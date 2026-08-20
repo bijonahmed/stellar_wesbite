@@ -1,0 +1,160 @@
+{
+  "chairman": {
+    "slug": "chairman-message",
+    "tag": "Leadership",
+    "title": "Chairman's Profile",
+    "subtitle": "Delivering premium residential and commercial projects in Dhaka with a reputation built on trust and excellence.",
+    "breadcrumbs": [
+      { "label": "About" },
+      { "label": "Chairman's Profile" }
+    ],
+    "name": "Muhammad Fakhrul Haider",
+    "designation": "Chairman",
+    "image": "/frontend_theme/assets/imgs/ourteam/fakhrul-haider-haider-chairman.png",
+    "paragraphs": [
+      "Muhammad Fakhrul Haider is an accomplished entrepreneur and business leader with a diverse professional background spanning banking, information technology, enterprise resource planning (ERP) security, and real estate.",
+      "Mr. Haider graduated from Independent University, Bangladesh (IUB) in 2002 and began his professional career as a Management Trainee Officer at Bank Asia Limited. He went on to build a successful career in Bangladesh's banking sector, serving in various professional capacities until 2014. His final banking position was Vice President at Mutual Trust Bank Limited.",
+      "In 2014, Mr. Haider relocated to the United States and transitioned his career into the information technology sector. He spent five years at Halliburton, where he served as a Senior Application Analyst – SAP, gaining extensive experience in enterprise applications, SAP systems, and technology solutions.",
+      "Driven by an entrepreneurial vision, Mr. Haider founded Astute 360 Corporation in 2019. Under his leadership, the company has developed into an IT services organization supporting federal and private-sector clients, with a particular focus on ERP security and enterprise technology solutions. Astute 360 Corporation has created employment opportunities for 27 IT specialists and generates more than USD 1 million in annual revenue.",
+      "In 2023, Mr. Haider expanded his entrepreneurial activities into the real estate sector in Bangladesh. With a strong commitment to innovation, sustainable growth, and long-term value creation, he is working to establish the real estate venture as a leading and respected company in Bangladesh.",
+      "As Chairman, Mr. Haider brings together his experience in banking, technology, entrepreneurship, and international business. His leadership philosophy is centered on building strong organizations, creating employment opportunities, delivering value to clients and stakeholders, and pursuing sustainable growth through integrity, innovation, and professional excellence."
+    ],
+    "cta": {
+      "title": "Experience Our Commitment Firsthand",
+      "subtitle": "Discover the Stellar difference — where vision meets execution and trust meets excellence.",
+      "primaryBtn": { "label": "Contact Us", "href": "/contact" },
+      "secondaryBtn": { "label": "View Projects", "href": "/projects" }
+    },
+    "seo": {
+      "title": "Chairman's Profile | Muhammad Fakhrul Haider — Stellar Structures Limited",
+      "description": "Read the inspiring message from Muhammad Fakhrul Haider, Chairman of Stellar Structures Limited — a visionary leader guiding the company with integrity, innovation, and excellence in Bangladesh's real estate sector.",
+      "keywords": [
+        "Muhammad Fakhrul Haider",
+        "chairman Stellar Structures",
+        "chairman message Stellar Structures",
+        "real estate leadership Bangladesh",
+        "Stellar Structures chairman vision",
+        "property developer chairman Dhaka",
+        "real estate company Bangladesh",
+        "premium housing Dhaka",
+        "commercial real estate Bangladesh",
+        "best real estate developer Dhaka"
+      ],
+      "openGraph": {
+        "title": "Chairman's Profile — Muhammad Fakhrul Haider | Stellar Structures Limited",
+        "description": "Discover the vision of Muhammad Fakhrul Haider, Chairman of Stellar Structures Limited — leading with integrity and excellence in real estate development across Bangladesh.",
+        "type": "website"
+      }
+    }
+  },
+
+  "managingDirector": {
+    "slug": "managing-director",
+    "tag": "Leadership",
+    "title": "Managing Director's Profile",
+    "subtitle": "Delivering premium residential and commercial projects in Dhaka with a reputation built on trust and excellence.",
+    "breadcrumbs": [
+      { "label": "About" },
+      { "label": "Managing Director" }
+    ],
+    "name": "Engr. Mohammad Adnan",
+    "designation": "Managing Director",
+    "image": "/frontend_theme/assets/imgs/ourteam/adnan.png",
+    "paragraphs": [
+      "Leading Stellar Structures Limited as Managing Director is a tremendous honor and responsibility. With over 15 years of experience in structural design and project management, I am committed to upholding the highest standards of engineering excellence and delivering projects that stand as testaments to quality, innovation, and customer satisfaction.",
+      "As a civil engineer trained at BUET, I bring a deep understanding of structural integrity, sustainable construction practices, and modern engineering methodologies to every project we undertake. Since 2009, I have been working in partnership at KIOSK Consultants and Construction, KIOSK Steel Structure Limited, and Revive Asset, successfully completing structural designs for numerous apartments, hospitals, educational institutions, and commercial developments.",
+      "Under my leadership, Stellar Structures Limited has embraced cutting-edge technology and innovative design approaches. Our collaboration with CFS Engineers LLC, Virginia, USA on light gauge steel framing systems demonstrates our commitment to international standards and modern construction techniques. We are dedicated to delivering residential and commercial projects that are not only architecturally stunning but also structurally sound and environmentally responsible.",
+      "Our vision extends beyond constructing buildings — we aim to create thriving communities and landmarks that stand the test of time. By integrating smart home solutions, energy-efficient systems, and world-class amenities, we are shaping the future of urban living in Bangladesh. I believe that the foundation of any great real estate company is the trust it earns through transparency, timely delivery, and an uncompromising commitment to excellence in every detail.",
+      "To our valued clients, partners, and well-wishers — I extend my heartfelt gratitude for your continued faith in Stellar Structures Limited. Together, we will continue to build landmarks that define Dhaka's skyline, create homes that nurture families, and develop commercial spaces that drive economic growth for generations to come. The future of real estate in Bangladesh is bright, and Stellar Structures Limited is proud to be at the forefront of this transformation."
+    ],
+    "cta": {
+      "title": "Let's Build Something Extraordinary",
+      "subtitle": "Partner with Stellar Structures Limited and experience a new standard in real estate excellence.",
+      "primaryBtn": { "label": "Contact Us", "href": "/contact" },
+      "secondaryBtn": { "label": "View Projects", "href": "/projects" }
+    },
+    "seo": {
+      "title": "Managing Director's Profile | Engr. Mohammad Adnan — Stellar Structures Limited",
+      "description": "Read the inspiring message from Engr. Mohammad Adnan, Managing Director of Stellar Structures Limited — a visionary engineer driving innovation, sustainable development, and premium real estate projects across Dhaka and Bangladesh.",
+      "keywords": [
+        "Engr. Mohammad Adnan",
+        "managing director Stellar Structures",
+        "real estate leadership Dhaka",
+        "Stellar Structures MD message",
+        "property development vision Bangladesh",
+        "real estate company Bangladesh",
+        "premium housing Dhaka",
+        "commercial real estate Bangladesh",
+        "construction company leadership",
+        "sustainable real estate development",
+        "structural engineer Bangladesh",
+        "best real estate developer Dhaka"
+      ],
+      "openGraph": {
+        "title": "Managing Director's Profile — Engr. Mohammad Adnan | Stellar Structures Limited",
+        "description": "Discover the vision of Engr. Mohammad Adnan, MD of Stellar Structures Limited — leading innovation in real estate development across Bangladesh.",
+        "type": "website"
+      }
+    }
+  },
+  
+  "directors": {
+    "slug": "directors-message",
+    "tag": "Leadership",
+    "title": "Directors' Profile",
+    "subtitle": "Meet the visionary leaders behind Stellar Structures Limited — dedicated to excellence in structural engineering, architecture, and real estate development.",
+    "breadcrumbs": [
+      { "label": "About" },
+      { "label": "Directors' Profile" }
+    ],
+    "items": [
+      {
+        "name": "Mohiuddin Khan",
+        "degree": "Minnesota State University Moorhead",
+        "title": "Director",
+        "experience": "20+ years",
+        "image": "/frontend_theme/assets/imgs/ourteam/mohiuddin-khan-director.jpeg",
+        "bio": "Mohiuddin Khan is an experienced business professional and entrepreneur with a diverse background spanning information technology, energy, manufacturing, garments, and real estate. Mr. Khan graduated with a degree in Computer Science from Minnesota State University Moorhead. He began his professional career in the United States as an IT professional in 2002, gaining valuable experience in technology and business operations. In 2012, Mr. Khan expanded his professional activities into Bangladesh and began building his business career, initially focusing on the Liquefied Natural Gas (LNG) sector. Over the years, he has diversified his business interests across several important industries, including steel rerolling mills, ready-made garments (RMG), and real estate. With his international professional experience, technology background, and broad exposure to multiple industries, Mr. Khan brings a strategic and diversified perspective to business leadership. His experience across both the United States and Bangladesh enables him to contribute valuable insight into business development, operations, investment opportunities, and long-term growth. As a Company Director, Mr. Khan is committed to supporting sustainable business growth, strengthening strategic partnerships, and identifying new opportunities across the company's areas of operation."
+      },
+      {
+        "name": "Ar. Wali Muhammad",
+        "degree": "Bachelor of Architecture, BUET",
+        "title": "Principal Architect & Partner",
+        "experience": "14 years",
+        "image": "/frontend_theme/assets/imgs/ourteam/wali_muhammad.png",
+        "bio": "Architect Wali Muhammad, Partner of KIOSK Consultants and Construction had work experience with senior architects and engineers to achieve vast experiences in Building Design, Interior Design and Construction Technology. He has experience to work with both indigenous and foreign consulting firms. Since 2009 to till date, he is also working in partnership at KIOSK Consultants and Construction, KIOSK Steel Structure Limited and Revive Asset. Within this tenure, he had successfully completed architectural design of a large number of apartment, industry, hospital, medical college, religious complex, educational institutes, commercial & mixed use projects. He is now a full member of IAB (Institute of Architects, Bangladesh) and enlisted architect of RAJUK and CDA (Chittagong Development Authority)."
+      }
+    ],
+    "cta": {
+      "title": "Let's Build Something Extraordinary",
+      "subtitle": "Partner with Stellar Structures Limited and experience a new standard in real estate excellence.",
+      "primaryBtn": { "label": "Contact Us", "href": "/contact" },
+      "secondaryBtn": { "label": "View Projects", "href": "/projects" }
+    },
+    "seo": {
+      "title": "Directors' Profile | Stellar Structures Limited",
+      "description": "Read the inspiring messages from the directors of Stellar Structures Limited — Mohiuddin Khan and Ar. Wali Muhammad, visionary leaders driving innovation in structural engineering, architecture, and premium real estate development across Bangladesh.",
+      "keywords": [
+        "Mohiuddin Khan",
+        "Ar. Wali Muhammad",
+        "Stellar Structures directors",
+        "structural engineer Bangladesh",
+        "architect Bangladesh",
+        "real estate leadership Dhaka",
+        "KIOSK Consultants",
+        "BUET civil engineering",
+        "best real estate developer Dhaka",
+        "construction company Bangladesh",
+        "premium housing Dhaka",
+        "commercial real estate Bangladesh",
+        "structural design Bangladesh",
+        "sustainable real estate development"
+      ],
+      "openGraph": {
+        "title": "Directors' Message — Stellar Structures Limited",
+        "description": "Discover the vision of the directors of Stellar Structures Limited — leading innovation in structural engineering, architecture, and real estate development across Bangladesh.",
+        "type": "website"
+      }
+    }
+  }
+}
