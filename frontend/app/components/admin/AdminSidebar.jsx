@@ -50,6 +50,15 @@ export default function AdminSidebar() {
         { label: "Post", href: "/post", icon: "bi-circle" },
       ],
     },
+    {
+      label: "Document Management",
+      href: "#",
+      icon: "nav-icon bi bi-file-earmark-text",
+      children: [
+        { label: "Document Category", href: "/documentcategories", icon: "bi-circle" },
+        { label: "Document", href: "/documents", icon: "bi-circle" },
+      ],
+    },
 
     // ✅ SHOW ONLY IF ADMIN
     ...(roles.includes("admin")

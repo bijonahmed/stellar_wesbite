@@ -19,9 +19,9 @@ class AuthController extends Controller
             'name'          => 'required|max:100',
             'email'         => 'required|email|unique:users,email',
             'phone_number'  => 'required|max:20|unique:users,phone_number',
-            'password'      => 'required|string|min:6|confirmed', // uses password_confirmation
+            'password'      => 'required|min:6|confirmed',
+            'register_type' => 'required|in:landowner,buyer',
         ], [
-            // Custom error messages
             'name.required'          => 'Full name is required.',
             'email.required'         => 'Email address is required.',
             'email.email'            => 'Please provide a valid email address.',
@@ -29,8 +29,11 @@ class AuthController extends Controller
             'phone_number.required'  => 'Phone number is required.',
             'phone_number.unique'    => 'This phone number is already in use.',
             'password.required'      => 'Password is required.',
+            'password.string'        => 'Password must be a string.',
             'password.min'           => 'Password must be at least 6 characters.',
             'password.confirmed'     => 'Passwords do not match.',
+            'register_type.required' => 'Please select a registration type.',
+            'register_type.in'       => 'Register type must be either landowner or buyer.',
         ]);
         // If validation fails
         if ($validator->fails()) {
@@ -40,13 +43,26 @@ class AuthController extends Controller
             ], 422);
         }
         // Create user
+        $roleType = $request->register_type === 'landowner' ? 2 : 3;
+
         $user = User::create([
-            'name'         => $request->name,
-            'email'        => $request->email,
-            'phone_number' => $request->phone_number,
-            'role_type'    => 4,
-            'password' => Hash::make($request->password),
+            'name'          => $request->name,
+            'email'         => $request->email,
+            'phone_number'  => $request->phone_number,
+            'register_type' => $request->register_type,
+            'role_type'     => $roleType,
+            'role_id'       => $roleType,
+            'password'      => Hash::make($request->password),
         ]);
+
+        // Assign Spatie role
+        $roleName = $request->register_type === 'landowner' ? 'landowner' : 'buyer';
+        try {
+            $user->assignRole($roleName);
+        } catch (\Exception $e) {
+            // Role may not exist in Spatie roles table yet
+        }
+
         return response()->json([
             'success' => true,
             'message' => 'User created successfully.',
@@ -56,15 +72,45 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         try {
+            $validator = Validator::make($request->all(), [
+                'email'         => 'required|email',
+                'password'      => 'required',
+            'register_type' => 'required|in:landowner,buyer,admin',
+            ], [
+                'register_type.required' => 'Please select login type.',
+                'register_type.in'       => 'Invalid login type.',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'success' => false,
+                    'errors' => $validator->errors(),
+                ], 422);
+            }
+
             $credentials = $request->only('email', 'password');
             if (!$token = auth()->attempt($credentials)) {
-                return response()->json(['error' => 'Invalid Credentials'], 401);
+                return response()->json(['success' => false, 'message' => 'Invalid credentials.'], 401);
             }
+
             $user = Auth::user();
-            // if (!empty($user->role_type)) {
-            //     return response()->json(['error' => 'Access denied for this role.'], 403);
-            // }
+
+            // Check register_type matches role_type
+            if ($request->register_type === 'admin') {
+                $expectedRoleType = 1;
+            } else {
+                $expectedRoleType = $request->register_type === 'landowner' ? 2 : 3;
+            }
+            if ($user->role_type != $expectedRoleType) {
+                auth()->guard('api')->logout();
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This account is not registered as a ' . $request->register_type . '.',
+                ], 403);
+            }
+
             return response()->json([
+                'success' => true,
                 'token' => $token,
                 'user' => $user,
                 'roles' => $user->getRoleNames(),
@@ -72,8 +118,8 @@ class AuthController extends Controller
             ]);
         } catch (\Throwable $e) {
             return response()->json([
-                'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'success' => false,
+                'message' => $e->getMessage(),
             ], 500);
         }
     }

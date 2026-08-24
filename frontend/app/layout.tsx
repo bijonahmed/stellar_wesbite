@@ -52,6 +52,7 @@ export default function RootLayout({ children }) {
           href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
         />
         <link rel="stylesheet" href="/dist/css/adminlte.css" />
+        <link rel="stylesheet" href="/frontend_theme/assets/css/custom.css" />
 
         {/* Frontend Theme CSS */}
         <link rel="shortcut icon" type="image/x-icon" href="/frontend_theme/assets/imgs/template/favicon.svg" />

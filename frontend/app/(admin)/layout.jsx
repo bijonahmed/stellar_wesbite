@@ -37,8 +37,10 @@ export default function AdminLayout({ children }) {
         <AdminAssets />
         <AdminNavbar />
         <AdminSidebar />
+        <div className="content-wrapper">
+          {children}
+        </div>
         <AdminFooter />
-        {children}
       </div>
     </AuthProvider>
 

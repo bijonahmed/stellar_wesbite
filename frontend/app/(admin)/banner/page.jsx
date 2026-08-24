@@ -238,7 +238,7 @@ export default function UserPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active" aria-current="page">
+                <li >
                   {title}
                 </li>
               </ol>

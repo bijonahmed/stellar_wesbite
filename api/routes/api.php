@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\Orders\OrdersController;
 use App\Http\Controllers\Api\Patho\GatewayController;
 use App\Http\Controllers\Api\Post\PostCategoryController;
 use App\Http\Controllers\Api\Post\PostController;
+use App\Http\Controllers\Api\Document\DocumentController;
+use App\Http\Controllers\Api\Document\DocumentCategoryController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\Roles\RolesController;
 use App\Http\Controllers\Api\Permissions\PermissionsController;
@@ -171,6 +173,7 @@ Route::middleware(['auth:api'])->group(function () {
         Route::post('/update', [UserController::class, 'update']);
         Route::DELETE('/delete/{id}', [UserController::class, 'destroy']);
         Route::get('/checkUserrow/{id}', [UserController::class, 'checkUserrow']);
+        Route::get('/byRole/{roleId}', [UserController::class, 'getUsersByRole']);
     });
     Route::prefix('posts-category')->group(function () {
         Route::get('/index', [PostCategoryController::class, 'index']);
@@ -186,6 +189,21 @@ Route::middleware(['auth:api'])->group(function () {
         Route::DELETE('/delete/{id}', [PostController::class, 'destroy']);
         Route::get('/postrow/{id}', [PostController::class, 'postrow']);
         Route::get('/postCategorysearch', [PostController::class, 'postCategorysearch']);
+    });
+    Route::prefix('documents-category')->group(function () {
+        Route::get('/index', [DocumentCategoryController::class, 'index']);
+        Route::post('/create', [DocumentCategoryController::class, 'store']);
+        Route::post('/update', [DocumentCategoryController::class, 'update']);
+        Route::DELETE('/delete/{id}', [DocumentCategoryController::class, 'destroy']);
+        Route::get('/postrow/{id}', [DocumentCategoryController::class, 'postrow']);
+    });
+    Route::prefix('documents')->group(function () {
+        Route::get('/index', [DocumentController::class, 'index']);
+        Route::post('/create', [DocumentController::class, 'store']);
+        Route::post('/update', [DocumentController::class, 'update']);
+        Route::DELETE('/delete/{id}', [DocumentController::class, 'destroy']);
+        Route::get('/postrow/{id}', [DocumentController::class, 'postrow']);
+        Route::get('/documentCategorysearch', [DocumentController::class, 'documentCategorysearch']);
     });
 });
 Route::fallback(function () {

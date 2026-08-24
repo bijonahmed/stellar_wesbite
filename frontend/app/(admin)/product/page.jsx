@@ -212,7 +212,7 @@ export default function ProductPage() {
           {perms.includes("edit product") && (
             <button
               className="btn btn-sm btn-primary"
-              onClick={() => router.push(`/product/edit/${row.id}`)}
+              onClick={() => router.push(`/product/edit?id=${row.id}`)}
             >
               <i className="bi bi-pencil"></i> Edit
             </button>
@@ -282,7 +282,7 @@ export default function ProductPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active">{title}</li>
+                <li >{title}</li>
               </ol>
             </div>
           </div>

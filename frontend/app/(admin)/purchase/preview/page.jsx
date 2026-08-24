@@ -1,6 +1,6 @@
 "use client";
 import { useSearchParams } from 'next/navigation';
-import EditForm from './[id]/EditForm';
+import EditForm from './_components/EditForm';
 export default function Page() {
     const searchParams = useSearchParams();
     const id = searchParams.get('id');

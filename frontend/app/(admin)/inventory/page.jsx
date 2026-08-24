@@ -183,7 +183,7 @@ export default function ProductPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active">{title}</li>
+                <li >{title}</li>
               </ol>
             </div>
           </div>

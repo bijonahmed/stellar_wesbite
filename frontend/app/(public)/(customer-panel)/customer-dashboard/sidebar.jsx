@@ -50,16 +50,12 @@ export default function Sidebar() {
               <i className="icon-user" /> Account Information
             </Link>
           </li>
-          <li className={isActive("/invoice") ? "active" : ""}>
-            <Link href="/invoice">
-              <i className="icon-papers" /> Invoices
+          <li className={isActive("/mydocuments") ? "active" : ""}>
+            <Link href="/mydocuments">
+              <i className="icon-papers" /> My Documents
             </Link>
           </li>
-          <li className={isActive("/whishlist") ? "active" : ""}>
-            <Link href="/whishlist">
-              <i className="icon-heart" /> Wishlist
-            </Link>
-          </li>
+          
           <li>
             <a
               href="#"

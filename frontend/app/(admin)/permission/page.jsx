@@ -211,7 +211,7 @@ export default function permissionAddPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active" aria-current="page">
+                <li >
                   <a
                     href="#"
                     onClick={(e) => {

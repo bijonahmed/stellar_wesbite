@@ -284,4 +284,21 @@ class UserController extends Controller
         $response = 'Password successfully changed!';
         return response()->json($response);
     }
+
+    public function getUsersByRole($roleId)
+    {
+        $user = Auth::user();
+        if (! $user->can('view users')) {
+            return response()->json([
+                'message' => 'Unauthorized: You do not have permission to view users',
+            ], 403);
+        }
+
+        $data = User::where('role_id', $roleId)
+            ->where('status', 1)
+            ->select('id', 'name', 'email', 'phone_number')
+            ->get();
+
+        return response()->json($data);
+    }
 }

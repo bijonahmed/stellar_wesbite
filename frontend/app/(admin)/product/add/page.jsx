@@ -187,7 +187,7 @@ export default function AddProductForm({}) {
               <li className="breadcrumb-item">
                 <Link href="/dashboard">Home</Link>
               </li>
-              <li className="breadcrumb-item active">
+              <li >
                 <a
                   href="#"
                   onClick={(e) => {

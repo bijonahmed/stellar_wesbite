@@ -121,7 +121,7 @@ export default function UserPage() {
           {perms.includes("edit users") ? (
             <button
               className="btn btn-sm btn-primary"
-              onClick={() => router.push(`/user/edit/${row.id}`)}
+              onClick={() => router.push(`/user/edit?id=${row.id}`)}
             >
               <i className="bi bi-pencil"></i> Edit
             </button>
@@ -173,7 +173,7 @@ export default function UserPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active" aria-current="page">
+                <li >
                   {title}
                 </li>
               </ol>

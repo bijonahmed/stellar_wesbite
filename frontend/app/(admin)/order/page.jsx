@@ -125,7 +125,7 @@ export default function ProductPage() {
           {perms.includes("edit order") && (
             <button
               className="btn btn-sm btn-primary"
-              onClick={() => router.push(`/order/preview/${row.id}`)}
+              onClick={() => router.push(`/order/preview?id=${row.id}`)}
             >
               <i className="bi bi-zoom-in"></i> Invoice
             </button>
@@ -174,7 +174,7 @@ export default function ProductPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li className="breadcrumb-item active">{title}</li>
+                <li >{title}</li>
               </ol>
             </div>
           </div>

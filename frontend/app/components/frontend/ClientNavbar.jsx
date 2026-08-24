@@ -66,12 +66,9 @@ const menuData = [
     ],
   },
   {
-    label: "Media",
-    href: "#",
-    children: [
-      { label: "Blog", href: "/blog" },
-      { label: "Photo Gallery", href: "/gallery/photos" },
-    ],
+    label: "Blog",
+    href: "/blog",
+    children: null,
   },
   {
     label: "Contact",
@@ -87,7 +84,7 @@ const menuData = [
     href: "#",
     children: [
       { label: "Landowner Login", href: "/login" },
-      { label: "Customer Login", href: "/login" },
+      { label: "Buyer Login", href: "/login" },
     ],
   },
 ];

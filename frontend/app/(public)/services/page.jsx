@@ -1,10 +1,7 @@
 import ServiceClient from "./ServiceClient";
 
-export async function generateMetadata({ params }) {
-  const { slug } = params;
-  const title = slug
-    ? `${slug.replace(/-/g, " ")} | Stellar Structures Limited`
-    : "Services | Stellar Structures Limited";
+export async function generateMetadata() {
+  const title = "Services | Stellar Structures Limited";
   const description =
     "Explore comprehensive real estate services by Stellar Structures Limited in Dhaka — property development, construction management, interior design, architectural design, investment consultancy, and property valuation.";
   return {
@@ -29,7 +26,6 @@ export async function generateMetadata({ params }) {
   };
 }
 
-export default function Page({ params }) {
-  const { slug } = params;
-  return <ServiceClient slug={slug} />;
+export default function Page() {
+  return <ServiceClient />;
 }

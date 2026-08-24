@@ -1,0 +1,253 @@
+/* ============================================================
+   CUSTOM ADMIN CSS - Stellar Structures
+   ============================================================ */
+
+/* 1. FORM INPUTS / SELECTS / TEXTAREA */
+.form-control,
+.form-select,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="date"],
+input[type="file"],
+select,
+textarea {
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8125rem;
+  min-height: 32px;
+  height: auto;
+  border-radius: 0.3rem;
+  border: 1px solid #dee2e6;
+  color: #212529;
+  background-color: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.form-control:focus,
+.form-select:focus,
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="number"]:focus,
+input[type="search"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.12);
+  outline: none;
+}
+
+textarea.form-control,
+textarea {
+  min-height: 80px;
+  padding: 0.5rem 0.6rem;
+  resize: vertical;
+}
+
+.form-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #495057;
+  margin-bottom: 0.3rem;
+}
+
+.invalid-feedback {
+  font-size: 0.75rem;
+}
+
+/* 2. BUTTONS - compact professional */
+.btn {
+  padding: 0.25rem 0.6rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 0.25rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.btn-sm {
+  padding: 0.2rem 0.45rem;
+  font-size: 0.7rem;
+  border-radius: 0.2rem;
+}
+
+.btn-xs {
+  padding: 0.15rem 0.35rem;
+  font-size: 0.65rem;
+  border-radius: 0.15rem;
+}
+
+/* 2. DATA TABLE (react-data-table-component) */
+.rdt_TableHeadRow {
+  background-color: #f8f9fa;
+  border-bottom: 2px solid #dee2e6;
+}
+
+.rdt_TableHeadCell {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6c757d;
+  padding: 0.65rem 0.75rem;
+  white-space: nowrap;
+}
+
+.rdt_TableCell {
+  padding: 0.6rem 0.75rem;
+  font-size: 0.85rem;
+}
+
+.rdt_TableRow {
+  border-bottom: 1px solid #e9ecef;
+}
+
+.rdt_TableRow:hover {
+  background-color: #f8f9fa !important;
+}
+
+.rdt_Pagination {
+  border-top: 1px solid #e9ecef;
+  padding: 0.5rem 0.75rem;
+}
+
+.rdt_NoData,
+.rdt_Loading {
+  padding: 2rem;
+  color: #adb5bd;
+}
+
+/* 3. DASHBOARD SMALL-BOX */
+.small-box {
+  border-radius: 0.5rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.small-box:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* 4. CKEDITOR */
+.ck-editor__editable {
+  min-height: 180px;
+}
+
+/* 5. TABLE HEADER */
+.table thead th {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #6c757d;
+}
+
+/* 6. IMAGE PREVIEW */
+.img-thumbnail {
+  border-radius: 0.375rem;
+  padding: 3px;
+  background: #fff;
+}
+
+/* 7. CARD HEADER TOOLBAR */
+.card-header .row {
+  align-items: center;
+}
+
+/* 8. ACTION BUTTONS */
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  transition: all 0.15s;
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+}
+
+/* 9. PERMISSION TABLE */
+.permission-table th {
+  background: #f8f9fa;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.permission-table .form-check-input {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+/* 10. STATUS INDICATOR */
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 0.35rem;
+}
+
+.status-dot.active { background: #198754; }
+.status-dot.inactive { background: #dc3545; }
+.status-dot.pending { background: #ffc107; }
+
+/* 11. STOCK BADGES */
+.stock-low { background: #fde8ea; color: #dc3545; padding: 0.2em 0.5em; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; }
+.stock-medium { background: #fff3cd; color: #856404; padding: 0.2em 0.5em; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; }
+.stock-high { background: #d1e7dd; color: #0f5132; padding: 0.2em 0.5em; border-radius: 0.25rem; font-size: 0.75rem; font-weight: 600; }
+
+/* 12. PRODUCT TABLE */
+.product-card { border-radius: 0.5rem; overflow: hidden; }
+.product-table thead { background: #f8f9fa; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; }
+.product-table tbody tr:hover { background: #f1f5f9; }
+.product-table td { vertical-align: middle; }
+.img-size-32 { width: 32px; height: 32px; object-fit: cover; border-radius: 0.25rem; }
+.trend { font-weight: 500; display: inline-block; margin-right: 5px; font-size: 0.85rem; }
+.trend.up { color: #198754; }
+.trend.down { color: #dc3545; }
+
+/* 13. SCROLLBAR */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
+
+/* 14. ANIMATIONS */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.fade-in { animation: fadeIn 0.3s ease-out; }
+.hover-lift { transition: transform 0.2s, box-shadow 0.2s; }
+.hover-lift:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); }
+
+/* 15. PRINT */
+@media print {
+  .app-header, .app-sidebar, .app-footer, .btn, .breadcrumb { display: none !important; }
+  .card { box-shadow: none; border: 1px solid #ddd; }
+}
+
+/* 16. ACCESSIBILITY */
+.btn:focus-visible, .form-control:focus-visible, .form-select:focus-visible, .nav-link:focus-visible {
+  outline: 2px solid #0d6efd;
+  outline-offset: 2px;
+}
+
+a:focus-visible { outline: 2px solid #0d6efd; outline-offset: 2px; }
+
+/* 17. RESPONSIVE */
+@media (max-width: 768px) {
+  .rdt_TableHeadCell, .rdt_TableCell { padding: 0.5rem 0.625rem; font-size: 0.8rem; }
+}
+
+@media (max-width: 576px) {
+  .card-body { padding: 0.75rem; }
+}

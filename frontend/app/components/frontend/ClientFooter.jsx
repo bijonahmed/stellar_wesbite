@@ -51,7 +51,7 @@ const footerLinks = [
     title: "Media & Support",
     links: [
       { label: "Blog", href: "/blog" },
-      { label: "Photo Gallery", href: "/gallery/photos" },
+    //  { label: "Photo Gallery", href: "/gallery/photos" },
     //  { label: "Events", href: "/events" },
       { label: "FAQ", href: "/faq" },
       { label: "Customer Support", href: "/support" },
