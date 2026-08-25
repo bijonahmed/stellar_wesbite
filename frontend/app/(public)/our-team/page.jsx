@@ -1,25 +1,7 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-import leadershipData from "../../data/leadershipMessages.json";
-
-const md = leadershipData.managingDirector;
-
-export const metadata = {
-  title: "Our Team | Stellar Structures Limited",
-  description:
-    "Meet the dedicated team behind Stellar Structures Limited — experienced professionals driving innovation and excellence in Bangladesh's real estate industry through expertise and commitment.",
-  keywords: [
-    "Stellar Structures team",
-    "real estate team Dhaka",
-    "property developer leadership Bangladesh",
-    "construction company professionals",
-  ],
-  openGraph: {
-    title: "Our Team | Stellar Structures Limited",
-    description: "Meet the experienced professionals behind Stellar Structures Limited's success in real estate.",
-    type: "website",
-  },
-};
 
 const gold = "#C9A227";
 const dark = "#061424";
@@ -76,9 +58,85 @@ const bioStyle = {
   margin: 0,
 };
 
+function cleanText(text) {
+  if (!text) return "";
+  return text
+    .replace(/&nbsp;|&#160;|&NonBreakingSpace;/g, " ")
+    .replace(/<[^>]*>/g, "")
+    .trim();
+}
+
+function parseParagraphs(text) {
+  if (!text) return [];
+  return text
+    .split(/\n\n|<\/p>\s*<p[^>]*>|<br\s*\/?>/)
+    .map((p) => cleanText(p))
+    .filter(Boolean);
+}
+
+function PersonImage({ src, name, style }) {
+  if (src) {
+    return (
+      <img
+        src={src}
+        alt={name}
+        style={{ ...style, display: "block", margin: "0 auto" }}
+      />
+    );
+  }
+  return (
+    <div
+      style={{
+        width: "180px",
+        height: "220px",
+        borderRadius: "8px",
+        border: `3px solid ${gold}`,
+        background: `linear-gradient(135deg, ${dark}10, ${dark}05)`,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        margin: "0 auto",
+      }}
+    >
+      <span style={{ fontSize: "48px", color: gold, opacity: 0.3 }}>
+        {name?.charAt(0) || "?"}
+      </span>
+    </div>
+  );
+}
+
 export default function OurTeamPage() {
-  const chairman = leadershipData.chairman;
-  const directors = leadershipData.directors;
+  const [chairmanPost, setChairmanPost] = useState(null);
+  const [mdPost, setMdPost] = useState(null);
+  const [directorsPosts, setDirectorsPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    Promise.all([
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getsPost?slug=chairman-message`).then((r) => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getsPost?slug=managing-director`).then((r) => r.json()),
+      fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getsPost?slug=directors-message`).then((r) => r.json()),
+    ])
+      .then(([chairmanData, mdData, directorsData]) => {
+        if (chairmanData.success && chairmanData.data.length > 0) {
+          setChairmanPost(chairmanData.data[0]);
+        }
+        if (mdData.success && mdData.data.length > 0) {
+          setMdPost(mdData.data[0]);
+        }
+        if (directorsData.success && directorsData.data.length > 0) {
+          setDirectorsPosts(directorsData.data);
+        }
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("API Error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  const chairmanParagraphs = parseParagraphs(chairmanPost?.description_full);
+  const mdParagraphs = parseParagraphs(mdPost?.description_full);
 
   return (
     <>
@@ -90,18 +148,18 @@ export default function OurTeamPage() {
       />
 
       {/* Chairman Section */}
+      
       <section style={{ padding: "clamp(20px, 2vw, 40px) 0", background: "#f8f7f3" }}>
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-10">
               <div style={cardStyle}>
                 <div className="row align-items-start g-4">
-                  {/* Passport Photo */}
                   <div className="col-md-auto text-center">
-                    <img
-                      src={chairman.image}
-                      alt={chairman.name}
-                      style={{ ...passportImgStyle, display: "block", margin: "0 auto" }}
+                    <PersonImage
+                      src={chairmanPost?.thumnail_img}
+                      name={chairmanPost?.name}
+                      style={passportImgStyle}
                     />
                     <p
                       style={{
@@ -112,7 +170,7 @@ export default function OurTeamPage() {
                         marginBottom: "2px",
                       }}
                     >
-                      {chairman.name}
+                      {chairmanPost?.name || ""}
                     </p>
                     <p
                       style={{
@@ -122,30 +180,35 @@ export default function OurTeamPage() {
                         margin: 0,
                       }}
                     >
-                      {chairman.designation}
+                      {chairmanPost?.description_short || "Chairman"}
                     </p>
                   </div>
 
-                  {/* Content */}
                   <div className="col">
                     <span style={sectionTag}>
                       <span style={{ width: "24px", height: "2px", background: gold }} />
-                      {chairman.tag}
+                      Leadership
                     </span>
-                    <h2 style={sectionTitle}>{chairman.title}</h2>
+                    <h2 style={sectionTitle}>Chairman&apos;s Profile</h2>
                     <div style={goldLine} />
 
-                    {chairman.paragraphs.map((para, i) => (
-                      <p
-                        key={i}
-                        style={{
-                          ...bioStyle,
-                          marginBottom: i === chairman.paragraphs.length - 1 ? "0" : "18px",
-                        }}
-                      >
-                        {para}
-                      </p>
-                    ))}
+                    {loading ? (
+                      <p style={{ color: "#999" }}>Loading...</p>
+                    ) : chairmanParagraphs.length > 0 ? (
+                      chairmanParagraphs.map((para, i) => (
+                        <p
+                          key={i}
+                          style={{
+                            ...bioStyle,
+                            marginBottom: i === chairmanParagraphs.length - 1 ? "0" : "18px",
+                          }}
+                        >
+                          {para}
+                        </p>
+                      ))
+                    ) : (
+                      <p style={{ color: "#999" }}>Content coming soon...</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -161,33 +224,12 @@ export default function OurTeamPage() {
             <div className="col-lg-10">
               <div style={cardStyle}>
                 <div className="row align-items-start g-4">
-                  {/* Passport Photo */}
                   <div className="col-md-auto text-center">
-                    {md.image ? (
-                      <img
-                        src={md.image}
-                        alt={md.name}
-                        style={{ ...passportImgStyle, display: "block", margin: "0 auto" }}
-                      />
-                    ) : (
-                      <div
-                        style={{
-                          width: "180px",
-                          height: "220px",
-                          borderRadius: "8px",
-                          border: `3px solid ${gold}`,
-                          background: `linear-gradient(135deg, ${dark}10, ${dark}05)`,
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          margin: "0 auto",
-                        }}
-                      >
-                        <span style={{ fontSize: "48px", color: gold, opacity: 0.3 }}>
-                          {md.name.charAt(0)}
-                        </span>
-                      </div>
-                    )}
+                    <PersonImage
+                      src={mdPost?.thumnail_img}
+                      name={mdPost?.name}
+                      style={passportImgStyle}
+                    />
                     <p
                       style={{
                         color: dark,
@@ -197,7 +239,7 @@ export default function OurTeamPage() {
                         marginBottom: "2px",
                       }}
                     >
-                      {md.name}
+                      {mdPost?.name || ""}
                     </p>
                     <p
                       style={{
@@ -207,30 +249,35 @@ export default function OurTeamPage() {
                         margin: 0,
                       }}
                     >
-                      {md.designation}
+                      {mdPost?.description_short || "Managing Director"}
                     </p>
                   </div>
 
-                  {/* Content */}
                   <div className="col">
                     <span style={sectionTag}>
                       <span style={{ width: "24px", height: "2px", background: gold }} />
-                      {md.tag}
+                      Leadership
                     </span>
-                    <h2 style={sectionTitle}>{md.title}</h2>
+                    <h2 style={sectionTitle}>Managing Director&apos;s Profile</h2>
                     <div style={goldLine} />
 
-                    {md.paragraphs.map((para, i) => (
-                      <p
-                        key={i}
-                        style={{
-                          ...bioStyle,
-                          marginBottom: i === md.paragraphs.length - 1 ? "0" : "18px",
-                        }}
-                      >
-                        {para}
-                      </p>
-                    ))}
+                    {loading ? (
+                      <p style={{ color: "#999" }}>Loading...</p>
+                    ) : mdParagraphs.length > 0 ? (
+                      mdParagraphs.map((para, i) => (
+                        <p
+                          key={i}
+                          style={{
+                            ...bioStyle,
+                            marginBottom: i === mdParagraphs.length - 1 ? "0" : "18px",
+                          }}
+                        >
+                          {para}
+                        </p>
+                      ))
+                    ) : (
+                      <p style={{ color: "#999" }}>Content coming soon...</p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -242,115 +289,84 @@ export default function OurTeamPage() {
       {/* Directors Section */}
       <section style={{ padding: "clamp(20px, 2vw, 40px) 0", background: "#fff" }}>
         <div className="container">
-          {/* Section Header */}
           <div className="text-center" style={{ marginBottom: "clamp(40px, 5vw, 64px)" }}>
             <span style={sectionTag}>
               <span style={{ width: "32px", height: "2px", background: gold }} />
-              {directors.tag}
+              Leadership
               <span style={{ width: "32px", height: "2px", background: gold }} />
             </span>
-            <h2 style={sectionTitle}>{directors.title}</h2>
+            <h2 style={sectionTitle}>Directors&apos; Profile</h2>
             <div style={{ ...goldLine, margin: "20px auto 0" }} />
           </div>
 
-          {/* Director Cards */}
           <div className="row g-4 justify-content-center">
-            {directors.items.map((director, i) => (
-              <div key={i} className="col-lg-10">
-                <div style={cardStyle}>
-                  <div className="row align-items-start g-4">
-                    {/* Passport Photo */}
-                    <div className="col-md-auto text-center">
-                      {director.image ? (
-                        <img
-                          src={director.image}
-                          alt={director.name}
-                          style={{ ...passportImgStyle, display: "block", margin: "0 auto" }}
-                        />
-                      ) : (
-                        <div
-                          style={{
-                            width: "180px",
-                            height: "220px",
-                            borderRadius: "8px",
-                            border: `3px solid ${gold}`,
-                            background: `linear-gradient(135deg, ${dark}10, ${dark}05)`,
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            margin: "0 auto",
-                          }}
-                        >
-                          <span style={{ fontSize: "48px", color: gold, opacity: 0.3 }}>
-                            {director.name.charAt(0)}
-                          </span>
+            {loading ? (
+              <p style={{ color: "#999", textAlign: "center" }}>Loading...</p>
+            ) : directorsPosts.length > 0 ? (
+              directorsPosts.map((director, i) => {
+                const directorParagraphs = parseParagraphs(director.description_full);
+                return (
+                  <div key={i} className="col-lg-10">
+                    <div style={cardStyle}>
+                      <div className="row align-items-start g-4">
+                        <div className="col-md-auto text-center">
+                          <PersonImage
+                            src={director.thumnail_img}
+                            name={director.name}
+                            style={passportImgStyle}
+                          />
+                          <p
+                            style={{
+                              color: dark,
+                              fontSize: "clamp(16px, 1.5vw, 18px)",
+                              fontWeight: 700,
+                              marginTop: "12px",
+                              marginBottom: "2px",
+                            }}
+                          >
+                            {director.name}
+                          </p>
+                          <p
+                            style={{
+                              color: gold,
+                              fontSize: "clamp(12px, 1vw, 14px)",
+                              fontWeight: 600,
+                              marginBottom: "4px",
+                            }}
+                          >
+                            {director.description_short || "Director"}
+                          </p>
                         </div>
-                      )}
-                      <p
-                        style={{
-                          color: dark,
-                          fontSize: "clamp(16px, 1.5vw, 18px)",
-                          fontWeight: 700,
-                          marginTop: "12px",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        {director.name}
-                      </p>
-                      <p
-                        style={{
-                          color: gold,
-                          fontSize: "clamp(12px, 1vw, 14px)",
-                          fontWeight: 600,
-                          marginBottom: "4px",
-                        }}
-                      >
-                        {director.title}
-                      </p>
-                      <p
-                        style={{
-                          color: "#999",
-                          fontSize: "clamp(11px, 0.9vw, 13px)",
-                          fontWeight: 500,
-                          margin: 0,
-                        }}
-                      >
-                        {director.experience}
-                      </p>
-                    </div>
 
-                    {/* Content */}
-                    <div className="col">
-                      <div style={{ marginBottom: "8px" }}>
-                        <span
-                          style={{
-                            display: "inline-block",
-                            background: `${gold}15`,
-                            color: gold,
-                            fontSize: "12px",
-                            fontWeight: 600,
-                            padding: "4px 12px",
-                            borderRadius: "20px",
-                            marginBottom: "8px",
-                          }}
-                        >
-                          {director.degree}
-                        </span>
+                        <div className="col">
+                          <div style={goldLine} />
+                          {directorParagraphs.length > 0 ? (
+                            directorParagraphs.map((para, j) => (
+                              <p
+                                key={j}
+                                style={{
+                                  ...bioStyle,
+                                  marginBottom: j === directorParagraphs.length - 1 ? "0" : "18px",
+                                }}
+                              >
+                                {para}
+                              </p>
+                            ))
+                          ) : (
+                            <p style={bioStyle}>{cleanText(director.description_full) || "Bio coming soon..."}</p>
+                          )}
+                        </div>
                       </div>
-
-                      <div style={goldLine} />
-
-                      <p style={bioStyle}>{director.bio}</p>
                     </div>
                   </div>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            ) : (
+              <p style={{ color: "#999", textAlign: "center" }}>Content coming soon...</p>
+            )}
           </div>
         </div>
       </section>
-
-      
     </>
   );
 }

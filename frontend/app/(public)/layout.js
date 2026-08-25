@@ -6,14 +6,26 @@ import { AuthProvider } from "../context/AuthContext";
 import FrontendAssets from "../components/frontend/FrontendAssets";
 import FooterMobileMenu from "../components/frontend/FooterMobileMenu";
 import { CartProvider } from "../context/CartContext";
-//export const metadata = { title: "Astute360corp - Your trusted technology solutions provider" };
 
-export default function PublicLayout({ children }) {
+async function getNavbarMenu() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getNavbarMenu`, {
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (data.success && data.data) return data.data;
+  } catch {}
+  return [];
+}
+
+export default async function PublicLayout({ children }) {
+  const initialMenu = await getNavbarMenu();
+
   return (
     <AuthProvider>
       <CartProvider>
         <FrontendAssets />
-        <ClientNavbar />
+        <ClientNavbar initialMenu={initialMenu} />
         <main>{children}</main>
         <ClientFooter />
       </CartProvider>

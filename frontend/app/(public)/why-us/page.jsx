@@ -1,8 +1,6 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
 import FeatureGrid from "../../components/frontend/PageElements/FeatureGrid";
 import StatBar from "../../components/frontend/PageElements/StatBar";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-
 export const metadata = {
   title: "Why Choose Stellar | Stellar Structures Limited",
   description:
@@ -83,13 +81,6 @@ export default function WhyUsPage() {
         columns={3}
       />
 
-    
-      <CTASection
-        title="Make the Right Choice"
-        subtitle="Experience the Stellar difference — where quality meets trust and innovation meets tradition."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "View Projects", href: "/projects" }}
-      />
     </>
   );
 }

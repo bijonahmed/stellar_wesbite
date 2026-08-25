@@ -1,15 +1,15 @@
 import ServicesPageClient from "./ServicesPageClient";
 
-const API = process.env.NEXT_PUBLIC_API_BASE;
+export const dynamicParams = true;
 
 export async function generateStaticParams() {
   try {
-    const res = await fetch(`${API}/public/getsAllServices`);
+    const baseUrl = "https://api.stellarstructuresbd.com/api";
+    const res = await fetch(`${baseUrl}/public/getsAllServices`);
     const result = await res.json();
-    const slugs = (result.data || []).map((post) => ({ slug: post.slug }));
-    return slugs.length > 0 ? slugs : [{ slug: "__none__" }];
+    return (result.data || []).map((post) => ({ slug: post.slug }));
   } catch {
-    return [{ slug: "__none__" }];
+    return [];
   }
 }
 

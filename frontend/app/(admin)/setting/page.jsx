@@ -222,19 +222,7 @@ export default function SettingPage() {
                   onChange={handleChange}
                 />
 
-                {/* DELIVERY */}
-                <Input
-                  label="Inside Dhaka"
-                  name="devliery_charge_inside_dhk"
-                  value={formData.devliery_charge_inside_dhk}
-                  onChange={handleChange}
-                />
-                <Input
-                  label="Outside Dhaka"
-                  name="devliery_charge_outside_dhk"
-                  value={formData.devliery_charge_outside_dhk}
-                  onChange={handleChange}
-                />
+               
 
                 {/* PROMOTIONAL BANNER */}
                 <div className="mb-3">

@@ -2,15 +2,17 @@ import BlogPageClient from "./BlogPageClient";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
+export const dynamicParams = true;
+
 export async function generateStaticParams() {
   try {
     const res = await fetch(`${API}/public/getsBlogPost`);
     const result = await res.json();
-    const slugs = (result.data || []).map((post) => ({ slug: post.slug }));
-    const filtered = slugs.filter((s) => s.slug && s.slug !== "__none__");
-    return filtered.length > 0 ? filtered : [{ slug: "__none__" }];
+    return (result.data || [])
+      .filter((post) => post.slug)
+      .map((post) => ({ slug: post.slug }));
   } catch {
-    return [{ slug: "__none__" }];
+    return [];
   }
 }
 

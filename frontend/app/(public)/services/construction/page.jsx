@@ -1,6 +1,5 @@
 import PageHeader from "../../../components/frontend/PageElements/PageHeader";
 import FeatureGrid from "../../../components/frontend/PageElements/FeatureGrid";
-import CTASection from "../../../components/frontend/PageElements/CTASection";
 
 export const metadata = {
   title: "Construction Management Services - Stellar Structures Limited",
@@ -23,7 +22,6 @@ export default function ConstructionPage() {
     <>
       <PageHeader tag="Services" title="Construction Management" subtitle="Expert construction management delivering quality buildings with precision and care." breadcrumbs={[{ label: "Services", href: "/services" }, { label: "Construction Management" }]} />
       <FeatureGrid title="Why Choose Our Construction" subtitle="We combine traditional craftsmanship with modern techniques for superior results." features={features} columns={3} />
-      <CTASection title="Need Construction Services?" subtitle="Discuss your project requirements with our expert team today." primaryBtn={{ label: "Contact Us", href: "/contact" }} secondaryBtn={{ label: "Our Process", href: "/services/development" }} />
     </>
   );
 }

@@ -1,7 +1,5 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
 import FeatureGrid from "../../components/frontend/PageElements/FeatureGrid";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-
 export const metadata = {
   title: "Customer Support - Stellar Structures Limited",
   description: "Get dedicated customer support from Stellar Structures Limited. Phone, email, portal, and in-person assistance for all buyers.",
@@ -54,13 +52,6 @@ export default function SupportPage() {
         subtitle="Choose the support channel that works best for you. Our trained professionals are ready to assist."
         features={supportChannels}
         columns={2}
-      />
-      
-      <CTASection
-        title="We Are Here to Help"
-        subtitle="No question is too small. Reach out and our team will ensure you get the support you deserve."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-       
       />
     </>
   );

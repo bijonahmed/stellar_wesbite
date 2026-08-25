@@ -3,7 +3,6 @@
 import { useState, useMemo } from "react";
 import Link from "next/link";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 import usePost from "../../hooks/useBlogPostSearch";
 
 function BlogCard({ post }) {
@@ -244,13 +243,6 @@ export default function BlogClient() {
           <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
       </section>
-
-      <CTASection
-        title="Have a Question?"
-        subtitle="Our team is ready to help you with property inquiries, investment advice, and project information."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "Schedule Visit", href: "/site-visit" }}
-      />
     </>
   );
 }

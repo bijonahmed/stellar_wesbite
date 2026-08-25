@@ -1,6 +1,5 @@
 import Link from "next/link";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 import ProjectsClient from "./ProjectsClient";
 
 export const metadata = {
@@ -36,12 +35,6 @@ export default function ProjectsPage() {
 
       <ProjectsClient />
 
-      <CTASection
-        title="Interested in Our Projects?"
-        subtitle="Get in touch with our sales team to learn more about available units, pricing, and flexible payment plans."
-        primaryBtn={{ label: "Contact Sales Team", href: "/contact" }}
-        secondaryBtn={{ label: "Schedule Site Visit", href: "/site-visit" }}
-      />
     </div>
   );
 }

@@ -1,5 +1,3 @@
-import CTASection from "./CTASection";
-
 const cardStyle = {
   position: "relative",
   background: "#faf9f6",
@@ -172,13 +170,6 @@ export default function LeadershipMessage({ data }) {
           }
         </div>
       </div>
-
-      <CTASection
-        title={data.cta.title}
-        subtitle={data.cta.subtitle}
-        primaryBtn={data.cta.primaryBtn}
-        secondaryBtn={data.cta.secondaryBtn}
-      />
     </section>
   );
 }

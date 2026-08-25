@@ -31,11 +31,13 @@ Route::middleware('api')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->name('api.login');
 });
 Route::prefix('public')->group(function () {
-    Route::get('/getCategory', [PublicController::class, 'index']);
-    Route::get('/inSubcategoryFilter', [PublicController::class, 'inSubcategoryFilter']);
 
+    Route::get('/getCategory', [PublicController::class, 'index']);
+    Route::get('/catgorUnderSubcategory', [PublicController::class, 'catgorUnderSubcategory']);
+    Route::get('/getSetting', [PublicController::class, 'getSetting']);
     Route::get('/categoryFilter', [PublicController::class, 'categoryFilter']);
     Route::get('/getCategoryParent', [PublicController::class, 'getCategoryParent']);
+    Route::get('/getNavbarMenu', [PublicController::class, 'getNavbarMenu']);
     Route::get('/productsCategory', [PublicController::class, 'productsCategory']);
     Route::get('/productsCategoryAllData', [PublicController::class, 'productsCategoryAllData']);
     Route::get('/getProducts', [PublicController::class, 'getProducts']);

@@ -1,7 +1,5 @@
 import Link from "next/link";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-
 
 export const metadata = {
   title: "Career | Stellar Structures Limited",
@@ -114,14 +112,6 @@ export default function CareerPage() {
         </div>
       </section>
 
-   
-
-      <CTASection
-        title="Ready to Build Your Future?"
-        subtitle="Join a team that is redefining real estate in Bangladesh through innovation, integrity, and excellence."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "View Projects", href: "/projects" }}
-      />
     </>
   );
 }

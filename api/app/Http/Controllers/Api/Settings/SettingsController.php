@@ -42,8 +42,7 @@ class SettingsController extends Controller
             $validator = Validator::make($request->all(), [
                 'name'        => 'required',
                 'email'       => 'required',
-                'devliery_charge_inside_dhk'  => 'required',
-                'devliery_charge_outside_dhk' => 'required',
+                'whatsApp'    => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -67,8 +66,7 @@ class SettingsController extends Controller
                     ? (int)$request->promotional_banner
                     : 0,
 
-                'devliery_charge_inside_dhk'  => $request->devliery_charge_inside_dhk ?? "",
-                'devliery_charge_outside_dhk' => $request->devliery_charge_outside_dhk ?? "",
+             
             ];
 
             Setting::where('id', 1)->update($data);

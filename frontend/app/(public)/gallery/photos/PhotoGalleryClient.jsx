@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import PageHeader from "../../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../../components/frontend/PageElements/CTASection";
 
 const basePath = "/frontend_theme/assets/imgs/gallery_img";
 const photos = Array.from({ length: 20 }, (_, i) => ({
@@ -254,13 +253,6 @@ export default function PhotoGalleryClient() {
         @media(max-width:480px){ .photo-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 3px !important; } }
         @media(max-width:576px){ .gbar h4{font-size:12px!important} .gbar p{font-size:9px!important} }
       `}</style>
-
-      <CTASection
-        title="See Our Projects in Person"
-        subtitle="Schedule a site visit to experience the Stellar Structures quality firsthand."
-        primaryBtn={{ label: "Schedule Visit", href: "/site-visit" }}
-        secondaryBtn={{ label: "View Videos", href: "/gallery/videos" }}
-      />
 
       {lightboxIndex !== null && (
         <Lightbox index={lightboxIndex} photos={photos} onClose={() => setLightboxIndex(null)} onPrev={handlePrev} onNext={handleNext} />

@@ -3,8 +3,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import PageHeader from "../../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../../components/frontend/PageElements/CTASection";
-
 function Sidebar({ popularPosts, searchTerm, setSearchTerm, filteredPosts }) {
   return (
     <aside style={{ padding: "0" }}>
@@ -316,13 +314,6 @@ export default function BlogPageClient({ slug }) {
           )}
         </div>
       </section>
-
-      <CTASection
-        title="Enjoyed This Article?"
-        subtitle="Explore more insights or get in touch with our team for expert real estate advice in Dhaka."
-        primaryBtn={{ label: "Read More Articles", href: "/blog" }}
-        secondaryBtn={{ label: "Contact Us", href: "/contact" }}
-      />
 
       <style>{`
         .blog-article-content h2 {

@@ -4,31 +4,21 @@ namespace App\Http\Controllers\Api\Public;
 
 use App\Http\Controllers\Controller;
 use App\Models\Banner;
-use App\Models\OrderHistory;
 use App\Models\Orders;
 use App\Models\OrderStatus;
 use App\Models\Post;
+use App\Models\PostCategory;
+use App\Models\Categories;
 use App\Models\Product;
-use App\Models\Roles;
 use App\Models\ProductCategory;
 use App\Models\ProductsAttribues;
 use App\Models\ProductsGallery;
 use App\Models\Setting;
 use App\Models\Supplier;
-use App\Models\User;
-use Illuminate\Support\Facades\Crypt;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Http;
+use DB;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use App\Mail\ContactMail;
-use Illuminate\Support\Facades\Mail;
-use Attribute;
-use DB;
-use File;
-use Helper;
-use Illuminate\Http\Request;
-use Validator;
 
 class PublicController extends Controller
 {
@@ -37,44 +27,46 @@ class PublicController extends Controller
         try {
             $categories = ProductCategory::where('status', 1)->where('tabs_status', 1)->get();
 
-            $grouped    = $categories->groupBy('parent_id');
-            $buildTree  = function ($parentId) use (&$buildTree, $grouped) {
+            $grouped = $categories->groupBy('parent_id');
+            $buildTree = function ($parentId) use (&$buildTree, $grouped) {
                 return $grouped->get($parentId, collect())->map(function ($category) use ($buildTree) {
                     return [
-                        'id'         => $category->id,
-                        'name'      => $category->name,
-                        'slug'       => $category->slug,
-                        'parent_id'  => $category->parent_id,
-                        'children'   => $buildTree($category->id),
+                        'id' => $category->id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'parent_id' => $category->parent_id,
+                        'children' => $buildTree($category->id),
                     ];
                 });
             };
-            $chkBanner    = Banner::where('type', 'top_banner')->first();
-            $topBanner    = !empty($chkBanner) ? url($chkBanner->banner_image) : "";
+            $chkBanner = Banner::where('type', 'top_banner')->first();
+            $topBanner = ! empty($chkBanner) ? url($chkBanner->banner_image) : '';
             $sliderBanner = Banner::where('type', 'slider')->get();
             $sliders = $sliderBanner->map(function ($item) {
-                if (!empty($item->home_slider)) {
+                if (! empty($item->home_slider)) {
                     $item->home_slider = url($item->home_slider);
                 }
+
                 return $item;
             });
             // Start with parent_id = 0 (top-level)
             $nestedCategories = $buildTree(0);
-            $settingData        = Setting::find(1);
-            $promotionalStatus  = !empty($settingData->promotional_banner) ? $settingData->promotional_banner : "";
+            $settingData = Setting::find(1);
+            $promotionalStatus = ! empty($settingData->promotional_banner) ? $settingData->promotional_banner : '';
 
             return response()->json([
-                'success'   => true,
-                'data'      => $nestedCategories,
-                'pro_status'  => $promotionalStatus,
+                'success' => true,
+                'data' => $nestedCategories,
+                'pro_status' => $promotionalStatus,
                 'topBanner' => $topBanner,
                 'sliders' => $sliders,
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Category fetch failed: ' . $e->getMessage(), [
+            \Log::error('Category fetch failed: '.$e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch categories. Please try again later.',
@@ -83,14 +75,11 @@ class PublicController extends Controller
         }
     }
 
-
-
     public function categoryFilter(Request $request)
     {
         $slug = $request->slug;
 
         $checkCategories = ProductCategory::where('slug', $slug)->first();
-
 
         $filterProducts = Product::where('subcategoryId', $checkCategories->id)
             ->where('status', 1)
@@ -98,48 +87,45 @@ class PublicController extends Controller
             ->get()
             ->map(function ($product) {
                 return [
-                    'id'    => $product->id,
+                    'id' => $product->id,
                     'name' => Str::limit($product->name, 25, '...'),
                     'fname' => $product->name,
-                    'slug'  => $product->slug,
+                    'slug' => $product->slug,
                     'price' => $product->price,
                     'discount_price' => $product->discount_price,
-                    'thumbnail'      => $product->thumnail_img ? url($product->thumnail_img) : null,
+                    'thumbnail' => $product->thumnail_img ? url($product->thumnail_img) : null,
                 ];
             });
-        $subcategoryImage = !empty($checkCategories->banner_sub_cat_image) ? url($checkCategories->banner_sub_cat_image) : null;
-
+        $subcategoryImage = ! empty($checkCategories->banner_sub_cat_image) ? url($checkCategories->banner_sub_cat_image) : null;
 
         $checkinSubCategories = ProductCategory::where('parent_child_id', $checkCategories->id)
             ->where('status', 1) // filter in DB
             ->get()
             ->map(function ($cat) {
                 return [
-                    'id'        => $cat->id,
-                    'name'      => $cat->name,
-                    'slug'      => $cat->slug,
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
                     'thumbnail' => $cat->insubCategoryImage ? url($cat->insubCategoryImage) : null,
                 ];
             });
-
 
         return response()->json([
             'success' => true,
             'product' => $filterProducts,
             'subcategoryImage' => $subcategoryImage,
-            'childId'       => $checkCategories->id ?? null,
-            'subCateName'   => $checkCategories->name ?? null,
+            'childId' => $checkCategories->id ?? null,
+            'subCateName' => $checkCategories->name ?? null,
             'checkinSubCategories' => $checkinSubCategories,
 
         ]);
     }
 
-    public function inSubcategoryFilter(Request $request)
+    public function catgorUnderSubcategory(Request $request)
     {
         $slug = $request->slug;
 
         $checkCategories = ProductCategory::where('slug', $slug)->first();
-
 
         $filterProducts = Product::where('inSubcategoryId', $checkCategories->id)
             ->where('status', 1)
@@ -147,52 +133,51 @@ class PublicController extends Controller
             ->get()
             ->map(function ($product) {
                 return [
-                    'id'    => $product->id,
+                    'id' => $product->id,
                     'name' => Str::limit($product->name, 25, '...'),
                     'fname' => $product->name,
-                    'slug'  => $product->slug,
+                    'slug' => $product->slug,
                     'price' => $product->price,
                     'discount_price' => $product->discount_price,
-                    'thumbnail'      => $product->thumnail_img ? url($product->thumnail_img) : null,
+                    'thumbnail' => $product->thumnail_img ? url($product->thumnail_img) : null,
                 ];
             });
-        $subcategoryImage = !empty($checkCategories->banner_sub_cat_image) ? url($checkCategories->banner_sub_cat_image) : null;
-
+        $subcategoryImage = ! empty($checkCategories->banner_sub_cat_image) ? url($checkCategories->banner_sub_cat_image) : null;
 
         $checkinSubCategories = ProductCategory::where('parent_child_id', $checkCategories->id)
             ->where('status', 1) // filter in DB
             ->get()
             ->map(function ($cat) {
                 return [
-                    'id'        => $cat->id,
-                    'name'      => $cat->name,
-                    'slug'      => $cat->slug,
+                    'id' => $cat->id,
+                    'name' => $cat->name,
+                    'slug' => $cat->slug,
                     'thumbnail' => $cat->insubCategoryImage ? url($cat->insubCategoryImage) : null,
                 ];
             });
-
 
         return response()->json([
             'success' => true,
             'product' => $filterProducts,
             'subcategoryImage' => $subcategoryImage,
-            'childId'       => $checkCategories->id ?? null,
-            'subCateName'   => $checkCategories->name ?? null,
+            'childId' => $checkCategories->id ?? null,
+            'subCateName' => $checkCategories->name ?? null,
             'checkinSubCategories' => $checkinSubCategories,
 
         ]);
     }
+
     public function getsAllproductsByInSubCategories(Request $request)
     {
-        //dd($request->all());
-        $slug                   = $request->query('slug');
-        $offset                 = $request->query('offset', 0);
-        $limit                  = $request->query('limit', 40);
+        // dd($request->all());
+        $slug = $request->query('slug');
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 40);
         $checkCategories = ProductCategory::where('slug', $slug)->first();
 
         $query = Product::where('status', 1);
 
-        if (!empty($checkCategories)) {
+        if (! empty($checkCategories)) {
             $query->where('inSubcategoryId', $checkCategories->id);
         }
         $products = $query->orderBy('id', 'desc')
@@ -200,35 +185,34 @@ class PublicController extends Controller
             ->take($limit)
             ->get();
         //      dd($products);
-        $get_products      = $products->map(function ($data) {
+        $get_products = $products->map(function ($data) {
             $checksupplier = Supplier::find($data->supplier_id);
+
             return [
-                'id'                => $data->id,
-                'name'              => Str::limit($data->name, 25, '...'),
-                'fname'             => $data->name,
-                'slug'              => $data->slug,
-                'price'             => $data->price,
-                'description_full'  => $data->description_full,
-                'discount_price'    => $data->discount_price,
-                'thumnail_img'      => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'            => $checksupplier ? $checksupplier->name : 'BIR GROUP',
-                'currency'          => 'Tk.',
+                'id' => $data->id,
+                'name' => Str::limit($data->name, 25, '...'),
+                'fname' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'description_full' => $data->description_full,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => $checksupplier ? $checksupplier->name : 'BIR GROUP',
+                'currency' => 'Tk.',
             ];
         });
+
         return response()->json([
             'success' => true,
             'product' => $get_products,
         ]);
     }
 
-
-
     public function getChildDataOnly(Request $request)
     {
 
-        $parent_id       = $request->parent_id;
+        $parent_id = $request->parent_id;
         $checkCategories = ProductCategory::where('parent_id', $parent_id)->where('status', 1)->get();
-
 
         return response()->json([
             'success' => true,
@@ -236,47 +220,61 @@ class PublicController extends Controller
         ]);
     }
 
+    public function getSetting(Request $request)
+    {
+        $settingData = Setting::first();
+
+        if (! $settingData) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Setting data not found.',
+                'settingData' => null,
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Setting data retrieved successfully.',
+            'settingData' => $settingData,
+        ], 200);
+    }
 
     public function getChildChildDataOnly(Request $request)
     {
 
-        $parent_child_id   = $request->parent_child_id;
-        $checkCategories   = ProductCategory::where('parent_child_id', $parent_child_id)->where('status', 1)->get();
+        $parent_child_id = $request->parent_child_id;
+        $checkCategories = ProductCategory::where('parent_child_id', $parent_child_id)->where('status', 1)->get();
 
         return response()->json([
-            'success'     => true,
+            'success' => true,
             'inChildData' => $checkCategories,
         ]);
     }
 
-
-
-
     public function getsAllproductsBySubCategories(Request $request)
     {
-        //dd($request->all());
-        $slug                   = $request->query('slug');
-        $category_id            = $request->query('category_id', null);
-        $subcategory_id         = $request->query('subcategory_id', null);
-        $offset                 = $request->query('offset', 0);
-        $limit                  = $request->query('limit', 40);
+        // dd($request->all());
+        $slug = $request->query('slug');
+        $category_id = $request->query('category_id', null);
+        $subcategory_id = $request->query('subcategory_id', null);
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 40);
         $checkCategories = ProductCategory::where('slug', $slug)->first();
 
-        //dd($checkCategories);
-
+        // dd($checkCategories);
 
         // âœ… Only check slug if both category and subcategory are NOT provided
-        if (empty($category_id) && empty($subcategory_id) && !empty($slug)) {
+        if (empty($category_id) && empty($subcategory_id) && ! empty($slug)) {
             $checkCategories = ProductCategory::where('slug', $slug)->first();
-            $subcategory_id  = $checkCategories->id ?? null;
+            $subcategory_id = $checkCategories->id ?? null;
         }
-        $inSubcategory_id  = $checkCategories->id ?? null;
+        $inSubcategory_id = $checkCategories->id ?? null;
         // âœ… Build the query
         $query = Product::where('status', 1);
-        if (!empty($category_id)) {
+        if (! empty($category_id)) {
             $query->where('categoryId', $category_id);
         }
-        if (!empty($subcategory_id)) {
+        if (! empty($subcategory_id)) {
             $query->where('subcategoryId', $subcategory_id);
         }
         $products = $query->orderBy('id', 'desc')
@@ -284,43 +282,44 @@ class PublicController extends Controller
             ->take($limit)
             ->get();
         //      dd($products);
-        $get_products      = $products->map(function ($data) {
+        $get_products = $products->map(function ($data) {
             $checksupplier = Supplier::find($data->supplier_id);
+
             return [
-                'id'                => $data->id,
-                'name'              => $data->name,
-                'slug'              => $data->slug,
-                'price'             => $data->price,
-                'description_full'  => $data->description_full,
-                'discount_price'    => $data->discount_price,
-                'thumnail_img'      => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'            => $checksupplier ? $checksupplier->name : 'BIR GROUP',
-                'currency'          => 'Tk.',
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'description_full' => $data->description_full,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => $checksupplier ? $checksupplier->name : 'BIR GROUP',
+                'currency' => 'Tk.',
             ];
         });
+
         return response()->json([
             'success' => true,
             'product' => $get_products,
         ]);
     }
+
     public function getsAllproductsByCategories(Request $request)
     {
-        //dd($request->all());
-        $slug                   = $request->query('slug');
-        //$category_id          = $request->query('category_id', null);
-        $subcategory_id         = $request->query('subcategory_id', null);
-        $offset                 = $request->query('offset', 0);
-        $limit                  = $request->query('limit', 40);
-        $checkCategories        = ProductCategory::where('slug', $slug)->first();
+        // dd($request->all());
+        $slug = $request->query('slug');
+        // $category_id          = $request->query('category_id', null);
+        $subcategory_id = $request->query('subcategory_id', null);
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 40);
+        $checkCategories = ProductCategory::where('slug', $slug)->first();
 
         $checkSubcategories = ProductCategory::where('parent_id', $checkCategories->id)->where('tabs_status', 1)->where('status', 1)->get();
 
-
-
         if ($checkCategories) {
-            $category_id    = $checkCategories->id;
+            $category_id = $checkCategories->id;
         }
-        $query                  = Product::where('status', 1);
+        $query = Product::where('status', 1);
         if ($category_id) {
             $query->where('categoryId', $category_id);
         }
@@ -332,35 +331,38 @@ class PublicController extends Controller
             ->take($limit)
             ->get();
 
-        $get_products      = $products->map(function ($data) {
+        $get_products = $products->map(function ($data) {
             $checksupplier = Supplier::find($data->supplier_id);
+
             return [
-                'id'                => $data->id,
-                'name'              => $data->name,
-                'slug'              => $data->slug,
-                'price'             => $data->price,
-                'description_full'  => $data->description_full,
-                'discount_price'    => $data->discount_price,
-                'thumnail_img'      => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'            => $checksupplier ? $checksupplier->name : 'BIR GROUP',
-                'currency'          => 'Tk.',
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'description_full' => $data->description_full,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => $checksupplier ? $checksupplier->name : 'BIR GROUP',
+                'currency' => 'Tk.',
             ];
         });
+
         return response()->json([
             'success' => true,
             'product' => $get_products,
             'subCategoryLists' => $checkSubcategories ?? [],
-            'categoryInsideImage' => !empty($checkCategories->category_image_inside_page) ? url($checkCategories->category_image_inside_page) : null,
+            'categoryInsideImage' => ! empty($checkCategories->category_image_inside_page) ? url($checkCategories->category_image_inside_page) : null,
         ]);
     }
+
     public function getsAllproducts(Request $request)
     {
         // dd($request->all());
-        $category_id            = $request->query('category_id', null);
-        $subcategory_id         = $request->query('subcategory_id', null);
-        $offset                 = $request->query('offset', 0);
-        $limit                  = $request->query('limit', 40);
-        $query                  = Product::where('status', 1);
+        $category_id = $request->query('category_id', null);
+        $subcategory_id = $request->query('subcategory_id', null);
+        $offset = $request->query('offset', 0);
+        $limit = $request->query('limit', 40);
+        $query = Product::where('status', 1);
 
         if ($category_id) {
             $query->where('categoryId', $category_id);
@@ -373,27 +375,28 @@ class PublicController extends Controller
             ->skip($offset)
             ->take($limit)
             ->get();
-        $get_products      = $products->map(function ($data) {
+        $get_products = $products->map(function ($data) {
             $checksupplier = Supplier::find($data->supplier_id);
+
             return [
-                'id'                => $data->id,
-                'name'              => Str::limit($data->name, 25, '...'),
-                'fname'             => $data->name,
-                'slug'              => $data->slug,
-                'price'             => $data->price,
-                'description_full'  => $data->description_full,
-                'discount_price'    => $data->discount_price,
-                'thumnail_img'      => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'            => $checksupplier ? $checksupplier->name : 'BIR GROUP',
-                'currency'          => 'Tk.',
+                'id' => $data->id,
+                'name' => Str::limit($data->name, 25, '...'),
+                'fname' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'description_full' => $data->description_full,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => $checksupplier ? $checksupplier->name : 'BIR GROUP',
+                'currency' => 'Tk.',
             ];
         });
 
         $categories = ProductCategory::where('status', 1)->where('parent_id', 0)->where('tabs_status', 1)->get()->map(function ($category) {
             return [
-                'id'                => $category->id,
-                'name'              => $category->name,
-                'categorySlug'      => $category->slug,
+                'id' => $category->id,
+                'name' => $category->name,
+                'categorySlug' => $category->slug,
             ];
         });
 
@@ -403,6 +406,7 @@ class PublicController extends Controller
             'categories' => $categories,
         ]);
     }
+
     public function getCategoryParent()
     {
         $categories = ProductCategory::where('status', 1)
@@ -413,29 +417,113 @@ class PublicController extends Controller
         // Map through categories
         $mappedCategories = $categories->map(function ($category) {
             return [
-                'id'              => $category->id,
-                'name'            => $category->name,
-                'slug'            => $category->slug,
-                'parent_id'       => $category->parent_id,
+                'id' => $category->id,
+                'name' => $category->name,
+                'slug' => $category->slug,
+                'parent_id' => $category->parent_id,
                 'thumbnail_image' => $category->thumbnail_image ? url($category->thumbnail_image) : null,
-                'banner_image'    => $category->banner_image ? url($category->banner_image) : null,
+                'banner_image' => $category->banner_image ? url($category->banner_image) : null,
             ];
         });
+
         return response()->json([
             'success' => true,
             'data' => $mappedCategories,
         ], 200);
     }
 
+    public function getNavbarMenu()
+{
+    $fixedLabels = ['Home', 'About', 'Blog', 'Contact'];
+
+    $categories = ProductCategory::where('status', 1)
+        ->where('parent_id', 0)
+        ->whereNotIn('name', $fixedLabels)
+        ->orderBy('sorting', 'asc')
+        ->get();
+
+    $allSubCategories = ProductCategory::where('status', 1)
+        ->where('parent_id', '>', 0)
+        ->get();
+
+    $groupedByParentChildId = $allSubCategories->filter(function ($item) {
+        return !empty($item->parent_child_id) && $item->parent_child_id > 0;
+    })->groupBy('parent_child_id');
+
+    $dynamicItems = $categories->map(function ($category) use ($allSubCategories, $groupedByParentChildId) {
+        $children = $allSubCategories->filter(function ($sub) use ($category) {
+            return $sub->parent_id == $category->id && (empty($sub->parent_child_id) || $sub->parent_child_id == 0);
+        })->map(function ($child) use ($groupedByParentChildId) {
+            $subChildren = $groupedByParentChildId->get($child->id, collect())->map(function ($subChild) {
+                return [
+                    'label' => $subChild->name,
+                    'href' => '/services/' . $subChild->slug,
+                ];
+            })->values();
+
+            return [
+                'label' => $child->name,
+                'href' => $subChildren->isEmpty() ? '/services/' . $child->slug : '#',
+                'children' => $subChildren->isNotEmpty() ? $subChildren->all() : null,
+            ];
+        });
+
+        return [
+            'label' => $category->name,
+            'href' => $children->isEmpty() ? '/projects/' . $category->slug : '#',
+            'children' => $children->isNotEmpty() ? $children->values()->all() : null,
+        ];
+    });
+
+    $fixedItems = collect([
+        [
+            'label' => 'Home',
+            'href' => '/',
+            'children' => null,
+        ],
+        [
+            'label' => 'About',
+            'href' => '#',
+            'children' => [
+                ['label' => 'Company Profile', 'href' => '/about'],
+                ['label' => 'Our Team', 'href' => '/our-team'],
+            ],
+        ],
+    ]);
+
+    $fixedEndItems = collect([
+        [
+            'label' => 'Blog',
+            'href' => '/blog',
+            'children' => null,
+        ],
+        [
+            'label' => 'Contact',
+            'href' => '#',
+            'children' => [
+                ['label' => 'Contact Us', 'href' => '/contact'],
+                ['label' => 'Book Appointment', 'href' => '/appointment'],
+                ['label' => 'Customer Support', 'href' => '/support'],
+            ],
+        ],
+    ]);
+
+    $navbarMenu = $fixedItems->merge($dynamicItems)->merge($fixedEndItems)->values();
+
+    return response()->json([
+        'success' => true,
+        'data' => $navbarMenu,
+    ], 200);
+}
 
     public function productsCategory(Request $request)
     {
         try {
             $categories = ProductCategory::where('status', 1)->where('tabs_status', 1)->orderBy('sorting', 'asc')->get();
-            $grouped    = $categories->groupBy('parent_id');
+            $grouped = $categories->groupBy('parent_id');
             // ðŸ”¹ Recursive closure to build tree
             $buildTree = function ($parentId) use (&$buildTree, $grouped) {
-                return $grouped->get($parentId, collect())->map(function ($category) use ($buildTree, $grouped) {
+                return $grouped->get($parentId, collect())->map(function ($category) use ($buildTree) {
                     // Get up to 6 products for this category
                     $filterProducts = Product::where('categoryId', $category->id)
                         ->where('status', 1)
@@ -443,13 +531,13 @@ class PublicController extends Controller
                         ->get()
                         ->map(function ($product) {
                             return [
-                                'id'    => $product->id,
-                                'name'  => Str::limit($product->name, 20, '...'),
+                                'id' => $product->id,
+                                'name' => Str::limit($product->name, 20, '...'),
                                 'fname' => $product->name,
-                                'slug'  => $product->slug,
+                                'slug' => $product->slug,
                                 'price' => $product->price,
                                 'discount_price' => $product->discount_price,
-                                'thumbnail'      => $product->thumnail_img ? url($product->thumnail_img) : null,
+                                'thumbnail' => $product->thumnail_img ? url($product->thumnail_img) : null,
                             ];
                         });
 
@@ -459,23 +547,19 @@ class PublicController extends Controller
                     // ðŸ”¹ Check if any category has parent_child_id = current category id
                     $hasInSubCategory = $category->where('parent_child_id', $category->id)->first();
 
-
-
                     return [
-                        'id'              => $category->id,
-                        'name'            => $category->name,
-                        'slug'            => $category->slug,
-                        'parent_id'       => $category->parent_id,
+                        'id' => $category->id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'parent_id' => $category->parent_id,
                         'thumbnail_image' => $category->thumbnail_image ? url($category->thumbnail_image) : null,
-                        'banner_image'    => $category->banner_image ? url($category->banner_image) : null,
-                        'children'        => $children,       // nested categories
-                        'products'        => $filterProducts, // related products
-                        'insub_category'  => $hasInSubCategory ? true : false, // ðŸ”¹ new flag
+                        'banner_image' => $category->banner_image ? url($category->banner_image) : null,
+                        'children' => $children,       // nested categories
+                        'products' => $filterProducts, // related products
+                        'insub_category' => $hasInSubCategory ? true : false, // ðŸ”¹ new flag
                     ];
                 });
             };
-
-
 
             // ðŸ”¹ Start recursion from root categories (parent_id = 0)
             $nestedCategories = $buildTree(0);
@@ -483,10 +567,10 @@ class PublicController extends Controller
             // ðŸ”¹ Return JSON
             return response()->json([
                 'success' => true,
-                'data'    => $nestedCategories,
+                'data' => $nestedCategories,
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Category fetch failed: ' . $e->getMessage(), [
+            \Log::error('Category fetch failed: '.$e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
@@ -494,17 +578,16 @@ class PublicController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch categories. Please try again later.',
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
-
 
     public function productsCategoryAllData(Request $request)
     {
         try {
             $categories = ProductCategory::where('status', 1)->where('tabs_status', 1)->get();
-            $grouped    = $categories->groupBy('parent_id');
+            $grouped = $categories->groupBy('parent_id');
             // Recursive closure
             $buildTree = function ($parentId) use (&$buildTree, $grouped) {
                 return $grouped->get($parentId, collect())->map(function ($category) use ($buildTree) {
@@ -514,39 +597,42 @@ class PublicController extends Controller
                         ->get()
                         ->map(function ($product) {
                             return [
-                                'id'    => $product->id,
-                                'name'  => $product->name,
-                                'slug'  => $product->slug,
+                                'id' => $product->id,
+                                'name' => $product->name,
+                                'slug' => $product->slug,
                                 'price' => $product->price,
                                 'discount_price' => $product->discount_price,
-                                'thumbnail'      => $product->thumnail_img ? url($product->thumnail_img) : null,
+                                'thumbnail' => $product->thumnail_img ? url($product->thumnail_img) : null,
                             ];
                         });
                     // Recursively build child categories (limited to 6)
                     $children = $buildTree($category->id)->take(150);
+
                     return [
-                        'id'              => $category->id,
-                        'name'            => $category->name,
-                        'slug'            => $category->slug,
-                        'parent_id'       => $category->parent_id,
+                        'id' => $category->id,
+                        'name' => $category->name,
+                        'slug' => $category->slug,
+                        'parent_id' => $category->parent_id,
                         'thumbnail_image' => $category->thumbnail_image ? url($category->thumbnail_image) : null,
-                        'banner_image'    => $category->banner_image ? url($category->banner_image) : null,
-                        'children'        => $children,       // nested categories
-                        'products'        => $filterProducts, // related products
+                        'banner_image' => $category->banner_image ? url($category->banner_image) : null,
+                        'children' => $children,       // nested categories
+                        'products' => $filterProducts, // related products
                     ];
                 });
             };
             // Start recursion from parent_id = 0 (root)
             $nestedCategories = $buildTree(0);
+
             return response()->json([
                 'success' => true,
                 'data' => $nestedCategories,
             ], 200);
         } catch (\Exception $e) {
-            \Log::error('Category fetch failed: ' . $e->getMessage(), [
+            \Log::error('Category fetch failed: '.$e->getMessage(), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),
             ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch categories. Please try again later.',
@@ -554,10 +640,11 @@ class PublicController extends Controller
             ], 500);
         }
     }
+
     public function searchProducts(Request $request)
     {
         $query = $request->query('q', '');
-        if (!$query) {
+        if (! $query) {
             return response()->json([
                 'success' => false,
                 'product' => [],
@@ -572,21 +659,21 @@ class PublicController extends Controller
             ->get();
         $get_prdoucts = $products->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
-                'price'           => $data->price,
-                'discount_price'  => $data->discount_price,
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'BIR GROUP',
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'BIR GROUP',
             ];
         });
+
         return response()->json([
             'success' => true,
             'product' => $get_prdoucts,
         ]);
     }
-
 
     public function getInSubProducts(Request $request)
     {
@@ -594,76 +681,88 @@ class PublicController extends Controller
         $product = Product::where('status', 1)->where('inSubcategoryId', $request->id)->orderBy('id', 'desc')->get();
         $get_prdoucts = $product->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
-                'price'           => $data->price,
-                'discount_price'  => $data->discount_price,
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'BIR GROUP',
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'BIR GROUP',
             ];
         });
+
         // Return a 404 response if not found
         return response()->json([
-            'success'               => true,
-            'product'               => $get_prdoucts,
+            'success' => true,
+            'product' => $get_prdoucts,
         ], 200);
     }
-
-
-
-
-
 
     public function getProducts()
     {
         $product = Product::where('status', 1)->limit(12)->orderBy('id', 'desc')->get();
         $get_prdoucts = $product->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
-                'price'           => $data->price,
-                'discount_price'  => $data->discount_price,
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'BIR GROUP',
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'discount_price' => $data->discount_price,
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'BIR GROUP',
             ];
         });
+
         // Return a 404 response if not found
         return response()->json([
-            'success'               => true,
-            'product'               => $get_prdoucts,
+            'success' => true,
+            'product' => $get_prdoucts,
         ], 200);
     }
-
-
 
     public function getsPost(Request $request)
     {
+        $slug = $request->query('slug');
+        $name = $request->query('name');
         $category_id = $request->query('category_id');
-        $post        = Post::where('categoryId', $category_id)->first();
-        // Return a 404 response if not found
-        if (!$post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Post not found.',
-            ], 404);
-        }
+
+        $lookup = $slug ?: $name;
+        //dd($lookup);
+          $checkCategory     = Categories::where('slug', $lookup)->first();
+        //dd($checkCategory->id);
+          $checkCategoryById = $checkCategory->id ?? null;
+
+
+        $posts = Post::where('subcategoryId', $checkCategoryById)
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'name' => $post->name,
+                    'slug' => $post->slug,
+                    'description_short' => $post->description_short,
+                    'description_full' => $post->description_full,
+                    'categoryId' => $post->categoryId,
+                    'subcategoryId' => $post->subcategoryId,
+                    'thumnail_img' => $post->thumnail_img ? url($post->thumnail_img) : null,
+                    'created_at' => $post->created_at,
+                ];
+            });
+
         return response()->json([
-            'success'               => true,
-            'data'                  => $post,
+            'success' => true,
+            'data' => $posts,
         ], 200);
     }
-
-
-
 
     public function checkedProductRow($slug)
     {
         $post = Product::where('slug', $slug)->first();
 
         // âœ… 404 if not found
-        if (!$post) {
+        if (! $post) {
             return response()->json([
                 'success' => false,
                 'message' => 'Post not found.',
@@ -719,7 +818,7 @@ class PublicController extends Controller
         $post = Post::where('slug', $slug)->first();
 
         // âœ… 404 if not found
-        if (!$post) {
+        if (! $post) {
             return response()->json([
                 'success' => false,
                 'message' => 'Post not found.',
@@ -774,154 +873,136 @@ class PublicController extends Controller
     {
         $category_id = $request->query('category_id');
 
-        $post        = Post::where('categoryId', $category_id)->where('status', 1)->get();
+        $post = Post::where('categoryId', $category_id)->where('status', 1)->get();
 
         $get_prdoucts = $post->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
                 'description_full' => $data->description_full,
-                'meta_title'      => $data->meta_title,
+                'meta_title' => $data->meta_title,
                 'meta_description' => $data->meta_description,
-                'meta_keyword'    => $data->meta_keyword,
-                'createdAt'       => date("d-M-Y", strtotime($data->created_at)),
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'Astute360',
+                'meta_keyword' => $data->meta_keyword,
+                'createdAt' => date('d-M-Y', strtotime($data->created_at)),
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'Astute360',
             ];
         });
+
         return response()->json([
-            'success'               => true,
-            'data'                  => $get_prdoucts,
+            'success' => true,
+            'data' => $get_prdoucts,
         ], 200);
     }
 
-
-
     public function getsAllServices(Request $request)
     {
-        $category_id = 3; //$request->query('category_id');
+        $category_id = 3; // $request->query('category_id');
 
-        $post        = Product::where('categoryId', $category_id)->where('status', 1)->get();
+        $post = Product::where('categoryId', $category_id)->where('status', 1)->get();
         $settingData = Setting::where('id', 1)->first();
 
         $get_prdoucts = $post->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
                 'description_full' => $data->description_full,
-                'meta_title'      => $data->meta_title,
+                'meta_title' => $data->meta_title,
                 'meta_description' => $data->meta_description,
-                'meta_keyword'    => $data->meta_keyword,
-                'createdAt'       => date("d-M-Y", strtotime($data->created_at)),
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'Astute360',
-                'categoryId'      => $data->categoryId,
-                'subcategoryId'   => $data->subcategoryId,
+                'meta_keyword' => $data->meta_keyword,
+                'createdAt' => date('d-M-Y', strtotime($data->created_at)),
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'Astute360',
+                'categoryId' => $data->categoryId,
+                'subcategoryId' => $data->subcategoryId,
                 'inSubcategoryId' => $data->inSubcategoryId,
             ];
         });
+
         return response()->json([
-            'success'               => true,
-            'data'                  => $get_prdoucts,
-            'settingData'           => $settingData,
+            'success' => true,
+            'data' => $get_prdoucts,
+            'settingData' => $settingData,
 
         ], 200);
     }
-
-
 
     public function getsAllTraining(Request $request)
     {
-        $category_id = 4; //$request->query('category_id');
+        $category_id = 4; // $request->query('category_id');
 
-        $post        = Product::where('categoryId', $category_id)->where('status', 1)->get();
+        $post = Product::where('categoryId', $category_id)->where('status', 1)->get();
 
         $get_prdoucts = $post->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
                 'description_full' => $data->description_full,
-                'meta_title'      => $data->meta_title,
+                'meta_title' => $data->meta_title,
                 'meta_description' => $data->meta_description,
-                'meta_keyword'    => $data->meta_keyword,
-                'createdAt'       => date("d-M-Y", strtotime($data->created_at)),
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'Astute360',
+                'meta_keyword' => $data->meta_keyword,
+                'createdAt' => date('d-M-Y', strtotime($data->created_at)),
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'Astute360',
             ];
         });
+
         return response()->json([
-            'success'               => true,
-            'data'                  => $get_prdoucts,
+            'success' => true,
+            'data' => $get_prdoucts,
         ], 200);
     }
+
     public function popularPosts()
     {
-        $post        = Post::where('status', 1)->get();
+        $post = Post::where('status', 1)->get();
 
         $get_prdoucts = $post->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
                 'description_full' => $data->description_full,
-                'meta_title'      => $data->meta_title,
+                'meta_title' => $data->meta_title,
                 'meta_description' => $data->meta_description,
-                'meta_keyword'    => $data->meta_keyword,
-                'createdAt'       => date("d-M-Y", strtotime($data->created_at)),
-                'thumnail_img'    => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'Astute360',
+                'meta_keyword' => $data->meta_keyword,
+                'createdAt' => date('d-M-Y', strtotime($data->created_at)),
+                'thumnail_img' => $data->thumnail_img ? url($data->thumnail_img) : null,
+                'vendor' => 'Astute360',
             ];
         });
+
         return response()->json([
-            'success'               => true,
-            'data'                  => $get_prdoucts,
+            'success' => true,
+            'data' => $get_prdoucts,
         ], 200);
     }
-
 
     public function track($order_number)
     {
         //   dd($order_number);
         $order = Orders::where('orderId', $order_number)->first();
 
-
-
-        if (!$order) {
+        if (! $order) {
             return response()->json([
                 'success' => false,
-                'message' => 'Order not found'
+                'message' => 'Order not found',
             ], 404);
         }
 
-
         $checkOrderSts = OrderStatus::where('id', $order->order_status)->first();
-        $orderstsName = !empty($checkOrderSts) ? $checkOrderSts->name : "";
+        $orderstsName = ! empty($checkOrderSts) ? $checkOrderSts->name : '';
 
         return response()->json([
-            'success'       => true,
-            'order_id'      => $order->orderId,
-            'order_status'  => $orderstsName // Pending, Delivered, Processing
+            'success' => true,
+            'order_id' => $order->orderId,
+            'order_status' => $orderstsName, // Pending, Delivered, Processing
         ]);
     }
 
-    public function getSetting(Request $request)
-    {
-        $post        = Setting::where('id', 1)->first();
-        // Return a 404 response if not found
-        if (!$post) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Data not found.',
-            ], 404);
-        }
-        return response()->json([
-            'success'               => true,
-            'data'                  => $post,
-        ], 200);
-    }
 
 
     public function checkProductDetails($slug)
@@ -932,45 +1013,46 @@ class PublicController extends Controller
             $product->thumnail_img = $product->thumnail_img ? url($product->thumnail_img) : null;
         }
         // Return a 404 response if not found
-        if (!$product) {
+        if (! $product) {
             return response()->json([
                 'success' => false,
                 'message' => 'Product not found.',
             ], 404);
         }
         $rproducts = Product::where('categoryId', $product->categoryId)->where('id', '!=', $product->id)->where('status', 1)->get();
-        //dd($rproducts);
+        // dd($rproducts);
         $related_prdoucts = $rproducts->map(function ($data) {
             return [
-                'id'              => $data->id,
-                'name'            => $data->name,
-                'slug'            => $data->slug,
-                'price'           => $data->price,
-                'discount_price'  => $data->discount_price,
+                'id' => $data->id,
+                'name' => $data->name,
+                'slug' => $data->slug,
+                'price' => $data->price,
+                'discount_price' => $data->discount_price,
                 'thumbnail_image' => $data->thumnail_img ? url($data->thumnail_img) : null,
-                'vendor'          => 'BIR GROUP',
+                'vendor' => 'BIR GROUP',
             ];
         });
         // dd($product->id);
 
         // Fetch related data
         $attributes = ProductsAttribues::where('product_id', $product->id)->get();
-        $galleries  = ProductsGallery::where('product_id', $product->id)->get();
+        $galleries = ProductsGallery::where('product_id', $product->id)->get();
         // Map gallery data with full URL
         $formattedGallery = $galleries->map(function ($gallery) {
             return [
-                'id'            => $gallery->id,
-                'product_id'    => $gallery->product_id,
+                'id' => $gallery->id,
+                'product_id' => $gallery->product_id,
                 'gallery_image' => $gallery->gallery_image ? url($gallery->gallery_image) : null,
             ];
         });
+
         // Return a structured JSON response
         return response()->json([
-            'success'               => true,
-            'product'               => $product,
-            'attributes'            => $attributes,
-            'gallery'               => $formattedGallery,
-            'related_prdoucts'      => $related_prdoucts,
+            'success' => true,
+            'product' => $product,
+            'attributes' => $attributes,
+            'gallery' => $formattedGallery,
+            'related_prdoucts' => $related_prdoucts,
         ], 200);
     }
 
@@ -992,30 +1074,30 @@ class PublicController extends Controller
         ]);
     }
     */
-     //START
-     public function contact(Request $request)
-{
-    $validated = $request->validate([
-        'name'    => 'required|max:255',
-        'email'   => 'required|email|max:255',
-        'phone'   => 'nullable|max:20',
-        'subject' => 'nullable|max:255',
-        'message' => 'required',
-    ]);
+    // START
+    public function contact(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|max:20',
+            'subject' => 'nullable|max:255',
+            'message' => 'required',
+        ]);
 
-    try {
-        $name    = htmlspecialchars($validated['name']);
-        $email   = htmlspecialchars($validated['email']);
-        $phone   = htmlspecialchars($validated['phone']   ?? 'N/A');
-        $subject = htmlspecialchars($validated['subject'] ?? 'No Subject');
-        $message = nl2br(htmlspecialchars($validated['message']));
+        try {
+            $name = htmlspecialchars($validated['name']);
+            $email = htmlspecialchars($validated['email']);
+            $phone = htmlspecialchars($validated['phone'] ?? 'N/A');
+            $subject = htmlspecialchars($validated['subject'] ?? 'No Subject');
+            $message = nl2br(htmlspecialchars($validated['message']));
 
-        $headers  = "MIME-Version: 1.0\r\n";
-        $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $headers .= "From: {$name} <{$email}>\r\n";
-        $headers .= "Reply-To: {$email}\r\n";
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+            $headers .= "From: {$name} <{$email}>\r\n";
+            $headers .= "Reply-To: {$email}\r\n";
 
-        $body = "
+            $body = "
             <h2>New Contact Message</h2>
             <p><strong>Name:</strong> {$name}</p>
             <p><strong>Email:</strong> {$email}</p>
@@ -1026,37 +1108,36 @@ class PublicController extends Controller
             <p>{$message}</p>
         ";
 
-        $recipients = 'mdbijon@gmail.com, info@astute360corp.com';
+            $recipients = 'mdbijon@gmail.com, info@astute360corp.com';
 
-        $sent = mail($recipients, "New Contact ASTUTE360: {$subject}", $body, $headers);
+            $sent = mail($recipients, "New Contact ASTUTE360: {$subject}", $body, $headers);
 
-        if (!$sent) {
-            throw new \Exception('Mail delivery failed.');
+            if (! $sent) {
+                throw new \Exception('Mail delivery failed.');
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Thank you for contacting us. We will get back to you shortly.',
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Contact form email failed: '.$e->getMessage());
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], 500);
         }
-
-        return response()->json([
-            'success' => true,
-            'message' => 'Thank you for contacting us. We will get back to you shortly.',
-        ]);
-
-    } catch (\Exception $e) {
-        Log::error('Contact form email failed: ' . $e->getMessage());
-        return response()->json([
-            'success' => false,
-            'message' => $e->getMessage(),
-        ], 500);
     }
-}
-     //END
-      
-      
+    // END
 
     public function testApiCallbackHook(Request $request)
     {
         Log::info('Test API Request:', $request->all());
 
         return response()->json([
-            'message' => 'Test API working'
+            'message' => 'Test API working',
         ]);
     }
 }

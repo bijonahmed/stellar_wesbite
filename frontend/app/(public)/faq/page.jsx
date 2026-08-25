@@ -1,5 +1,4 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 import FaqPageClient from "../../components/frontend/FaqPageClient";
 
 export const metadata = {
@@ -34,13 +33,6 @@ export default function FaqPage() {
       />
 
       <FaqPageClient />
-
-      <CTASection
-        title="Still Have Questions?"
-        subtitle="Our team is ready to help you with any additional queries you may have."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "Schedule Site Visit", href: "/site-visit" }}
-      />
     </div>
   );
 }

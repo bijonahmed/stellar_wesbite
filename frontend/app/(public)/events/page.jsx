@@ -1,6 +1,5 @@
 import Link from "next/link";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 import StatBar from "../../components/frontend/PageElements/StatBar";
 
 export const metadata = {
@@ -79,13 +78,6 @@ export default function EventsPage() {
           </div>
         </div>
       </section>
-
-      <CTASection
-        title="Never Miss an Event"
-        subtitle="Subscribe to our newsletter or follow us on social media to receive updates about upcoming events, launches, and exclusive invitations."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "Follow Us", href: "#" }}
-      />
     </>
   );
 }

@@ -1,6 +1,5 @@
 import Link from "next/link";
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 
 export const metadata = {
   title: "Sitemap | Stellar Structures Limited",
@@ -21,104 +20,44 @@ export const metadata = {
   },
 };
 
-const sitemapSections = [
-  {
-    title: "Home",
-    links: [
-      { label: "Stellar Structures Limited", href: "/" },
-    ],
-  },
-  {
-    title: "About",
-    links: [
-      { label: "Company Profile", href: "/about" },
-      { label: "Our Story", href: "/our-story" },
-    { label: "Chairman's Message", href: "/chairman-message" },
-      { label: "Managing Director", href: "/managing-director" },
-      { label: "Vision & Mission", href: "/vision-mission" },
-      { label: "Core Values", href: "/core-values" },
-      { label: "Why Stellar Structures", href: "/why-us" },
-      { label: "Our Team", href: "/our-team" },
-      { label: "Career", href: "/career" },
-      { label: "CSR Activities", href: "/csr" },
-    ],
-  },
-  {
-    title: "Projects",
-    links: [
-      { label: "All Projects", href: "/projects" },
-      { label: "Ongoing Projects", href: "/projects/ongoing" },
-      { label: "Upcoming Projects", href: "/projects/upcoming" },
-      { label: "Residential Projects", href: "/projects/residential" },
-      { label: "Commercial Projects", href: "/projects/commercial" },
-      { label: "Luxury Apartments", href: "/projects/luxury" },
-    ],
-  },
-  {
-    title: "Properties",
-    links: [
-      { label: "Apartments", href: "/properties/apartments" },
-      { label: "Flats", href: "/properties/flats" },
-      { label: "Commercial Space", href: "/properties/commercial" },
-      { label: "Office Space", href: "/properties/offices" },
-      { label: "Shops", href: "/properties/shops" },
-      { label: "Land / Plots", href: "/properties/land" },
-      { label: "Duplex Houses", href: "/properties/duplex" },
-      { label: "Penthouses", href: "/properties/penthouses" },
-    ],
-  },
-  {
-    title: "Services",
-    links: [
-      { label: "Property Development", href: "/services/development" },
-      { label: "Construction Management", href: "/services/construction" },
-      { label: "Interior Design", href: "/services/interior" },
-      { label: "Architectural Design", href: "/services/architecture" },
-      { label: "Investment Consultancy", href: "/services/investment" },
-      { label: "Property Valuation", href: "/services/valuation" },
-    ],
-  },
-  {
-    title: "Media",
-    links: [
-      { label: "Blog", href: "/blog" },
-      { label: "Photo Gallery", href: "/gallery/photos" },
-      { label: "Video Gallery", href: "/gallery/videos" },
-      { label: "Events", href: "/events" },
-    ],
-  },
-  {
-    title: "Support",
-    links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "FAQ", href: "/faq" },
-      { label: "Book Appointment", href: "/appointment" },
-      { label: "Schedule Site Visit", href: "/site-visit" },
-      { label: "Customer Support", href: "/support" },
-    ],
-  },
-  {
-    title: "Tools",
-    links: [
-      { label: "EMI Calculator", href: "/emi-calculator" },
-      { label: "Payment Plans", href: "/payment-plan" },
-      { label: "Booking Process", href: "/booking-process" },
-      { label: "Downloads", href: "/downloads" },
-      { label: "Notice Board", href: "/notice" },
-      { label: "Offices", href: "/offices" },
-    ],
-  },
-  {
-    title: "Legal",
-    links: [
-      { label: "Terms & Conditions", href: "/terms" },
-      { label: "Privacy Policy", href: "/policy" },
-      { label: "Refund Policy", href: "/return" },
-    ],
-  },
-];
+async function getNavbarMenu() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getNavbarMenu`, {
+      next: { revalidate: 60 },
+    });
+    const data = await res.json();
+    if (data.success && data.data) return data.data;
+  } catch {}
+  return [];
+}
 
-export default function SitemapPage() {
+function flattenMenuToSections(menu) {
+  return menu
+    .filter((item) => item.label && item.href)
+    .map((item) => {
+      if (item.children && item.children.length > 0) {
+        return {
+          title: item.label,
+          links: item.children
+            .filter((child) => child.label && child.href && child.href !== "#")
+            .map((child) => ({
+              label: child.label,
+              href: child.href,
+            })),
+        };
+      }
+      return {
+        title: item.label,
+        links: [{ label: item.label, href: item.href }],
+      };
+    })
+    .filter((section) => section.links.length > 0);
+}
+
+export default async function SitemapPage() {
+  const menu = await getNavbarMenu();
+  const sitemapSections = flattenMenuToSections(menu);
+
   return (
     <div>
       <PageHeader
@@ -177,8 +116,6 @@ export default function SitemapPage() {
           </div>
         </div>
       </section>
-
-      <CTASection />
 
       <style>{`.ss-sitemap-link:hover { color: #C9A227 !important; }`}</style>
     </div>

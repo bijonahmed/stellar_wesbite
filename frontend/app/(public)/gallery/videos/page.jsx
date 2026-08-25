@@ -1,8 +1,6 @@
 import Link from "next/link";
 import PageHeader from "../../../components/frontend/PageElements/PageHeader";
 import FeatureGrid from "../../../components/frontend/PageElements/FeatureGrid";
-import CTASection from "../../../components/frontend/PageElements/CTASection";
-
 export const metadata = {
   title: "Video Gallery - Stellar Structures Limited",
   description: "Watch videos from Stellar Structures Limited. Virtual tours, construction updates, project walkthroughs, and corporate presentations from our developments in Dhaka.",
@@ -76,14 +74,6 @@ export default function VideoGalleryPage() {
           </div>
         </div>
       </section>
-
-      <CTASection
-        title="Experience Stellar Structures"
-        titleAlign="center"
-        subtitle="Schedule a physical visit to our projects and see the quality that video can only begin to capture. Our team awaits to welcome you."
-        primaryBtn={{ label: "Schedule Visit", href: "/site-visit" }}
-        secondaryBtn={{ label: "View Photos", href: "/gallery/photos" }}
-      />
     </>
   );
 }

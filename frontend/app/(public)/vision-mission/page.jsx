@@ -1,6 +1,4 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-
 export const metadata = {
   title: "Vision & Mission | Stellar Structures Limited",
   description:
@@ -202,13 +200,6 @@ export default function VisionMissionPage() {
           </div>
         </div>
       </section>
-
-      <CTASection
-        title="Aligned With Your Vision?"
-        subtitle="Let Stellar Structures Limited bring your dream property to life with our unwavering commitment to excellence."
-        primaryBtn={{ label: "Contact Us", href: "/contact" }}
-        secondaryBtn={{ label: "View Projects", href: "/projects" }}
-      />
     </>
   );
 }

@@ -1,5 +1,4 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
-import CTASection from "../../components/frontend/PageElements/CTASection";
 import BookingProcessClient from "./BookingProcessClient";
 
 export const metadata = {
@@ -35,12 +34,6 @@ export default function BookingProcessPage() {
 
       <BookingProcessClient />
 
-      <CTASection
-        title="Ready to Begin Your Journey?"
-        subtitle="Our dedicated sales team is here to guide you through every step. Book a consultation today."
-        primaryBtn={{ label: "Contact Sales Team", href: "/contact" }}
-        secondaryBtn={{ label: "Schedule Site Visit", href: "/site-visit" }}
-      />
     </div>
   );
 }

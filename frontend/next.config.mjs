@@ -5,7 +5,12 @@ const nextConfig = {
       reactStrictMode: true,
       trailingSlash: true,
       images: {
-            unoptimized: true,
+            remotePatterns: [
+                  {
+                        protocol: "https",
+                        hostname: "api.stellarstructuresbd.com",
+                  },
+            ],
       },
       typescript: {
             ignoreBuildErrors: true,

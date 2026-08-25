@@ -5,7 +5,33 @@ import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
 import { useAuth } from "../../context/AuthContext";
 
-const baseMenuData = [
+const CACHE_KEY = "stellar_nav_menu";
+const CACHE_TTL = 60 * 60 * 1000;
+
+function getCachedMenu() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(CACHE_KEY);
+    if (!raw) return null;
+    const { data, ts } = JSON.parse(raw);
+    if (Date.now() - ts > CACHE_TTL) {
+      localStorage.removeItem(CACHE_KEY);
+      return null;
+    }
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedMenu(data) {
+  if (typeof window === "undefined") return;
+  try {
+    localStorage.setItem(CACHE_KEY, JSON.stringify({ data, ts: Date.now() }));
+  } catch {}
+}
+
+const fallbackMenu = [
   {
     label: "Home",
     href: "/",
@@ -16,54 +42,7 @@ const baseMenuData = [
     href: "#",
     children: [
       { label: "Company Profile", href: "/about" },
-      // { label: "Our Story", href: "/our-story" },
-      // { label: "Managing Director's Message", href: "/managing-director" },
-      // { label: "Chairman's Message", href: "/chairman-message" },
-      // { label: "Director's Message", href: "/directors-message" },
-      // { label: "Vision & Mission", href: "/vision-mission" },
-      // { label: "Core Values", href: "/core-values" },
-      // { label: "Why Stellar Structures", href: "/why-us" },
       { label: "Our Team", href: "/our-team" },
-    //  { label: "Career", href: "/career" },
-     // { label: "CSR Activities", href: "/csr" },
-    ],
-  },
-  {
-    label: "Projects",
-    href: "#",
-    children: [
-      { label: "Construction Management", href: "/projects/construction-management" },
-     
-      // { label: "Residential Projects", href: "/projects/residential" },
-      // { label: "Commercial Projects", href: "/projects/commercial" },
-      // { label: "Luxury Apartments", href: "/projects/luxury" },
-    ],
-  },
-  {
-    label: "Stellar Homes",
-    href: "#",
-    children: [
-      { label: "Ongoing Projects", href: "/projects/ongoing" },
-      { label: "Upcoming Projects", href: "/projects/upcoming" },
-      // { label: "Flats", href: "/properties/flats" },
-      // { label: "Commercial Space", href: "/properties/commercial" },
-      // { label: "Office Space", href: "/properties/offices" },
-      // { label: "Shops", href: "/properties/shops" },
-      // { label: "Land / Plots", href: "/properties/land" },
-      // { label: "Duplex Houses", href: "/properties/duplex" },
-      // { label: "Penthouses", href: "/properties/penthouses" },
-    ],
-  },
-  {
-    label: "Services",
-    href: "#",
-    children: [
-      { label: "Property Development", href: "/services/development" },
-      { label: "Construction Management", href: "/services/construction" },
-      { label: "Interior Design", href: "/services/interior" },
-      { label: "Architectural Design", href: "/services/architecture" },
-      { label: "Investment Consultancy", href: "/services/investment" },
-      ///{ label: "Property Valuation", href: "/services/valuation" },
     ],
   },
   {
@@ -82,49 +61,74 @@ const baseMenuData = [
   },
 ];
 
-export default function ClientNavbar() {
+export default function ClientNavbar({ initialMenu = [] }) {
   const pathname = usePathname();
   const { isLoggedIn, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
+  const [mobileSubOpen, setMobileSubOpen] = useState(null);
   const [desktopOpen, setDesktopOpen] = useState(null);
+  const [desktopSubOpen, setDesktopSubOpen] = useState(null);
   const navRef = useRef(null);
+  const hoverTimeout = useRef(null);
   const [mounted, setMounted] = useState(false);
+  const [dynamicMenu, setDynamicMenu] = useState(
+    initialMenu.length > 0 ? initialMenu : fallbackMenu
+  );
 
   useEffect(() => {
     setMounted(true);
+    const cached = getCachedMenu();
+    if (cached && cached.length > 0) {
+      setDynamicMenu(cached);
+    }
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getNavbarMenu`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCachedMenu(data.data);
+          setDynamicMenu(data.data);
+        }
+      })
+      .catch(() => {});
   }, []);
 
-  const menuData = mounted && isLoggedIn
-    ? [
-        ...baseMenuData,
-        {
-          label: "My Portal",
-          href: "/myportal",
-          children: [
-            { label: "Account Information", href: "/myportal" },
-            { label: "Change Password", href: "/changepassword" },
-            { label: "My Documents", href: "/mydocuments" },
-          ],
-        },
-        {
-          label: "Logout",
-          href: "#",
-          children: null,
-          isLogout: true,
-        },
-      ]
-    : [
-        ...baseMenuData,
-        {
-          label: "Login",
-          href: "#",
-          children: [
-            { label: "Landowner Login", href: "/login" },
-            { label: "Buyer Login", href: "/login" },
-          ],
-        },
-      ];
+  const baseMenuData = dynamicMenu;
+
+  const filteredMenuData = (items) =>
+    items.filter((item) => item.label !== "Blog");
+
+  const menuData =
+    mounted && isLoggedIn
+      ? filteredMenuData([
+          ...baseMenuData,
+          {
+            label: "My Portal",
+            href: "/myportal",
+            children: [
+              { label: "Account Information", href: "/myportal" },
+              { label: "Change Password", href: "/changepassword" },
+              { label: "My Documents", href: "/mydocuments" },
+            ],
+          },
+          {
+            label: "Logout",
+            href: "#",
+            children: null,
+            isLogout: true,
+          },
+        ])
+      : filteredMenuData([
+          ...baseMenuData,
+          {
+            label: "Login",
+            href: "#",
+            children: [
+              { label: "Landowner Login", href: "/login" },
+              { label: "Buyer Login", href: "/login" },
+            ],
+          },
+        ]);
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
@@ -132,16 +136,20 @@ export default function ClientNavbar() {
   };
 
   const isChildActive = (children) => {
-    return children?.some((child) => pathname.startsWith(child.href));
+    return children?.some(
+      (child) =>
+        pathname.startsWith(child.href) ||
+        (child.children && isChildActive(child.children))
+    );
   };
 
-  // Close mobile menu on route change
   useEffect(() => {
     setMobileOpen(false);
     setOpenDropdown(null);
+    setDesktopSubOpen(null);
+    setMobileSubOpen(null);
   }, [pathname]);
 
-  // Close desktop dropdown on outside click
   useEffect(() => {
     if (desktopOpen === null) return;
     const handleClick = (e) => {
@@ -153,22 +161,16 @@ export default function ClientNavbar() {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [desktopOpen]);
 
-  // Cleanup hover timeout on unmount
   useEffect(() => {
     return () => clearTimeout(hoverTimeout.current);
   }, []);
 
-  // Prevent body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [mobileOpen]);
-
-  const toggleDesktop = (label) => {
-    setDesktopOpen(desktopOpen === label ? null : label);
-  };
-
-  const hoverTimeout = useRef(null);
 
   const handleMouseEnter = (label) => {
     clearTimeout(hoverTimeout.current);
@@ -183,6 +185,10 @@ export default function ClientNavbar() {
 
   const toggleMobile = (label) => {
     setOpenDropdown(openDropdown === label ? null : label);
+  };
+
+  const toggleMobileSub = (label) => {
+    setMobileSubOpen(mobileSubOpen === label ? null : label);
   };
 
   const handleLogout = (e) => {
@@ -203,49 +209,174 @@ export default function ClientNavbar() {
                   <img
                     alt="Stellar Structures Limited"
                     src="/frontend_theme/assets/imgs/template/logo.png"
-                    
                   />
                 </Link>
               </div>
               <div className="header-nav">
-                {/* Desktop Menu */}
-                <nav className="nav-main-menu d-none d-xl-block" ref={navRef}>
+                <nav
+                  className="nav-main-menu d-none d-xl-block"
+                  ref={navRef}
+                >
                   <ul className="main-menu">
                     {menuData.map((item, index) => (
-                      <li key={index} className={desktopOpen === item.label ? "active" : ""} onMouseEnter={() => handleMouseEnter(item.label)} onMouseLeave={handleMouseLeave}>
+                      <li
+                        key={index}
+                        className={
+                          desktopOpen === item.label ? "active" : ""
+                        }
+                        onMouseEnter={() => handleMouseEnter(item.label)}
+                        onMouseLeave={handleMouseLeave}
+                      >
                         {item.children ? (
                           <>
                             <a
                               href="#"
-                              className={isChildActive(item.children) ? "active" : ""}
+                              className={
+                                isChildActive(item.children) ? "active" : ""
+                              }
                               onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
                               }}
                             >
                               {item.label}{" "}
-                              <i className="fi fi-rr-angle-small-down" style={{ transition: "transform 0.2s", transform: desktopOpen === item.label ? "rotate(180deg)" : "rotate(0)" }}></i>
+                              <i
+                                className="fi fi-rr-angle-small-down"
+                                style={{
+                                  transition: "transform 0.2s",
+                                  transform:
+                                    desktopOpen === item.label
+                                      ? "rotate(180deg)"
+                                      : "rotate(0)",
+                                }}
+                              ></i>
                             </a>
                             <ul
                               className="sub-menu"
                               style={{
-                                opacity: desktopOpen === item.label ? 1 : 0,
-                                visibility: desktopOpen === item.label ? "visible" : "hidden",
-                                transform: desktopOpen === item.label ? "translateY(0)" : "translateY(8px)",
+                                opacity:
+                                  desktopOpen === item.label ? 1 : 0,
+                                visibility:
+                                  desktopOpen === item.label
+                                    ? "visible"
+                                    : "hidden",
+                                transform:
+                                  desktopOpen === item.label
+                                    ? "translateY(0)"
+                                    : "translateY(8px)",
                                 transition: "all 0.2s ease",
-                                pointerEvents: desktopOpen === item.label ? "auto" : "none",
-                                ...(item.label === "Login" ? { minWidth: "180px", width: "180px" } : {}),
+                                pointerEvents:
+                                  desktopOpen === item.label
+                                    ? "auto"
+                                    : "none",
                               }}
                             >
                               {item.children.map((child, childIndex) => (
-                                <li key={childIndex}>
-                                  <Link
-                                    className={isActive(child.href) ? "active" : ""}
-                                    href={child.href}
-                                    onClick={() => setDesktopOpen(null)}
-                                  >
-                                    {child.label}
-                                  </Link>
+                                <li
+                                  key={childIndex}
+                                  className={
+                                    child.children ? "has-children" : ""
+                                  }
+                                  onMouseEnter={() =>
+                                    child.children &&
+                                    setDesktopSubOpen(child.label)
+                                  }
+                                  onMouseLeave={() =>
+                                    child.children &&
+                                    setDesktopSubOpen(null)
+                                  }
+                                >
+                                  {child.children ? (
+                                    <>
+                                      <a
+                                        href="#"
+                                        className={
+                                          isActive(child.href) ||
+                                          isChildActive(child.children)
+                                            ? "active"
+                                            : ""
+                                        }
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                        }}
+                                        style={{
+                                          display: "flex",
+                                          alignItems: "center",
+                                          justifyContent: "space-between",
+                                        }}
+                                      >
+                                        {child.label}
+                                        <i
+                                          className="fi fi-rr-angle-small-right"
+                                          style={{
+                                            fontSize: "10px",
+                                            marginLeft: "4px",
+                                          }}
+                                        ></i>
+                                      </a>
+                                      <ul
+                                        className="sub-menu sub-menu-nested"
+                                        style={{
+                                          opacity:
+                                            desktopSubOpen === child.label
+                                              ? 1
+                                              : 0,
+                                          visibility:
+                                            desktopSubOpen === child.label
+                                              ? "visible"
+                                              : "hidden",
+                                          transform:
+                                            desktopSubOpen === child.label
+                                              ? "translateY(0)"
+                                              : "translateY(8px)",
+                                          transition: "all 0.2s ease",
+                                          pointerEvents:
+                                            desktopSubOpen === child.label
+                                              ? "auto"
+                                              : "none",
+                                          left: "100%",
+                                          top: 0,
+                                          position: "absolute",
+                                          minWidth: "180px",
+                                        }}
+                                      >
+                                        {child.children.map(
+                                          (subChild, subIndex) => (
+                                            <li key={subIndex}>
+                                              <Link
+                                                className={
+                                                  isActive(subChild.href)
+                                                    ? "active"
+                                                    : ""
+                                                }
+                                                href={subChild.href}
+                                                onClick={() =>
+                                                  setDesktopOpen(null)
+                                                }
+                                              >
+                                                {subChild.label}
+                                              </Link>
+                                            </li>
+                                          )
+                                        )}
+                                      </ul>
+                                    </>
+                                  ) : (
+                                    <Link
+                                      className={
+                                        isActive(child.href)
+                                          ? "active"
+                                          : ""
+                                      }
+                                      href={child.href}
+                                      onClick={() =>
+                                        setDesktopOpen(null)
+                                      }
+                                    >
+                                      {child.label}
+                                    </Link>
+                                  )}
                                 </li>
                               ))}
                             </ul>
@@ -260,7 +391,9 @@ export default function ClientNavbar() {
                           </a>
                         ) : (
                           <Link
-                            className={isActive(item.href) ? "active" : ""}
+                            className={
+                              isActive(item.href) ? "active" : ""
+                            }
                             href={item.href}
                           >
                             {item.label}
@@ -271,9 +404,10 @@ export default function ClientNavbar() {
                   </ul>
                 </nav>
 
-                {/* Burger Icon */}
                 <div
-                  className={`burger-icon burger-icon-white ${mobileOpen ? "burger-open" : ""}`}
+                  className={`burger-icon burger-icon-white ${
+                    mobileOpen ? "burger-open" : ""
+                  }`}
                   onClick={() => setMobileOpen(!mobileOpen)}
                   style={{ cursor: "pointer" }}
                 >
@@ -287,7 +421,6 @@ export default function ClientNavbar() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
       {mobileOpen && (
         <div
           onClick={() => setMobileOpen(false)}
@@ -300,7 +433,6 @@ export default function ClientNavbar() {
         />
       )}
 
-      {/* Mobile Menu */}
       <div
         style={{
           position: "fixed",
@@ -316,7 +448,6 @@ export default function ClientNavbar() {
           padding: "80px 0 40px",
         }}
       >
-        {/* Close button */}
         <button
           onClick={() => setMobileOpen(false)}
           style={{
@@ -356,7 +487,11 @@ export default function ClientNavbar() {
                         justifyContent: "space-between",
                         alignItems: "center",
                         padding: "14px 28px",
-                        color: isChildActive(item.children) || openDropdown === item.label ? "#C9A227" : "#fff",
+                        color:
+                          isChildActive(item.children) ||
+                          openDropdown === item.label
+                            ? "#C9A227"
+                            : "#fff",
                         fontSize: "16px",
                         textDecoration: "none",
                         borderBottom: "1px solid rgba(255,255,255,0.06)",
@@ -368,7 +503,10 @@ export default function ClientNavbar() {
                         style={{
                           fontSize: "14px",
                           transition: "transform 0.3s",
-                          transform: openDropdown === item.label ? "rotate(180deg)" : "rotate(0)",
+                          transform:
+                            openDropdown === item.label
+                              ? "rotate(180deg)"
+                              : "rotate(0)",
                         }}
                       ></i>
                     </a>
@@ -377,7 +515,8 @@ export default function ClientNavbar() {
                         listStyle: "none",
                         padding: 0,
                         margin: 0,
-                        maxHeight: openDropdown === item.label ? "500px" : "0",
+                        maxHeight:
+                          openDropdown === item.label ? "1000px" : "0",
                         overflow: "hidden",
                         transition: "max-height 0.3s ease",
                         background: "rgba(255,255,255,0.02)",
@@ -385,21 +524,110 @@ export default function ClientNavbar() {
                     >
                       {item.children.map((child, childIndex) => (
                         <li key={childIndex}>
-                          <Link
-                            href={child.href}
-                            onClick={() => setMobileOpen(false)}
-                            style={{
-                              display: "block",
-                              padding: "12px 28px 12px 44px",
-                              color: isActive(child.href) ? "#C9A227" : "rgba(255,255,255,0.55)",
-                              fontSize: "14px",
-                              textDecoration: "none",
-                              transition: "color 0.2s",
-                              borderBottom: "1px solid rgba(255,255,255,0.03)",
-                            }}
-                          >
-                            {child.label}
-                          </Link>
+                          {child.children ? (
+                            <>
+                              <a
+                                href="#"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  toggleMobileSub(child.label);
+                                }}
+                                style={{
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  padding: "12px 28px 12px 44px",
+                                  color:
+                                    isActive(child.href) ||
+                                    isChildActive(child.children) ||
+                                    mobileSubOpen === child.label
+                                      ? "#C9A227"
+                                      : "rgba(255,255,255,0.55)",
+                                  fontSize: "14px",
+                                  textDecoration: "none",
+                                  transition: "color 0.2s",
+                                  borderBottom:
+                                    "1px solid rgba(255,255,255,0.03)",
+                                }}
+                              >
+                                {child.label}
+                                <i
+                                  className="fi fi-rr-angle-small-down"
+                                  style={{
+                                    fontSize: "12px",
+                                    transition: "transform 0.3s",
+                                    transform:
+                                      mobileSubOpen === child.label
+                                        ? "rotate(180deg)"
+                                        : "rotate(0)",
+                                  }}
+                                ></i>
+                              </a>
+                              <ul
+                                style={{
+                                  listStyle: "none",
+                                  padding: 0,
+                                  margin: 0,
+                                  maxHeight:
+                                    mobileSubOpen === child.label
+                                      ? "500px"
+                                      : "0",
+                                  overflow: "hidden",
+                                  transition: "max-height 0.3s ease",
+                                  background: "rgba(255,255,255,0.02)",
+                                }}
+                              >
+                                {child.children.map(
+                                  (subChild, subIndex) => (
+                                    <li key={subIndex}>
+                                      <Link
+                                        href={subChild.href}
+                                        onClick={() =>
+                                          setMobileOpen(false)
+                                        }
+                                        style={{
+                                          display: "block",
+                                          padding:
+                                            "10px 28px 10px 60px",
+                                          color: isActive(
+                                            subChild.href
+                                          )
+                                            ? "#C9A227"
+                                            : "rgba(255,255,255,0.4)",
+                                          fontSize: "13px",
+                                          textDecoration: "none",
+                                          transition: "color 0.2s",
+                                          borderBottom:
+                                            "1px solid rgba(255,255,255,0.02)",
+                                        }}
+                                      >
+                                        {subChild.label}
+                                      </Link>
+                                    </li>
+                                  )
+                                )}
+                              </ul>
+                            </>
+                          ) : (
+                            <Link
+                              href={child.href}
+                              onClick={() => setMobileOpen(false)}
+                              style={{
+                                display: "block",
+                                padding: "12px 28px 12px 44px",
+                                color: isActive(child.href)
+                                  ? "#C9A227"
+                                  : "rgba(255,255,255,0.55)",
+                                fontSize: "14px",
+                                textDecoration: "none",
+                                transition: "color 0.2s",
+                                borderBottom:
+                                  "1px solid rgba(255,255,255,0.03)",
+                              }}
+                            >
+                              {child.label}
+                            </Link>
+                          )}
                         </li>
                       ))}
                     </ul>
@@ -441,8 +669,20 @@ export default function ClientNavbar() {
           </ul>
         </nav>
 
-        <div style={{ padding: "24px 28px", borderTop: "1px solid rgba(255,255,255,0.06)", marginTop: "16px" }}>
-          <p style={{ fontSize: "12px", color: "rgba(255,255,255,0.3)", margin: 0 }}>
+        <div
+          style={{
+            padding: "24px 28px",
+            borderTop: "1px solid rgba(255,255,255,0.06)",
+            marginTop: "16px",
+          }}
+        >
+          <p
+            style={{
+              fontSize: "12px",
+              color: "rgba(255,255,255,0.3)",
+              margin: 0,
+            }}
+          >
             &copy; {new Date().getFullYear()} Stellar Structures Limited
           </p>
         </div>
@@ -457,6 +697,12 @@ export default function ClientNavbar() {
         }
         .burger-open .burger-icon-bottom {
           transform: rotate(-45deg) translate(6px, -6px) !important;
+        }
+        .main-menu > li {
+          position: relative;
+        }
+        .sub-menu > li.has-children {
+          position: relative;
         }
       `}</style>
     </div>

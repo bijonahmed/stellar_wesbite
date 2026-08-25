@@ -1,7 +1,5 @@
 import PageHeader from "../../components/frontend/PageElements/PageHeader";
 import FeatureGrid from "../../components/frontend/PageElements/FeatureGrid";
-import CTASection from "../../components/frontend/PageElements/CTASection";
-
 export const metadata = {
   title: "Book an Appointment - Stellar Structures Limited",
   description: "Book an appointment with Stellar Structures Limited for property consultation, project discussion, and personalized guidance in Dhaka.",
@@ -54,13 +52,6 @@ export default function AppointmentPage() {
         description="Select the type of consultation that best fits your needs. All consultations are free of charge and carry no obligation."
         features={consultationTypes}
         columns={2}
-      />
-    
-      <CTASection
-        title="Prefer to Call?"
-        subtitle="Our sales team is available during working hours to assist you immediately."
-       
-        secondaryBtn={{ label: "Contact", href: "/contact" }}
       />
     </>
   );

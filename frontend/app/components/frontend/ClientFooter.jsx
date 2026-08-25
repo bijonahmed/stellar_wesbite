@@ -9,29 +9,21 @@ const footerLinks = [
     links: [
       { label: "Company Profile", href: "/about" },
       { label: "Our Story", href: "/our-story" },
-      // { label: "Chairman's Message", href: "/chairman-message" },
-      // { label: "Director's Message", href: "/directors-message" },
-      // { label: "Managing Director", href: "/managing-director" },
-      // { label: "Vision & Mission", href: "/vision-mission" },
-      // { label: "Core Values", href: "/core-values" },
-      // { label: "Why Stellar Structures", href: "/why-us" },
-      // { label: "Our Team", href: "/our-team" },
-      // { label: "Career", href: "/career" },
-      // { label: "CSR Activities", href: "/csr" },
+     
     ],
   },
   {
     title: "Projects",
     links: [
-       { label: "Construction Management", href: "/projects/construction-management" },
+       { label: "Construction Management", href: "/services/construction-management" },
     ],
   },
 
    {
     title: "Stellar Homes Development",
     links: [
-      { label: "Ongoing Projects", href: "/projects/ongoing" },
-      { label: "Upcoming Projects", href: "/projects/upcoming" },
+      { label: "Ongoing Projects", href: "/services/ongoing-projects" },
+      { label: "Upcoming Projects", href: "/services/upcoming-projects" },
     ],
   },
 
@@ -39,20 +31,18 @@ const footerLinks = [
   {
     title: "Services",
     links: [
-      { label: "Property Development", href: "/services/development" },
-      { label: "Construction Management", href: "/services/construction" },
-      { label: "Interior Design", href: "/services/interior" },
-      { label: "Architectural Design", href: "/services/architecture" },
-      { label: "Investment Consultancy", href: "/services/investment" },
-      { label: "Property Valuation", href: "/services/valuation" },
+       { label: "Property Development", href: "/services/property-development" },
+      { label: "Interior Design", href: "/services/interior-design" },
+      { label: "Architectural Design", href: "/services/architectural-design" },
+      { label: "Investment Consultancy", href: "/services/investment-consultancy" },
+      { label: "Construction Management", href: "/services/construction-management" },
+
     ],
   },
   {
     title: "Media & Support",
     links: [
-      { label: "Blog", href: "/blog" },
-    //  { label: "Photo Gallery", href: "/gallery/photos" },
-    //  { label: "Events", href: "/events" },
+
       { label: "FAQ", href: "/faq" },
       { label: "Customer Support", href: "/support" },
     ],
@@ -60,11 +50,11 @@ const footerLinks = [
   {
     title: "Quick Links",
     links: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "Book Appointment", href: "/appointment" },
-      { label: "Schedule Site Visit", href: "/site-visit" },
-      { label: "Booking Process", href: "/booking-process" },
-      { label: "Terms & Conditions", href: "/terms" },
+      { label: "Property Development", href: "/services/property-development" },
+      { label: "Interior Design", href: "/services/interior-design" },
+      { label: "Architectural Design", href: "/services/architectural-design" },
+      { label: "Investment Consultancy", href: "/services/investment-consultancy" },
+      { label: "Construction Management", href: "/services/construction-management" },
       { label: "Sitemap", href: "/sitemap" },
     ],
   },
