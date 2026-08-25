@@ -43,13 +43,16 @@ class PostController extends Controller
         }
         $paginator          = $query->paginate($pageSize, ['*'], 'page', $page);
         $modifiedCollection = $paginator->getCollection()->map(function ($item) {
-        $categoryName       = PostCategory::where('id',$item->categoryId)->first();
-
+        $categoryName       = \DB::table('categorys')->where('id', $item->categoryId)->first();
+        $subCategoryName    = $item->subcategoryId ? \DB::table('categorys')->where('id', $item->subcategoryId)->first() : null;
+        $thumnail_img       = ! empty($item->thumnail_img) ? url($item->thumnail_img) : '';
 
             return [
                 'id' => $item->id,
                 'category_name' => !empty($categoryName->name) ? $categoryName->name : "",
+                'subcategory_name' => !empty($subCategoryName->name) ? $subCategoryName->name : "",
                 'name' => substr($item->name, 0, 250),
+                'thumnail_img' => $thumnail_img,
                 'status' => $item->status,
             ];
         });
@@ -92,6 +95,9 @@ class PostController extends Controller
             'meta_description' => ! empty($request->meta_description) ? $request->meta_description : '',
             'meta_keyword' => ! empty($request->meta_keyword) ? $request->meta_keyword : '',
             'categoryId' => ! empty($request->categoryId) ? $request->categoryId : '',
+            'subcategoryId' => ! empty($request->subcategoryId) ? $request->subcategoryId : null,
+            'text_1' => ! empty($request->text_1) ? $request->text_1 : null,
+            'text_2' => ! empty($request->text_2) ? $request->text_2 : null,
             'status' => 1, // !empty($request->status) ? $request->status : "",
             'entry_by' => $user_id,
         ];
@@ -107,6 +113,7 @@ class PostController extends Controller
             $file_url = $uploadPath . $path;
             $data['thumnail_img'] = $file_url;
         }
+        
         // Post::create($data);
         $resdata['product_id'] = PostModel::insertGetId($data);
 
@@ -124,12 +131,12 @@ class PostController extends Controller
     public function postrow($id)
     {
         $data = PostModel::where('posts.id', $id)
-            ->select('posts.*', 'post_category.name as category_name')
-            ->join('post_category', 'posts.categoryId', '=', 'post_category.id')
+            ->select('posts.*', 'categorys.name as category_name')
+            ->leftJoin('categorys', 'posts.categoryId', '=', 'categorys.id')
             ->first();
+        $data->thumnail_img = ! empty($data->thumnail_img) ? url($data->thumnail_img) : '';
         $responseData['data'] = $data;
-        $responseData['images'] = ! empty($data->thumnail_img) ? url($data->thumnail_img) : '';
-
+        $responseData['images'] = $data->thumnail_img;
         return response()->json($responseData);
     }
 
@@ -190,6 +197,9 @@ class PostController extends Controller
             'meta_description'  => ! empty($request->meta_description) ? $request->meta_description : '',
             'meta_keyword'      => ! empty($request->meta_keyword) ? $request->meta_keyword : '',
             'categoryId'        => ! empty($request->categoryId) ? $request->categoryId : '',
+            'subcategoryId'     => ! empty($request->subcategoryId) ? $request->subcategoryId : null,
+            'text_1' => ! empty($request->text_1) ? $request->text_1 : null,
+            'text_2' => ! empty($request->text_2) ? $request->text_2 : null,
             'status'            =>  $request->status !== null ? $request->status : 1, // fix here,
             'entry_by'          => $user_id,
         ];
@@ -205,6 +215,7 @@ class PostController extends Controller
             $file_url = $uploadPath . $path;
             $data['thumnail_img'] = $file_url;
         }
+       
 
       //  dd($data);
         $data['id'] = $request->id;

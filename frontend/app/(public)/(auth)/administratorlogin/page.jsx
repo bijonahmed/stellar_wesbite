@@ -312,7 +312,7 @@ export default function LoginPage() {
                       <polyline points="22,6 12,13 2,6" />
                     </svg>
                   </span>
-                  <input className="field-input" type="email" placeholder="admin@company.com"
+                  <input className="field-input" type="email" placeholder=""
                     value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
                 </div>
               </div>
@@ -327,7 +327,7 @@ export default function LoginPage() {
                     </svg>
                   </span>
                   <input className="field-input" type={showPassword ? "text" : "password"}
-                    placeholder="••••••••••" value={password}
+                    placeholder="" value={password}
                     onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
                   <button type="button" className="pwd-toggle" onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1} aria-label={showPassword ? "Hide password" : "Show password"}>

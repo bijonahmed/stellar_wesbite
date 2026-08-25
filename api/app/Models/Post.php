@@ -20,8 +20,11 @@ class Post extends Authenticatable
         'meta_description',
         'meta_keyword',
         'categoryId',
+        'subcategoryId',
         'entry_by',
         'thumnail_img',
+        'text_1',
+        'text_2',
         'created_at',
         'status'
     ];

@@ -7,7 +7,6 @@ import CategoryTree from "./CategoryTree";
 import { useAuth } from "../../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import useCategories from "../../hooks/useCategories";
-import { createServerSearchParamsForServerPage } from "next/dist/server/request/search-params";
 
 export default function UserPage() {
   const router = useRouter();

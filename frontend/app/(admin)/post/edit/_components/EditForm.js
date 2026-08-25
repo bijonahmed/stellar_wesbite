@@ -8,6 +8,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import Image from "next/image";
+import useCategories from "../../../../hooks/useCategories";
 
 export default function EditUserForm({ id }) {
   const { token, permissions } = useAuth();
@@ -18,24 +19,66 @@ export default function EditUserForm({ id }) {
     meta_description: "",
     meta_keyword: "",
     categoryId: "",
+    subcategoryId: "",
     description_full: "",
     files: null,
+    text_1: "",
+    text_2: "",
     status: "",
   });
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
-  const [postCategory, setPostCategorys] = useState([]);
   const router = useRouter();
   const pathname = usePathname();
-  const title = "Post Edit";
+  const title = "Edit Post";
+
+  useEffect(() => {
+    document.title = title;
+  }, []);
+
+  const { categoryData } = useCategories();
+  const [subcategoryList, setSubcategoryList] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
 
     if (files) {
       setFormData({ ...formData, [name]: files[0] });
+    } else if (name === "categoryId") {
+      setFormData({ ...formData, categoryId: value, subcategoryId: "" });
+      fetchSubcategories(value);
     } else {
       setFormData({ ...formData, [name]: value });
+    }
+  };
+
+  const fetchSubcategories = async (categoryId) => {
+    if (!categoryId) {
+      setSubcategoryList([]);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/product-category/checkSubcategory`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ category_id: categoryId }),
+        }
+      );
+      const text = await res.text();
+      try {
+        const data = JSON.parse(text);
+        setSubcategoryList(data?.data || []);
+      } catch {
+        setSubcategoryList([]);
+      }
+    } catch (err) {
+      console.error("Subcategory fetch error:", err);
+      setSubcategoryList([]);
     }
   };
 
@@ -49,12 +92,15 @@ export default function EditUserForm({ id }) {
     payload.append("meta_description", formData.meta_description);
     payload.append("meta_keyword", formData.meta_keyword);
     payload.append("categoryId", formData.categoryId);
+    payload.append("subcategoryId", formData.subcategoryId);
     payload.append("description_full", formData.description_full);
     payload.append("status", formData.status);
 
     if (formData.files instanceof File) {
       payload.append("files", formData.files);
     }
+    payload.append("text_1", formData.text_1);
+    payload.append("text_2", formData.text_2);
 
     try {
       const res = await fetch(
@@ -68,10 +114,17 @@ export default function EditUserForm({ id }) {
         }
       );
 
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        toast.error("Server error. Please try again.");
+        return;
+      }
 
       if (res.ok) {
-        toast.success("Post update successfully ✅");
+        toast.success("Post update successfully");
         router.push("/post");
       } else if (data.errors) {
         toast.error(Object.values(data.errors).flat().join("\n"), {
@@ -87,7 +140,6 @@ export default function EditUserForm({ id }) {
     }
   };
 
-  // Fetch post data
   useEffect(() => {
     const fetchPost = async () => {
       try {
@@ -101,8 +153,21 @@ export default function EditUserForm({ id }) {
           }
         );
 
-        const data = await res.json();
+        const text = await res.text();
+        let data;
+        try {
+          data = JSON.parse(text);
+        } catch {
+          setLoading(false);
+          return;
+        }
         const datarow = data?.data || {};
+
+        if (!datarow.id) {
+          toast.error("Post not found");
+          router.push("/post");
+          return;
+        }
 
         setFormData({
           id: datarow.id ?? "",
@@ -111,10 +176,16 @@ export default function EditUserForm({ id }) {
           meta_description: datarow.meta_description ?? "",
           meta_keyword: datarow.meta_keyword ?? "",
           categoryId: datarow.categoryId ?? "",
+          subcategoryId: datarow.subcategoryId ?? "",
           description_full: datarow.description_full ?? "",
           status: datarow.status ?? "",
           files: data?.images ?? "",
+          text_1: datarow.text_1 ?? "",
+          text_2: datarow.text_2 ?? "",
         });
+        if (datarow.categoryId) {
+          fetchSubcategories(datarow.categoryId);
+        }
       } catch (err) {
         console.error(err);
       } finally {
@@ -123,30 +194,6 @@ export default function EditUserForm({ id }) {
     };
 
     fetchPost();
-  }, [id, token]);
-
-  // Fetch categories
-  useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/posts/postCategorysearch`,
-          {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        const data = await res.json();
-        if (res.ok) setPostCategorys(data);
-      } catch (err) {
-        console.error(err);
-      }
-    };
-
-    fetchCategories();
   }, [id, token]);
 
   if (loading) return <p>Loading...</p>;
@@ -171,7 +218,7 @@ export default function EditUserForm({ id }) {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li >
+                <li>
                   <a
                     href="#"
                     onClick={(e) => {
@@ -195,7 +242,6 @@ export default function EditUserForm({ id }) {
               <div className="card card-primary card-outline mb-4">
                 <form onSubmit={handleSubmit}>
                   <div className="card-body">
-                    {/* NAME */}
                     <div className="mb-3">
                       <label className="form-label">Name</label>
                       <input
@@ -212,7 +258,6 @@ export default function EditUserForm({ id }) {
                       )}
                     </div>
 
-                    {/* META FIELDS */}
                     <div className="mb-3">
                       <label className="form-label">Meta Title</label>
                       <input
@@ -246,9 +291,8 @@ export default function EditUserForm({ id }) {
                       />
                     </div>
 
-                    {/* CATEGORY */}
                     <div className="mb-3">
-                      <label className="form-label">Post Category</label>
+                      <label className="form-label">Main Category</label>
                       <select
                         name="categoryId"
                         className={`form-control ${
@@ -257,8 +301,8 @@ export default function EditUserForm({ id }) {
                         value={formData.categoryId}
                         onChange={handleChange}
                       >
-                        <option value="">-- Select --</option>
-                        {postCategory.map((cat) => (
+                        <option value="">-- Select Main Category --</option>
+                        {categoryData.map((cat) => (
                           <option key={cat.id} value={cat.id}>
                             {cat.name}
                           </option>
@@ -266,7 +310,23 @@ export default function EditUserForm({ id }) {
                       </select>
                     </div>
 
-                    {/* DESCRIPTION */}
+                    <div className="mb-3">
+                      <label className="form-label">Subcategory</label>
+                      <select
+                        name="subcategoryId"
+                        className="form-control"
+                        value={formData.subcategoryId}
+                        onChange={handleChange}
+                      >
+                        <option value="">-- Select Subcategory --</option>
+                        {subcategoryList.map((sub) => (
+                          <option key={sub.id} value={sub.id}>
+                            {sub.name}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
                     <div className="mb-3">
                       <label className="form-label">Full Description</label>
                       <CKEditor
@@ -295,7 +355,7 @@ export default function EditUserForm({ id }) {
                         <option value="0">Inactive</option>
                       </select>
                     </div>
-                    {/* UPLOAD */}
+
                     <div className="mb-3">
                       <label className="form-label">Upload Image</label>
                       <input
@@ -307,7 +367,6 @@ export default function EditUserForm({ id }) {
                       />
                     </div>
 
-                    {/* PREVIEW IMAGE – now using NEXT/IMAGE */}
                     {formData.files && (
                       <div className="mb-3">
                         <Image
@@ -324,6 +383,30 @@ export default function EditUserForm({ id }) {
                         />
                       </div>
                     )}
+
+                    <div className="mb-3">
+                      <label className="form-label">Text 1</label>
+                      <input
+                        type="text"
+                        name="text_1"
+                        value={formData.text_1}
+                        onChange={handleChange}
+                        className="form-control"
+                        placeholder="Enter text 1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label">Text 2</label>
+                      <input
+                        type="text"
+                        name="text_2"
+                        value={formData.text_2}
+                        onChange={handleChange}
+                        className="form-control"
+                        placeholder="Enter text 2"
+                      />
+                    </div>
                   </div>
 
                   <div className="card-footer text-end">

@@ -15,11 +15,16 @@ export default function useCategories() {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_API_BASE}/public/getCategory`
         );
-        const result = await res.json();
-        setCategoryData(result.data || []);
-        setTopBannerData(result.topBanner || []);
-        setSlidersData(result.sliders || []);
-         setPromotionalStatus(result.pro_status || "");
+        const text = await res.text();
+        try {
+          const result = JSON.parse(text);
+          setCategoryData(result.data || []);
+          setTopBannerData(result.topBanner || []);
+          setSlidersData(result.sliders || []);
+          setPromotionalStatus(result.pro_status || "");
+        } catch {
+          console.error("API returned non-JSON response");
+        }
       } catch (err) {
         console.error("Fetch failed:", err);
       } finally {

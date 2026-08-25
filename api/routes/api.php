@@ -11,8 +11,10 @@ use App\Http\Controllers\Api\Orders\OrdersController;
 use App\Http\Controllers\Api\Patho\GatewayController;
 use App\Http\Controllers\Api\Post\PostCategoryController;
 use App\Http\Controllers\Api\Post\PostController;
+use App\Http\Controllers\Api\OurTeam\OurTeamController;
 use App\Http\Controllers\Api\Document\DocumentController;
 use App\Http\Controllers\Api\Document\DocumentCategoryController;
+use App\Http\Controllers\Api\Document\UserDocumentController;
 use App\Http\Controllers\Api\User\UserController;
 use App\Http\Controllers\Api\Roles\RolesController;
 use App\Http\Controllers\Api\Permissions\PermissionsController;
@@ -204,6 +206,10 @@ Route::middleware(['auth:api'])->group(function () {
         Route::DELETE('/delete/{id}', [DocumentController::class, 'destroy']);
         Route::get('/postrow/{id}', [DocumentController::class, 'postrow']);
         Route::get('/documentCategorysearch', [DocumentController::class, 'documentCategorysearch']);
+    });
+    Route::prefix('my-documents')->group(function () {
+        Route::get('/', [UserDocumentController::class, 'index']);
+        Route::get('/{id}', [UserDocumentController::class, 'postrow']);
     });
 });
 Route::fallback(function () {

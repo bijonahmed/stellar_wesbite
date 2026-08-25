@@ -50,7 +50,7 @@ export default function LoginPage() {
 
         setSuccess("Login successful! Redirecting...");
         login(data.token, data.user.name, data.roles, data.permissions);
-        router.replace("/customer-dashboard");
+        router.replace("/myportal");
       } else {
         setError(data.message || "Invalid login credentials");
       }
@@ -441,7 +441,7 @@ export default function LoginPage() {
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                     </svg>
                   </span>
-                  <input className="field-input" type="email" placeholder="admin@company.com"
+                  <input className="field-input" type="email" placeholder=""
                     value={email} onChange={(e) => setEmail(e.target.value)}  autoComplete="email" />
                 </div>
               </div>
@@ -456,7 +456,7 @@ export default function LoginPage() {
                     </svg>
                   </span>
                   <input className="field-input" type={showPassword ? "text" : "password"}
-                    placeholder="Enter your password" value={password}
+                    placeholder="" value={password}
                     onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
                   <button type="button" className="pwd-btn" onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1} aria-label={showPassword ? "Hide password" : "Show password"}>
@@ -476,9 +476,9 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="forgot-row">
+              {/* <div className="forgot-row">
                 <a href="#" className="forgot-link">Forgot password?</a>
-              </div>
+              </div> */}
 
               <button type="submit" className="submit-btn" disabled={loading}>
                 {loading ? (

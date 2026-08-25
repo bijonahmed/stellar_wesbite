@@ -3,23 +3,24 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePathname } from "next/navigation";
-import { useAuth } from "../../../context/AuthContext"; // adjust path
+import { useAuth } from "../../../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-
+import useCategories from "../../../hooks/useCategories";
 import Link from "next/link";
 
 export default function UserAddPage() {
   const { token, permissions } = useAuth();
   const [user, setUser] = useState(null);
-  const [postCategory, setPostCategorys] = useState([]);
   const pathname = usePathname();
   const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const title = "Post Add";
-  // update document title
+
+  const { categoryData } = useCategories();
+
   useEffect(() => {
     if (title) {
       document.title = title;
@@ -32,29 +33,67 @@ export default function UserAddPage() {
     meta_description: "",
     meta_keyword: "",
     categoryId: "",
+    subcategoryId: "",
     description_full: "",
-    files: null, // single image
+    files: null,
+    text_1: "",
+    text_2: "",
     status: 1,
   });
+
+  const [subcategoryList, setSubcategoryList] = useState([]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
     if (files) {
-      setFormData({ ...formData, [name]: files[0] }); // store single file
+      setFormData({ ...formData, [name]: files[0] });
+    } else if (name === "categoryId") {
+      setFormData({ ...formData, categoryId: value, subcategoryId: "" });
+      fetchSubcategories(value);
     } else {
       setFormData({ ...formData, [name]: value });
     }
   };
+
+  const fetchSubcategories = async (categoryId) => {
+    if (!categoryId) {
+      setSubcategoryList([]);
+      return;
+    }
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/product-category/checkSubcategory`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ category_id: categoryId }),
+        }
+      );
+      const text = await res.text();
+      try {
+        const data = JSON.parse(text);
+        setSubcategoryList(data?.data || []);
+      } catch {
+        setSubcategoryList([]);
+      }
+    } catch (err) {
+      console.error("Subcategory fetch error:", err);
+      setSubcategoryList([]);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // If categoryId is 13, ensure a file is uploaded
     if (
       formData.categoryId == 13 &&
       (!formData.files || formData.files.length === 0)
     ) {
       alert("You must upload a file for this category!");
-      return; // Stop submission
+      return;
     }
 
     const payload = new FormData();
@@ -63,17 +102,16 @@ export default function UserAddPage() {
     payload.append("meta_description", formData.meta_description);
     payload.append("meta_keyword", formData.meta_keyword);
     payload.append("categoryId", formData.categoryId);
+    payload.append("subcategoryId", formData.subcategoryId);
     payload.append("description_full", formData.description_full);
     payload.append("status", formData.status);
 
     if (formData.files instanceof File) {
       payload.append("files", formData.files);
     }
+    payload.append("text_1", formData.text_1);
+    payload.append("text_2", formData.text_2);
 
-    // Check FormData content
-    for (let pair of payload.entries()) {
-      console.log(pair[0], pair[1]);
-    }
     try {
       const res = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/posts/create`,
@@ -81,15 +119,21 @@ export default function UserAddPage() {
           method: "POST",
           body: payload,
           headers: {
-            // "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      const data = await res.json();
+      const text = await res.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        toast.error("Server error. Please try again.");
+        return;
+      }
       if (res.ok) {
         setUser(data);
-        toast.success("Post add successfully ✅");
+        toast.success("Post add successfully");
         router.push("/post");
       } else if (data.errors) {
         toast.error(Object.values(data.errors).flat().join("\n"), {
@@ -106,32 +150,8 @@ export default function UserAddPage() {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_BASE}/posts/postCategorysearch`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        const data = await res.json();
-        if (res.ok) {
-          setPostCategorys(data);
-        } else {
-          console.error("Auth error:", data.message);
-        }
-      } catch (err) {
-        console.error("API error:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [router]);
+    setLoading(false);
+  }, []);
 
   if (loading) {
     return <p className="text-center py-5"></p>;
@@ -144,11 +164,8 @@ export default function UserAddPage() {
 
   return (
     <main className="app-main" id="main" tabIndex={-1}>
-      {/*begin::App Content Header*/}
       <div className="app-content-header">
-        {/*begin::Container*/}
         <div className="container-fluid">
-          {/*begin::Row*/}
           <div className="row">
             <div className="col-sm-6">
               <h3 className="mb-0">{title}</h3>
@@ -158,7 +175,7 @@ export default function UserAddPage() {
                 <li className="breadcrumb-item">
                   <Link href="/dashboard">Home</Link>
                 </li>
-                <li >
+                <li>
                   <a
                     href="#"
                     onClick={(e) => {
@@ -173,25 +190,16 @@ export default function UserAddPage() {
               </ol>
             </div>
           </div>
-          {/*end::Row*/}
         </div>
-        {/*end::Container*/}
       </div>
 
-      {/*begin::App Content*/}
       <div className="app-content">
-        {/*begin::Container*/}
         <div className="container-fluid">
-          {/*begin::Row*/}
           <div className="row g-4">
-            {/*begin::Col*/}
             <div className="col-md-12">
-              {/*begin::Quick Example*/}
               <div className="card card-primary card-outline mb-4">
-                {/*begin::Form*/}
                 <Toaster position="top-right" />
                 <form onSubmit={handleSubmit}>
-                  {/*begin::Body*/}
                   <div className="card-body">
                     <div className="mb-3">
                       <label className="form-label">Name</label>
@@ -242,7 +250,7 @@ export default function UserAddPage() {
                     </div>
 
                     <div className="mb-3">
-                      <label className="form-label">Post Categoryes</label>
+                      <label className="form-label">Main Category</label>
                       <select
                         className={`form-control ${
                           errors.categoryId ? "is-invalid" : ""
@@ -251,19 +259,35 @@ export default function UserAddPage() {
                         value={formData.categoryId}
                         onChange={handleChange}
                       >
-                        <option value="">-- Select --</option>
-                        {postCategory.map((pcategory, index) => (
-                          <option key={pcategory.id} value={pcategory.id}>
-                            {pcategory.name}
+                        <option value="">-- Select Main Category --</option>
+                        {categoryData.map((cat) => (
+                          <option key={cat.id} value={cat.id}>
+                            {cat.name}
                           </option>
                         ))}
                       </select>
-
                       {errors.categoryId && errors.categoryId.length > 0 && (
                         <div className="invalid-feedback">
                           {errors.categoryId[0]}
                         </div>
                       )}
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label">Subcategory</label>
+                      <select
+                        className="form-control"
+                        name="subcategoryId"
+                        value={formData.subcategoryId}
+                        onChange={handleChange}
+                      >
+                        <option value="">-- Select Subcategory --</option>
+                        {subcategoryList.map((sub) => (
+                          <option key={sub.id} value={sub.id}>
+                            {sub.name}
+                          </option>
+                        ))}
+                      </select>
                     </div>
 
                     <div className="mb-3">
@@ -289,7 +313,6 @@ export default function UserAddPage() {
                       />
                     </div>
 
-                    {/* ✅ Show Preview if Image is Selected */}
                     {formData.files && (
                       <div className="mb-3">
                         <img
@@ -300,27 +323,42 @@ export default function UserAddPage() {
                         />
                       </div>
                     )}
+
+                    <div className="mb-3">
+                      <label className="form-label">Text 1</label>
+                      <input
+                        type="text"
+                        name="text_1"
+                        value={formData.text_1}
+                        onChange={handleChange}
+                        className="form-control"
+                        placeholder="Enter text 1"
+                      />
+                    </div>
+
+                    <div className="mb-3">
+                      <label className="form-label">Text 2</label>
+                      <input
+                        type="text"
+                        name="text_2"
+                        value={formData.text_2}
+                        onChange={handleChange}
+                        className="form-control"
+                        placeholder="Enter text 2"
+                      />
+                    </div>
                   </div>
-                  {/*end::Body*/}
-                  {/*begin::Footer*/}
                   <div className="card-footer text-end">
                     <button type="submit" className="btn btn-primary">
                       Submit
                     </button>
                   </div>
-                  {/*end::Footer*/}
                 </form>
-                {/*end::Form*/}
               </div>
-              {/*end::Quick Example*/}
             </div>
-            {/*end::Col*/}
           </div>
-          {/*end::Row*/}
         </div>
-        {/*end::Container*/}
       </div>
-      {/*end::App Content*/}
     </main>
   );
 }

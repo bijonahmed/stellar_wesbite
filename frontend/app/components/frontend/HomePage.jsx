@@ -258,55 +258,7 @@ export default function HomePage() {
           </div>
         </section>
 
-        {/* FAQ */}
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-5 mb-40">
-              <h3 className="text-heading-3">Frequently Asked Questions</h3>
-              <p className="text-body-text color-gray-600 mt-30">Find answers to common questions about our projects, booking process, and services. If you need more help, our team is always ready to assist.</p>
-              <div className="row">
-                <div className="col-lg-12 mt-50">
-                  <h4 className="text-heading-6 icon-leaf">Booking &amp; Payment</h4>
-                  <p className="text-body-excerpt color-gray-600 mt-15">Learn about our flexible payment plans and straightforward booking process.</p>
-                </div>
-                <div className="col-lg-12 mt-50">
-                  <h4 className="text-heading-6 icon-leaf">Project Updates</h4>
-                  <p className="text-body-excerpt color-gray-600 mt-15">Stay informed about construction progress and milestone achievements.</p>
-                </div>
-              </div>
-            
-            </div>
-            <div className="col-lg-7">
-              <div className="accordion" id="accordionFAQ">
-                {faqData.map((faq, i) => (
-                  <div className="accordion-item" key={faq.id}>
-                    <h2 className="accordion-header" id={`heading${faq.id}`}>
-                      <button
-                        className={`accordion-button text-heading-5 ${i > 0 ? "collapsed" : ""}`}
-                        type="button"
-                        data-bs-toggle="collapse"
-                        data-bs-target={`#collapse${faq.id}`}
-                        aria-expanded={i === 0 ? "true" : "false"}
-                        aria-controls={`collapse${faq.id}`}
-                      >
-                        {faq.question}
-                      </button>
-                    </h2>
-                    <div
-                      className={`accordion-collapse collapse ${i === 0 ? "show" : ""}`}
-                      id={`collapse${faq.id}`}
-                      aria-labelledby={`heading${faq.id}`}
-                      data-bs-parent="#accordionFAQ"
-                    >
-                      <div className="accordion-body">{faq.answer}</div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </div>
-
+        
         
 
         {/* Newsletter */}

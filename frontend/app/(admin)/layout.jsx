@@ -34,6 +34,21 @@ export default function AdminLayout({ children }) {
 
     <AuthProvider>
       <div className="app-wrapper">
+        <style>{`
+          .app-wrapper .content-wrapper {
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+          }
+          .app-wrapper .content-wrapper textarea.form-control {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 10px 14px;
+          }
+          .app-wrapper .content-wrapper textarea.form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102,126,234,0.25);
+          }
+        `}</style>
         <AdminAssets />
         <AdminNavbar />
         <AdminSidebar />

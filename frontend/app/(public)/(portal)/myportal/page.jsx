@@ -3,17 +3,15 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../../../context/AuthContext";
-import Sidebar from "../customer-dashboard/sidebar";
+import Sidebar from "./sidebar";
 import { useEffect, useState } from "react";
 import toast, { Toaster } from "react-hot-toast";
 
 export default function customerDhasboardPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const { login } = useAuth();
+  const { token } = useAuth();
   const [userdata, setUserdata] = useState(null);
-  const { token, permissions } = useAuth();
   const [updating, setUpdating] = useState(false);
 
   useEffect(() => {
@@ -88,77 +86,16 @@ export default function customerDhasboardPage() {
     }
   };
 
-  const [formData, setFormData] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-    newPassword_confirmation: "",
-  });
-
-  const handleSubmitChatPassword = async (e) => {
-    e.preventDefault();
-
-    if (
-      !formData.currentPassword ||
-      !formData.newPassword ||
-      !formData.confirmPassword
-    ) {
-      toast.error("All fields are required");
-      return;
-    }
-
-    if (formData.newPassword !== formData.confirmPassword) {
-      toast.error("New Password and Confirm Password do not match");
-      return;
-    }
-
-    setUpdating(true);
-
-    try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/customerChangePassword`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: JSON.stringify({
-            currentPassword: formData.currentPassword,
-            newPassword: formData.newPassword,
-            newPassword_confirmation: formData.confirmPassword,
-          }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success("Password updated successfully!");
-        setFormData({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      } else {
-        toast.error(data.message || "Failed to update password");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    } finally {
-      setUpdating(false);
-    }
-  };
-
   return (
     <main className="ps-page--my-account">
-      <div className="ps-breadcrumb">
+      <div style={{ background: "#f8f9fa", borderBottom: "1px solid #e9ecef" }}>
         <div className="container">
-          <ul className="breadcrumb">
+          <ul style={{ display: "flex", listStyle: "none", padding: "12px 0", margin: 0, alignItems: "center", gap: "8px" }}>
             <li>
-              <Link href="/">Home</Link>
+              <Link href="/" style={{ color: "#667eea", textDecoration: "none", fontSize: "14px", fontWeight: "500" }}>Home</Link>
             </li>
-            <li>User Information</li>
+            <li style={{ color: "#6c757d", fontSize: "14px" }}>/</li>
+            <li style={{ color: "#495057", fontSize: "14px", fontWeight: "600" }}>Account Information</li>
           </ul>
         </div>
       </div>
@@ -208,11 +145,11 @@ export default function customerDhasboardPage() {
                     >
                       <i className="bi bi-person-fill" style={{ fontSize: "40px" }}></i>
                     </div>
-                    <h4 style={{ margin: 0, fontWeight: "700" }}>
-                      {userdata?.name || "Customer"}
+                    <h4 style={{ margin: 0, fontWeight: "700", color: "white" }}>
+                      {userdata?.name || "N/A"}
                     </h4>
                     <p style={{ margin: "5px 0 0", opacity: 0.85, fontSize: "14px" }}>
-                      {userdata?.email || "customer@email.com"}
+                      {userdata?.email || "N/A"}
                     </p>
                   </div>
 
@@ -348,114 +285,6 @@ export default function customerDhasboardPage() {
                           <>
                             <i className="bi bi-check-circle me-2"></i>
                             Save Changes
-                          </>
-                        )}
-                      </button>
-                    </form>
-                  </div>
-                </div>
-
-                {/* Change Password Card */}
-                <div
-                  className="card mb-4"
-                  style={{
-                    border: "none",
-                    borderRadius: "16px",
-                    boxShadow: "0 4px 20px rgba(0,0,0,0.06)",
-                  }}
-                >
-                  <div
-                    style={{
-                      background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                      padding: "18px 24px",
-                      borderRadius: "16px 16px 0 0",
-                    }}
-                  >
-                    <h5 className="mb-0 text-white" style={{ fontWeight: "600" }}>
-                      <i className="bi bi-shield-lock me-2"></i>
-                      Change Password
-                    </h5>
-                  </div>
-                  <div className="card-body" style={{ padding: "24px" }}>
-                    <form onSubmit={handleSubmitChatPassword}>
-                      <div className="mb-3">
-                        <label className="form-label fw-semibold">Current Password</label>
-                        <input
-                          className="form-control"
-                          type="password"
-                          placeholder="Enter current password"
-                          value={formData.currentPassword}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              currentPassword: e.target.value,
-                            })
-                          }
-                          style={{ borderRadius: "10px", padding: "12px 16px" }}
-                        />
-                      </div>
-                      <div className="row g-3">
-                        <div className="col-sm-6">
-                          <div className="mb-3">
-                            <label className="form-label fw-semibold">New Password</label>
-                            <input
-                              className="form-control"
-                              type="password"
-                              placeholder="Enter new password"
-                              value={formData.newPassword}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  newPassword: e.target.value,
-                                })
-                              }
-                              style={{ borderRadius: "10px", padding: "12px 16px" }}
-                            />
-                          </div>
-                        </div>
-                        <div className="col-sm-6">
-                          <div className="mb-3">
-                            <label className="form-label fw-semibold">Confirm Password</label>
-                            <input
-                              className="form-control"
-                              type="password"
-                              placeholder="Confirm new password"
-                              value={formData.confirmPassword}
-                              onChange={(e) =>
-                                setFormData({
-                                  ...formData,
-                                  confirmPassword: e.target.value,
-                                  newPassword_confirmation: e.target.value,
-                                })
-                              }
-                              style={{ borderRadius: "10px", padding: "12px 16px" }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <button
-                        className="btn w-100"
-                        type="submit"
-                        disabled={updating}
-                        style={{
-                          background: "linear-gradient(135deg, #f093fb 0%, #f5576c 100%)",
-                          border: "none",
-                          color: "white",
-                          borderRadius: "10px",
-                          padding: "12px",
-                          fontWeight: "600",
-                          fontSize: "15px",
-                        }}
-                      >
-                        {updating ? (
-                          <>
-                            <span className="spinner-border spinner-border-sm me-2"></span>
-                            Updating...
-                          </>
-                        ) : (
-                          <>
-                            <i className="bi bi-key me-2"></i>
-                            Update Password
                           </>
                         )}
                       </button>

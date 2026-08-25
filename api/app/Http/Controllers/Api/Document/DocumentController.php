@@ -104,7 +104,7 @@ class DocumentController extends Controller
 
         if (! empty($request->file('files'))) {
             $files = $request->file('files');
-            $fileName = Str::random(20);
+            $fileName = $slug."-".now()->format('Y-m-d_H-i-s');
             $ext = strtolower($files->getClientOriginalExtension());
             $path = $fileName . '.' . $ext;
             $uploadPath = '/backend/files/';
@@ -116,7 +116,7 @@ class DocumentController extends Controller
 
         if (! empty($request->file('document_file'))) {
             $docFile = $request->file('document_file');
-            $docFileName = Str::random(20);
+            $docFileName = $slug."-".now()->format('Y-m-d_H-i-s');
             $docExt = strtolower($docFile->getClientOriginalExtension());
             $docPath = $docFileName . '.' . $docExt;
             $docUploadPath = '/backend/files/';
@@ -205,7 +205,7 @@ class DocumentController extends Controller
 
         if (! empty($request->file('files'))) {
             $files = $request->file('files');
-            $fileName = Str::random(20);
+            $fileName = $slug."-".now()->format('Y-m-d_H-i-s');
             $ext = strtolower($files->getClientOriginalExtension());
             $path = $fileName . '.' . $ext;
             $uploadPath = '/backend/files/';
@@ -217,7 +217,7 @@ class DocumentController extends Controller
 
         if (! empty($request->file('document_file'))) {
             $docFile = $request->file('document_file');
-            $docFileName = Str::random(20);
+            $docFileName =  $slug."-".now()->format('Y-m-d_H-i-s');
             $docExt = strtolower($docFile->getClientOriginalExtension());
             $docPath = $docFileName . '.' . $docExt;
             $docUploadPath = '/backend/files/';

@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { useEffect, useState, useRef } from "react";
 import { usePathname } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
-const menuData = [
+const baseMenuData = [
   {
     label: "Home",
     href: "/",
@@ -79,22 +80,51 @@ const menuData = [
       { label: "Customer Support", href: "/support" },
     ],
   },
-  {
-    label: "Login",
-    href: "#",
-    children: [
-      { label: "Landowner Login", href: "/login" },
-      { label: "Buyer Login", href: "/login" },
-    ],
-  },
 ];
 
 export default function ClientNavbar() {
   const pathname = usePathname();
+  const { isLoggedIn, logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState(null);
   const [desktopOpen, setDesktopOpen] = useState(null);
   const navRef = useRef(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const menuData = mounted && isLoggedIn
+    ? [
+        ...baseMenuData,
+        {
+          label: "My Portal",
+          href: "/myportal",
+          children: [
+            { label: "Account Information", href: "/myportal" },
+            { label: "Change Password", href: "/changepassword" },
+            { label: "My Documents", href: "/mydocuments" },
+          ],
+        },
+        {
+          label: "Logout",
+          href: "#",
+          children: null,
+          isLogout: true,
+        },
+      ]
+    : [
+        ...baseMenuData,
+        {
+          label: "Login",
+          href: "#",
+          children: [
+            { label: "Landowner Login", href: "/login" },
+            { label: "Buyer Login", href: "/login" },
+          ],
+        },
+      ];
 
   const isActive = (href) => {
     if (href === "/") return pathname === "/";
@@ -155,6 +185,13 @@ export default function ClientNavbar() {
     setOpenDropdown(openDropdown === label ? null : label);
   };
 
+  const handleLogout = (e) => {
+    e.preventDefault();
+    logout();
+    setMobileOpen(false);
+    setDesktopOpen(null);
+  };
+
   return (
     <div>
       <header className="header sticky-bar" style={{ zIndex: 1000 }}>
@@ -213,6 +250,14 @@ export default function ClientNavbar() {
                               ))}
                             </ul>
                           </>
+                        ) : item.isLogout ? (
+                          <a
+                            href="#"
+                            onClick={handleLogout}
+                            style={{ cursor: "pointer" }}
+                          >
+                            {item.label}
+                          </a>
                         ) : (
                           <Link
                             className={isActive(item.href) ? "active" : ""}
@@ -359,6 +404,22 @@ export default function ClientNavbar() {
                       ))}
                     </ul>
                   </>
+                ) : item.isLogout ? (
+                  <a
+                    href="#"
+                    onClick={handleLogout}
+                    style={{
+                      display: "block",
+                      padding: "14px 28px",
+                      color: "#dc3545",
+                      fontSize: "16px",
+                      textDecoration: "none",
+                      borderBottom: "1px solid rgba(255,255,255,0.06)",
+                      cursor: "pointer",
+                    }}
+                  >
+                    {item.label}
+                  </a>
                 ) : (
                   <Link
                     href={item.href}

@@ -282,38 +282,7 @@ export default function BookingProcessClient() {
         </div>
       </section>
 
-      {/* FAQ */}
-      <section style={{ padding: "clamp(48px, 6vw, 88px) 0", background: "#fff" }}>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-8">
-              <div style={{ textAlign: "center", marginBottom: "56px" }}>
-                <span style={{ display: "block", fontWeight: 600, letterSpacing: "4px", textTransform: "uppercase", color: "#C9A227", fontSize: "14px", marginBottom: "14px" }}>Quick Answers</span>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#061424", marginBottom: "20px" }}>
-                  Frequently Asked Questions
-                </h2>
-              </div>
-              {faqs.map((faq, i) => (
-                <div
-                  key={i}
-                  style={{
-                    padding: "28px 0",
-                    borderBottom: i < faqs.length - 1 ? "1px solid #EFEFED" : "none",
-                  }}
-                >
-                  <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "22px", fontWeight: 700, color: "#061424", marginBottom: "12px" }}>
-                    {faq.q}
-                  </h4>
-                  <p style={{ fontSize: "17px", color: "#8A8A85", lineHeight: 1.85, margin: 0 }}>
-                    {faq.a}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
+      
       <style>{`
         .ss-doc-card:hover { border-color: #C9A227 !important; }
         .ss-benefit-card:hover { border-color: rgba(201,162,39,0.3) !important; }
