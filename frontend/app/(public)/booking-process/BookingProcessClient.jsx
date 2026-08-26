@@ -140,7 +140,7 @@ export default function BookingProcessClient() {
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      fontFamily: "'Cormorant Garamond', serif",
+                      fontFamily: "'Chivo', sans-serif",
                       fontSize: "26px",
                       fontWeight: 700,
                       color: "#fff",
@@ -160,7 +160,7 @@ export default function BookingProcessClient() {
                     <i className={step.icon} style={{ fontSize: "22px", color: "#C9A227" }} />
                     <h3
                       style={{
-                        fontFamily: "'Cormorant Garamond', serif",
+                        fontFamily: "'Chivo', sans-serif",
                         fontSize: "clamp(26px, 3vw, 34px)",
                         fontWeight: 700,
                         color: "#061424",
@@ -193,7 +193,7 @@ export default function BookingProcessClient() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "56px" }}>
             <span style={{ display: "block", fontWeight: 600, letterSpacing: "4px", textTransform: "uppercase", color: "#C9A227", fontSize: "14px", marginBottom: "14px" }}>Documentation</span>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#061424", marginBottom: "20px" }}>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#061424", marginBottom: "20px" }}>
               What You Will Need
             </h2>
             <p style={{ fontSize: "18px", color: "#8A8A85", maxWidth: "600px", margin: "0 auto", lineHeight: 1.8 }}>
@@ -233,7 +233,7 @@ export default function BookingProcessClient() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "56px" }}>
             <span style={{ display: "block", fontWeight: 600, letterSpacing: "4px", textTransform: "uppercase", color: "#C9A227", fontSize: "14px", marginBottom: "14px" }}>Trust & Transparency</span>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", marginBottom: "20px" }}>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#fff", marginBottom: "20px" }}>
               Why Book With Stellar Structures
             </h2>
             <p style={{ fontSize: "18px", color: "rgba(255,255,255,0.5)", maxWidth: "600px", margin: "0 auto", lineHeight: 1.8 }}>
@@ -269,7 +269,7 @@ export default function BookingProcessClient() {
                   >
                     <i className={b.icon} style={{ fontSize: "26px", color: "#C9A227" }} />
                   </div>
-                  <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "24px", fontWeight: 700, color: "#fff", marginBottom: "14px" }}>
+                  <h4 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "24px", fontWeight: 700, color: "#fff", marginBottom: "14px" }}>
                     {b.title}
                   </h4>
                   <p style={{ fontSize: "17px", color: "rgba(255,255,255,0.45)", lineHeight: 1.7, margin: 0 }}>

@@ -253,7 +253,7 @@ export default function ConstructionManagementPage() {
             <div style={{ display: "flex", alignItems: "center", gap: "10px", minWidth: 0 }}>
               <span style={{ fontSize: "20px", flexShrink: 0 }}>📄</span>
               <div style={{ minWidth: 0 }}>
-                <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1rem", fontWeight: 600, color: "#061424", margin: 0, lineHeight: 1.2 }}>
+                <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "1rem", fontWeight: 600, color: "#061424", margin: 0, lineHeight: 1.2 }}>
                   Stellar Structures Limited — Company Profile
                 </h3>
                 <p style={{ fontSize: "12px", color: "#8A8A85", margin: 0, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -325,7 +325,7 @@ export default function ConstructionManagementPage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "30px" }}>
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "8px" }}>Our Projects</p>
-            <h2 id="portfolio-heading" style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424" }}>Construction Portfolio</h2>
+            <h2 id="portfolio-heading" style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424" }}>Construction Portfolio</h2>
             <p style={{ fontSize: "15px", color: "#8A8A85", maxWidth: "650px", margin: "0 auto", lineHeight: 1.8 }}>
               A showcase of our active and completed construction projects, demonstrating our commitment to excellence in every build.
             </p>
@@ -372,7 +372,7 @@ export default function ConstructionManagementPage() {
                 <h3
                   id={`project-${project.id}-title`}
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Chivo', sans-serif",
                     fontSize: "clamp(1.2rem, 2.5vw, 1.75rem)",
                     fontWeight: 600,
                     color: "#061424",

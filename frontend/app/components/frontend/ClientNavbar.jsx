@@ -492,7 +492,8 @@ export default function ClientNavbar({ initialMenu = [] }) {
                           openDropdown === item.label
                             ? "#C9A227"
                             : "#fff",
-                        fontSize: "16px",
+                        fontSize: "18px",
+                        fontFamily: "'Chivo', sans-serif",
                         textDecoration: "none",
                         borderBottom: "1px solid rgba(255,255,255,0.06)",
                       }}
@@ -543,7 +544,8 @@ export default function ClientNavbar({ initialMenu = [] }) {
                                     mobileSubOpen === child.label
                                       ? "#C9A227"
                                       : "rgba(255,255,255,0.55)",
-                                  fontSize: "14px",
+                                  fontSize: "18px",
+                                  fontFamily: "'Chivo', sans-serif",
                                   textDecoration: "none",
                                   transition: "color 0.2s",
                                   borderBottom:
@@ -594,7 +596,8 @@ export default function ClientNavbar({ initialMenu = [] }) {
                                           )
                                             ? "#C9A227"
                                             : "rgba(255,255,255,0.4)",
-                                          fontSize: "13px",
+                                          fontSize: "18px",
+                                          fontFamily: "'Chivo', sans-serif",
                                           textDecoration: "none",
                                           transition: "color 0.2s",
                                           borderBottom:
@@ -609,17 +612,18 @@ export default function ClientNavbar({ initialMenu = [] }) {
                               </ul>
                             </>
                           ) : (
-                            <Link
-                              href={child.href}
-                              onClick={() => setMobileOpen(false)}
-                              style={{
-                                display: "block",
-                                padding: "12px 28px 12px 44px",
-                                color: isActive(child.href)
-                                  ? "#C9A227"
-                                  : "rgba(255,255,255,0.55)",
-                                fontSize: "14px",
-                                textDecoration: "none",
+                              <Link
+                                href={child.href}
+                                onClick={() => setMobileOpen(false)}
+                                style={{
+                                  display: "block",
+                                  padding: "12px 28px 12px 44px",
+                                  color: isActive(child.href)
+                                    ? "#C9A227"
+                                    : "rgba(255,255,255,0.55)",
+                                  fontSize: "18px",
+                                  fontFamily: "'Chivo', sans-serif",
+                                  textDecoration: "none",
                                 transition: "color 0.2s",
                                 borderBottom:
                                   "1px solid rgba(255,255,255,0.03)",
@@ -640,7 +644,8 @@ export default function ClientNavbar({ initialMenu = [] }) {
                       display: "block",
                       padding: "14px 28px",
                       color: "#dc3545",
-                      fontSize: "16px",
+                      fontSize: "18px",
+                      fontFamily: "'Chivo', sans-serif",
                       textDecoration: "none",
                       borderBottom: "1px solid rgba(255,255,255,0.06)",
                       cursor: "pointer",
@@ -656,7 +661,8 @@ export default function ClientNavbar({ initialMenu = [] }) {
                       display: "block",
                       padding: "14px 28px",
                       color: isActive(item.href) ? "#C9A227" : "#fff",
-                      fontSize: "16px",
+                      fontSize: "18px",
+                      fontFamily: "'Chivo', sans-serif",
                       textDecoration: "none",
                       borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}

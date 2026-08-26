@@ -66,7 +66,7 @@ function BlogCard({ post }) {
 
           <h3
             style={{
-              fontFamily: "'Cormorant Garamond', serif",
+              fontFamily: "'Chivo', sans-serif",
               fontSize: "clamp(1.1rem, 2vw, 1.35rem)",
               fontWeight: 600,
               color: "#061424",
@@ -208,7 +208,7 @@ export default function BlogClient() {
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>
               News & Articles
             </p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>
               Learn More From Our Latest Blog
             </h2>
             <div style={{ width: "60px", height: "2px", background: "#C9A227", margin: "0 auto" }} />
@@ -231,7 +231,7 @@ export default function BlogClient() {
           ) : (
             <div style={{ textAlign: "center", padding: "80px 0" }}>
               <p style={{ fontSize: "48px", marginBottom: "16px" }}>&#128221;</p>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem", color: "#061424", marginBottom: "8px" }}>
+              <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "1.5rem", color: "#061424", marginBottom: "8px" }}>
                 No Blog Posts Found
               </h3>
               <p style={{ fontSize: "14px", color: "#8A8A85" }}>

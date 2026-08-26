@@ -29,7 +29,7 @@ function EventCard({ event, featured }) {
         <span style={{ padding: "4px 12px", background: featured ? "#C9A227" : "#061424", color: "#fff", fontSize: "11px", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1px" }}>{event.category}</span>
         <span style={{ fontSize: "13px", color: "#8A8A85", fontWeight: 500 }}>{event.date}</span>
       </div>
-      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.15rem, 2vw, 1.4rem)", fontWeight: 600, color: "#061424", marginBottom: "8px" }}>{event.title}</h3>
+      <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.15rem, 2vw, 1.4rem)", fontWeight: 600, color: "#061424", marginBottom: "8px" }}>{event.title}</h3>
       <p style={{ fontSize: "13px", color: "#C9A227", fontWeight: 500, marginBottom: "4px" }}>{event.time}</p>
       <p style={{ fontSize: "13px", color: "#8A8A85", marginBottom: "12px" }}>{event.location}</p>
       <p style={{ fontSize: "14px", color: "#8A8A85", lineHeight: 1.7, marginBottom: "16px" }}>{event.description}</p>
@@ -55,7 +55,7 @@ export default function EventsPage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "50px" }}>
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>Mark Your Calendar</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Upcoming Events</h2>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Upcoming Events</h2>
           </div>
           {upcomingEvents.map((event, i) => (
             <EventCard key={i} event={event} featured={event.featured} />
@@ -67,7 +67,7 @@ export default function EventsPage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "50px" }}>
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>Recap</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Past Events</h2>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Past Events</h2>
           </div>
           <div className="row">
             {pastEvents.map((event, i) => (

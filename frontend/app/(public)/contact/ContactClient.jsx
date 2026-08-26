@@ -142,7 +142,7 @@ export default function ContactClient() {
                   <div className="ci-icon" style={{ width: "48px", height: "48px", background: "rgba(201,162,39,0.08)", color: "#C9A227", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "16px", transition: "all 0.3s ease" }}>
                     {item.icon}
                   </div>
-                  <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1rem, 1.5vw, 1.15rem)", fontWeight: 600, color: "#061424", marginBottom: "10px" }}>
+                  <h4 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1rem, 1.5vw, 1.15rem)", fontWeight: 600, color: "#061424", marginBottom: "10px" }}>
                     {item.label}
                   </h4>
                   {item.lines.map((line, j) => (
@@ -170,7 +170,7 @@ export default function ContactClient() {
             <div className="col-lg-7" style={{ marginBottom: "40px" }}>
               <div style={{ marginBottom: "32px" }}>
                 <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>Send a Message</p>
-                <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 600, color: "#061424", marginBottom: "12px" }}>
+                <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 600, color: "#061424", marginBottom: "12px" }}>
                   Let&apos;s Start a Conversation
                 </h2>
                 <p style={{ fontSize: "14px", color: "#8A8A85", lineHeight: 1.7 }}>
@@ -237,7 +237,7 @@ export default function ContactClient() {
                     <p style={{ fontSize: "13px", color: "#16a34a", fontWeight: 600, textTransform: "uppercase", letterSpacing: "1.5px", marginBottom: "4px", fontFamily: "inherit" }}>
                       Quick Communication
                     </p>
-                    <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.1rem, 2vw, 1.4rem)", fontWeight: 600, color: "#061424", margin: "0 0 4px 0" }}>
+                    <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.1rem, 2vw, 1.4rem)", fontWeight: 600, color: "#061424", margin: "0 0 4px 0" }}>
                       Chat with us on WhatsApp
                     </h3>
                     <p style={{ fontSize: "13.5px", color: "#8A8A85", margin: 0, lineHeight: 1.5 }}>

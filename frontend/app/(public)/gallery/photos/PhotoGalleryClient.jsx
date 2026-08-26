@@ -229,7 +229,7 @@ export default function PhotoGalleryClient() {
                   <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <div>
                       <p style={{ fontSize: "10px", color: "#C9A227", fontWeight: 600, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "2px" }}>Photo {String(i + 1).padStart(2, "0")}</p>
-                      <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "14px", fontWeight: 600, color: "#fff", margin: 0 }}>{photo.alt}</h4>
+                      <h4 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "14px", fontWeight: 600, color: "#fff", margin: 0 }}>{photo.alt}</h4>
                     </div>
                     <div style={{ width: "30px", height: "30px", background: "rgba(201,162,39,0.9)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

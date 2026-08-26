@@ -66,7 +66,7 @@ export default function AboutPage() {
                     fontSize: "clamp(80px, 10vw, 140px)",
                     color: "#C9A227",
                     opacity: 0.08,
-                    fontFamily: "Georgia, serif",
+                    fontFamily: "'Chivo', sans-serif",
                     lineHeight: 1,
                     userSelect: "none",
                   }}

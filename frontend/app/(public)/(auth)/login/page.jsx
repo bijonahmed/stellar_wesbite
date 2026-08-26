@@ -64,7 +64,7 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@300;400;500;600;700;800&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -72,7 +72,7 @@ export default function LoginPage() {
           min-height: 100vh;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Chivo', sans-serif;
           background: #09090b;
         }
 
@@ -223,7 +223,7 @@ export default function LoginPage() {
           border-radius: 12px;
           padding: 0 44px;
           font-size: 14px; color: #09090b;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Chivo', sans-serif;
           outline: none;
           transition: border-color 0.2s, box-shadow 0.2s;
         }
@@ -249,7 +249,7 @@ export default function LoginPage() {
           border-radius: 12px;
           padding: 0 44px;
           font-size: 14px; color: #09090b;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Chivo', sans-serif;
           outline: none;
           transition: border-color 0.2s, box-shadow 0.2s;
           appearance: none;
@@ -282,7 +282,7 @@ export default function LoginPage() {
         .submit-btn {
           width: 100%; height: 50px; border: none; border-radius: 12px;
           background: #09090b; color: #fff;
-          font-family: 'Inter', sans-serif;
+          font-family: 'Chivo', sans-serif;
           font-size: 14px; font-weight: 700;
           cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px;
           transition: all 0.2s;

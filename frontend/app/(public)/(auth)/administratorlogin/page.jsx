@@ -59,7 +59,7 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Chivo:wght@300;400;500;600;700;800&display=swap');
 
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -67,7 +67,7 @@ export default function LoginPage() {
           min-height: 100vh;
           display: grid;
           grid-template-columns: 1fr 1fr;
-          font-family: 'Plus Jakarta Sans', sans-serif;
+          font-family: 'Chivo', sans-serif;
           background: #f7f6f3;
         }
 
@@ -183,7 +183,7 @@ export default function LoginPage() {
           width:100%; height:46px;
           background:#fff; border:1.5px solid #e5e7eb; border-radius:10px;
           padding:0 42px; font-size:14px; color:#111827;
-          font-family:'Plus Jakarta Sans', sans-serif; outline:none;
+          font-family:'Chivo', sans-serif; outline:none;
           transition:border-color 0.18s, box-shadow 0.18s;
         }
         .field-input::placeholder { color:#d1d5db; }
@@ -205,7 +205,7 @@ export default function LoginPage() {
         .submit-btn {
           width:100%; height:50px; border:none; border-radius:10px;
           background:#1a1a2e; color:#fff;
-          font-family:'Plus Jakarta Sans', sans-serif;
+          font-family:'Chivo', sans-serif;
           font-size:14px; font-weight:700; letter-spacing:0.1px;
           cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px;
           transition:transform 0.12s, box-shadow 0.18s; margin-top:6px;

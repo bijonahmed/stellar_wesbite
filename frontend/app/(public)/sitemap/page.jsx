@@ -80,7 +80,7 @@ export default async function SitemapPage() {
               <div key={i}>
                 <h3
                   style={{
-                    fontFamily: "'Cormorant Garamond', serif",
+                    fontFamily: "'Chivo', sans-serif",
                     fontSize: "clamp(24px, 3vw, 30px)",
                     fontWeight: 700,
                     color: "#061424",

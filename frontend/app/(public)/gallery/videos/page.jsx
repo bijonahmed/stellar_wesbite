@@ -39,7 +39,7 @@ export default function VideoGalleryPage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "50px" }}>
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>Browse By Category</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Video Categories</h2>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Video Categories</h2>
             <p style={{ fontSize: "15px", color: "#8A8A85", maxWidth: "600px", margin: "0 auto", lineHeight: 1.7 }}>Discover our video content organized by category for an immersive experience.</p>
           </div>
           <FeatureGrid features={videoCategories} columns={3} />
@@ -50,7 +50,7 @@ export default function VideoGalleryPage() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "50px" }}>
             <p style={{ fontSize: "12px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "2px", marginBottom: "12px" }}>Most Watched</p>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Featured Videos</h2>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1.5rem, 3vw, 2.25rem)", fontWeight: 600, color: "#061424", marginBottom: "16px" }}>Featured Videos</h2>
           </div>
           <div className="row">
             {featuredVideos.map((video, i) => (
@@ -65,7 +65,7 @@ export default function VideoGalleryPage() {
                   </div>
                   <div style={{ padding: "20px" }}>
                     <p style={{ fontSize: "11px", color: "#C9A227", fontWeight: 500, textTransform: "uppercase", letterSpacing: "1px", marginBottom: "6px" }}>{video.category}</p>
-                    <h4 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(1rem, 1.5vw, 1.15rem)", fontWeight: 600, color: "#061424", marginBottom: "8px" }}>{video.title}</h4>
+                    <h4 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(1rem, 1.5vw, 1.15rem)", fontWeight: 600, color: "#061424", marginBottom: "8px" }}>{video.title}</h4>
                     <p style={{ fontSize: "12px", color: "#8A8A85" }}>{video.views} views</p>
                   </div>
                 </div>

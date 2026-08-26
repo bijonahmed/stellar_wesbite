@@ -137,7 +137,7 @@ export default function ProjectsClient() {
           <div className="row">
             {stats.map((s, i) => (
               <div className="col-lg-3 col-6" key={i} style={{ textAlign: "center", padding: "20px 0" }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(36px, 4vw, 52px)", fontWeight: 700, color: "#C9A227", marginBottom: "8px" }}>
+                <div style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(36px, 4vw, 52px)", fontWeight: 700, color: "#C9A227", marginBottom: "8px" }}>
                   {s.number}
                 </div>
                 <div style={{ fontSize: "15px", color: "rgba(255,255,255,0.5)", textTransform: "uppercase", letterSpacing: "2px", fontWeight: 500 }}>
@@ -182,7 +182,7 @@ export default function ProjectsClient() {
                       </span>
                     </div>
 
-                    <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(22px, 2.5vw, 28px)", fontWeight: 700, color: "#061424", marginBottom: "6px" }}>
+                    <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(22px, 2.5vw, 28px)", fontWeight: 700, color: "#061424", marginBottom: "6px" }}>
                       {p.title}
                     </h3>
 
@@ -243,7 +243,7 @@ export default function ProjectsClient() {
         <div className="container">
           <div style={{ textAlign: "center", marginBottom: "48px" }}>
             <span style={{ display: "block", fontWeight: 600, letterSpacing: "4px", textTransform: "uppercase", color: "#C9A227", fontSize: "14px", marginBottom: "14px" }}>Visual Showcase</span>
-            <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#061424", marginBottom: "16px" }}>
+            <h2 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "clamp(32px, 4vw, 52px)", fontWeight: 700, color: "#061424", marginBottom: "16px" }}>
               Project Gallery
             </h2>
             <p style={{ fontSize: "18px", color: "#8A8A85", maxWidth: "560px", margin: "0 auto", lineHeight: 1.8 }}>

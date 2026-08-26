@@ -16,7 +16,7 @@ function Sidebar({ popularPosts, searchTerm, setSearchTerm, filteredPosts }) {
       >
         <h4
           style={{
-            fontFamily: "'Cormorant Garamond', serif",
+            fontFamily: "'Chivo', sans-serif",
             fontSize: "1.2rem",
             fontWeight: 600,
             color: "#061424",
@@ -68,7 +68,7 @@ function Sidebar({ popularPosts, searchTerm, setSearchTerm, filteredPosts }) {
       >
         <h4
           style={{
-            fontFamily: "'Cormorant Garamond', serif",
+            fontFamily: "'Chivo', sans-serif",
             fontSize: "1.2rem",
             fontWeight: 600,
             color: "#061424",
@@ -216,7 +216,7 @@ export default function BlogPageClient({ slug }) {
                   {/* Title */}
                   <h1
                     style={{
-                      fontFamily: "'Cormorant Garamond', serif",
+                      fontFamily: "'Chivo', sans-serif",
                       fontSize: "clamp(1.5rem, 3vw, 2.2rem)",
                       fontWeight: 700,
                       color: "#061424",
@@ -286,7 +286,7 @@ export default function BlogPageClient({ slug }) {
           ) : (
             <div style={{ textAlign: "center", padding: "80px 0" }}>
               <p style={{ fontSize: "48px", marginBottom: "16px" }}>&#128196;</p>
-              <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: "1.5rem", color: "#061424", marginBottom: "8px" }}>
+              <h3 style={{ fontFamily: "'Chivo', sans-serif", fontSize: "1.5rem", color: "#061424", marginBottom: "8px" }}>
                 Article Not Found
               </h3>
               <p style={{ fontSize: "14px", color: "#8A8A85", marginBottom: "24px" }}>
@@ -317,14 +317,14 @@ export default function BlogPageClient({ slug }) {
 
       <style>{`
         .blog-article-content h2 {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: 'Chivo', sans-serif;
           font-size: clamp(1.2rem, 2.5vw, 1.6rem);
           font-weight: 600;
           color: #061424;
           margin: 32px 0 16px;
         }
         .blog-article-content h3 {
-          font-family: 'Cormorant Garamond', serif;
+          font-family: 'Chivo', sans-serif;
           font-size: clamp(1.1rem, 2vw, 1.35rem);
           font-weight: 600;
           color: #061424;
