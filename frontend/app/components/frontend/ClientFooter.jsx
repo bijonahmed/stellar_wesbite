@@ -8,7 +8,7 @@ const footerLinks = [
     title: "About Us",
     links: [
       { label: "Company Profile", href: "/about" },
-      { label: "Our Story", href: "/our-story" },
+      { label: "Our Team", href: "/our-team" },
      
     ],
   },
@@ -43,8 +43,8 @@ const footerLinks = [
     title: "Media & Support",
     links: [
 
-      { label: "FAQ", href: "/faq" },
-      { label: "Customer Support", href: "/support" },
+      { label: "Quick Support", href: "/contact" },
+      { label: "Customer Support", href: "/contact" },
     ],
   },
   {

@@ -26,6 +26,7 @@ export async function generateMetadata({ params }) {
     : "Read the latest insights and updates from Stellar Structures Limited on real estate trends and property investment in Dhaka.";
 
   return {
+    metadataBase: new URL("https://stellarstructures.com"),
     title,
     description,
     keywords: [

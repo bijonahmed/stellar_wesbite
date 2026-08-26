@@ -52,12 +52,8 @@ const fallbackMenu = [
   },
   {
     label: "Contact",
-    href: "#",
-    children: [
-      { label: "Contact Us", href: "/contact" },
-      { label: "Book Appointment", href: "/appointment" },
-      { label: "Customer Support", href: "/support" },
-    ],
+    href: "/contact",
+    children: null,
   },
 ];
 

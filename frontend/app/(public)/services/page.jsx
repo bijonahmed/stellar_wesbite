@@ -5,6 +5,7 @@ export async function generateMetadata() {
   const description =
     "Explore comprehensive real estate services by Stellar Structures Limited in Dhaka — property development, construction management, interior design, architectural design, investment consultancy, and property valuation.";
   return {
+    metadataBase: new URL("https://stellarstructures.com"),
     title,
     description,
     keywords: [

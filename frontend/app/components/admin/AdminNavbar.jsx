@@ -38,13 +38,20 @@ const capitalizeFirst = (value) => {
             </a>
           </li>
           <li className="nav-item d-none d-md-block">
-            <a href="/dashboard" className="nav-link" style={{ padding: "8px 14px", fontSize: "14px", fontWeight: 500, color: "#495057" }}>
+            <a href="/dashboard" className="nav-link" style={{ padding: "8px 14px", fontSize: "14px", fontWeight: 500, color: "#495057", display: "flex", alignItems: "center", gap: "6px" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path fillRule="evenodd" d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 0-.908-.417A6 6 0 1 0 8 2v1z"/>
+                <path d="M8 4.466V.534a.25.25 0 0 0-.41-.192L5.23 2.308a.25.25 0 0 0 0 .384l2.36 1.966A.25.25 0 0 0 8 4.466z"/>
+              </svg>
               Refresh
             </a>
           </li>
           <li className="nav-item d-none d-md-block">
-            <a href="/" className="nav-link" target="_blank" style={{ padding: "8px 14px", fontSize: "14px", fontWeight: 500, color: "#495057" }}>
-              e-Commerce
+            <a href="/" className="nav-link" target="_blank" style={{ padding: "8px 14px", fontSize: "14px", fontWeight: 500, color: "#495057", display: "flex", alignItems: "center", gap: "6px" }}>
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 2 7.5V14a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 .5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5V7.5a.5.5 0 0 0-.146-.354l-6-6z"/>
+              </svg>
+              Home 
             </a>
           </li>
         </ul>

@@ -3,9 +3,13 @@ import Link from "next/link";
 import { useState, useEffect, useMemo } from "react";
 import Slider from "./Slider";
 
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://api.stellarstructuresbd.com/api";
+
 export default function HomePage() {
   const [lightboxIndex, setLightboxIndex] = useState(-1);
   const [zoomed, setZoomed] = useState(false);
+  const [homeData, setHomeData] = useState(null);
+  const [whoWeAre, setWhoWeAre] = useState(null);
 
   const galleryImages = [
     { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-1.jpg", title: "Bashundhara R/A — Phase I", location: "Bashundhara, Dhaka" },
@@ -16,43 +20,21 @@ export default function HomePage() {
     { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-20.jpg", title: "Superior Construction Quality", location: "Premium Materials" },
   ];
 
-  const faqData = [
-    {
-      id: "One",
-      question: "How do I book an apartment with Stellar Structures?",
-      answer: "Booking an apartment with Stellar Structures is a straightforward process. Simply contact our sales team or visit our office to discuss available units. Once you select your preferred apartment, we will guide you through the booking documentation, outline the payment plan, and secure your unit with a booking confirmation.",
-    },
-    {
-      id: "Two",
-      question: "What payment plans do you offer?",
-      answer: "We offer flexible payment plans tailored to suit different financial capabilities. Options include during-construction installment plans and post-handover payment schedules. Each project has its own specific plan, and our sales team will provide detailed breakdowns during your consultation.",
-    },
-    {
-      id: "Three",
-      question: "When will my project be completed?",
-      answer: "We are committed to timely delivery. Each project has a defined timeline shared during the booking phase. We provide regular construction updates so you can track progress. In the unlikely event of a delay, our team communicates proactively and provides revised schedules.",
-    },
-    {
-      id: "Four",
-      question: "What materials and standards do you use?",
-      answer: "We use only premium-grade materials sourced from trusted suppliers. Our construction follows national and international building codes, with third-party quality inspections at every stage to ensure structural integrity, safety, and longevity of every project.",
-    },
-    {
-      id: "Five",
-      question: "Do you offer after-sales and handover support?",
-      answer: "Absolutely. Our relationship does not end at handover. We provide comprehensive post-handover support including maintenance assistance, warranty coverage on structural elements, and a dedicated customer service team to address any concerns promptly.",
-    },
-    {
-      id: "Six",
-      question: "Can non-resident Bangladeshis (NRB) invest with Stellar Structures?",
-      answer: "Yes, we warmly welcome investments from non-resident Bangladeshis. We have a dedicated NRB support team that handles everything remotely — from virtual tours and documentation to payment processing and legal compliance — making the entire investment process seamless and secure.",
-    },
-    {
-      id: "Seven",
-      question: "Where are your current projects located?",
-      answer: "Our current projects are located in some of Dhaka's most prestigious areas including Bashundhara R/A and Jolshiri R/A. These neighbourhoods offer excellent infrastructure, connectivity, and a premium lifestyle. Visit our projects page for detailed information on each development.",
-    },
-  ];
+
+  useEffect(() => {
+    fetch(`${API_BASE}/public/getsPost`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data.length > 0) {
+          const homePosts = data.data.filter((p) => p.categoryId === 22);
+          homePosts.forEach((post) => {
+            if (post.id === 1) setHomeData(post);
+            if (post.id === 2) setWhoWeAre(post);
+          });
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const loadOwlCarousel = async () => {
@@ -158,6 +140,9 @@ export default function HomePage() {
           <Slider />
         </section>
 
+
+
+
         {/* Intro */}
         <section className="section-box">
           <div className="container">
@@ -165,16 +150,22 @@ export default function HomePage() {
               <div className="col-lg-2 col-sm-1 col-12"></div>
               <div className="col-lg-8 col-sm-10 col-12 text-center mt-2">
                 <h2 className="text-heading-3 color-gray-900">
-                  Crafting Premium Living Spaces<br className="d-lg-block d-none" /> Across Dhaka
+                  {homeData?.name || <>Crafting Premium Living Spaces<br className="d-lg-block d-none" /> Across Dhaka</>}
                 </h2>
-                <p className="text-body-text color-gray-600 mt-20" style={{ textAlign: "justify" }}>
-                  Stellar Structures Limited is a trusted name in Bangladesh&apos;s real estate industry, delivering exceptional residential and commercial developments built on quality, transparency, and innovation.
-                </p>
+                <div className="text-body-text color-gray-600 mt-20" style={{ textAlign: "justify" }}>
+                  {homeData?.description_full ? (
+                    <span dangerouslySetInnerHTML={{ __html: homeData.description_full }} />
+                  ) : (
+                    "Stellar Structures Limited is a trusted name in Bangladesh&apos;s real estate industry, delivering exceptional residential and commercial developments built on quality, transparency, and innovation."
+                  )}
+                </div>
               </div>
               <div className="col-lg-2 col-sm-1 col-12"></div>
             </div>
           </div>
         </section>
+
+
 
         {/* Who We Are */}
         <section className="section-box">
@@ -185,10 +176,16 @@ export default function HomePage() {
               </div>
               <div className="col-lg-6 col-sm-12 block-we-do">
                 <span className="tag-1">Who We Are</span>
-                <h3 className="text-heading-3 mt-30">Building Landmarks. Creating Better Living.</h3>
-                <p className="text-body-text color-gray-600 mt-30 text-justify" style={{ textAlign: "justify" }}>
-                  Founded with a vision to redefine urban living in Bangladesh, Stellar Structures Limited brings together passionate professionals dedicated to creating residences that inspire. From site selection to final handover, we maintain the highest standards of construction quality, design innovation, and transparent communication.
-                </p>
+                <h3 className="text-heading-3 mt-30">{whoWeAre?.name || "Building Landmarks. Creating Better Living."}</h3>
+                {whoWeAre?.description_full ? (
+                  <div className="text-body-text color-gray-600 mt-30 text-justify" style={{ textAlign: "justify" }}>
+                    <span dangerouslySetInnerHTML={{ __html: whoWeAre.description_full }} />
+                  </div>
+                ) : (
+                  <p className="text-body-text color-gray-600 mt-30 text-justify" style={{ textAlign: "justify" }}>
+                    Founded with a vision to redefine urban living in Bangladesh, Stellar Structures Limited brings together passionate professionals dedicated to creating residences that inspire. From site selection to final handover, we maintain the highest standards of construction quality, design innovation, and transparent communication.
+                  </p>
+                )}
                 <div className="line-bd-green mt-50"></div>
                 <div className="row">
                   <div className="col-lg-6 col-sm-6 col-12 mt-50">
@@ -212,6 +209,11 @@ export default function HomePage() {
             </div>
           </div>
         </section>
+
+
+
+
+        
 
         {/* Our Approach */}
         <section className="section-box mt-lg-100">

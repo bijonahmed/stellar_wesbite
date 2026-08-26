@@ -71,42 +71,42 @@ export default function ServicesPageClient({ slug }) {
           {loading && <p>Loading...</p>}
           {!loading && data && (
             <div className="row">
-              <div className="col-lg-8 col-md-12">
+              <div className="col-12 col-lg-8 col-md-12">
                 <div className="blog-details-desc">
                   <div className="article-image">
-                    <img src={data.image || "/frontend_theme/blog/blog-img4.jpg"} alt={data.name} />
+                    <img src={data.image || "/frontend_theme/blog/blog-img4.jpg"} alt={data.name} style={{ width: "100%", height: "auto", borderRadius: "8px" }} />
                   </div>
                   <div className="article-content" style={{ color: "#000" }}>
                     <div className="entry-meta mb-3">
-                      <ul style={{ display: "flex", gap: "20px", padding: 0, listStyle: "none", fontSize: "14px", color: "#555" }}>
+                      <ul style={{ display: "flex", gap: "20px", padding: 0, listStyle: "none", fontSize: "14px", color: "#555", fontFamily: "'Chivo', sans-serif", flexWrap: "wrap" }}>
                         <li><i className="far fa-user-circle" /> <span>{data.author || "Admin"}</span></li>
                         <li><i className="far fa-calendar-alt" /> <time dateTime={data.created_at}>{data.created_at}</time></li>
                       </ul>
                     </div>
-                    <h1 style={{ fontSize: "28px", fontWeight: "700", marginBottom: "15px" }}>{data.title}</h1>
+                    <h1 style={{ fontSize: "clamp(22px, 4vw, 28px)", fontWeight: "700", marginBottom: "15px", fontFamily: "'Chivo', sans-serif" }}>{data.title}</h1>
                     <hr style={{ margin: "25px 0", opacity: 0.2 }} />
-                    <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: data.description }} style={{ fontSize: "16px", lineHeight: "1.9", color: "#111" }} />
+                    <div className="blog-content-body" dangerouslySetInnerHTML={{ __html: data.description }} style={{ fontSize: "16px", lineHeight: "1.9", color: "#111", fontFamily: "'Chivo', sans-serif" }} />
                   </div>
                 </div>
               </div>
-              <div className="col-lg-4 col-md-12">
+              <div className="col-12 col-lg-4 col-md-12" style={{ marginTop: "40px" }}>
                 <aside className="widget-area extra-padding">
                   <div className="widget widget_search">
                     <form className="search-form" onSubmit={(e) => e.preventDefault()}>
-                      <input type="search" className="search-field" placeholder="Search services..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%", padding: "10px", border: "1px solid #ddd", borderRadius: "6px", outline: "none" }} />
+                      <input type="search" className="search-field" placeholder="Search services..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} style={{ width: "100%", padding: "12px 16px", border: "1px solid #ddd", borderRadius: "6px", outline: "none", fontFamily: "'Chivo', sans-serif", fontSize: "14px" }} />
                       <button type="submit"><i className="fas fa-search" /></button>
                     </form>
                   </div>
                   <div className="widget widget_noke_posts_thumb">
-                    <h3 className="widget-title">Popular Posts</h3>
+                    <h3 className="widget-title" style={{ fontFamily: "'Chivo', sans-serif" }}>Popular Posts</h3>
                     {filteredPosts.length === 0 && <p>No posts found</p>}
                     {filteredPosts.map((post) => (
-                      <article className="item" key={post.id} style={{ paddingBottom: "20px", marginBottom: "20px", borderBottom: "1px solid #eee" }}>
-                        <Link href={`/services/${post.slug}`} className="thumb">
+                      <article className="item" key={post.id} style={{ paddingBottom: "20px", marginBottom: "20px", borderBottom: "1px solid #eee", display: "flex", gap: "12px" }}>
+                        <Link href={`/services/${post.slug}`} className="thumb" style={{ flexShrink: 0 }}>
                           <img src={post.thumnail_img} alt={post.name} style={{ width: "80px", height: "60px", objectFit: "cover", borderRadius: "6px" }} />
                         </Link>
-                        <div style={{ fontWeight: "400", marginTop: "8px" }}>
-                          <Link href={`/services/${post.slug}`} style={{ fontWeight: "400", color: "#000", textDecoration: "none", fontSize: "14px", lineHeight: "1.4" }}>{post.name}</Link>
+                        <div style={{ fontWeight: "400", marginTop: "0" }}>
+                          <Link href={`/services/${post.slug}`} style={{ fontWeight: "400", color: "#000", textDecoration: "none", fontSize: "14px", lineHeight: "1.4", fontFamily: "'Chivo', sans-serif" }}>{post.name}</Link>
                         </div>
                       </article>
                     ))}

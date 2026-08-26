@@ -1,108 +1,82 @@
-"use client";
+import AboutContent from "./AboutContent";
 
-import { useEffect, useState } from "react";
-import PageHeader from "../../../components/frontend/PageElements/PageHeader";
+const baseUrl = "https://stellarstructures.com";
+
+async function getAboutData() {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE || "https://api.stellarstructuresbd.com/api"}/public/getsPost?slug=company-profile`, {
+      next: { revalidate: 3600 },
+    });
+    const data = await res.json();
+    if (data.success && data.data.length > 0) {
+      return data.data[0];
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function generateMetadata() {
+  const post = await getAboutData();
+
+  const title = post?.meta_title
+    ? `${post.meta_title} - Stellar Structures Limited`
+    : "About Us - Stellar Structures Limited";
+
+  const description = post?.meta_description
+    ? post.meta_description.replace(/<[^>]*>/g, "").replace(/&nbsp;|&#160;/g, " ").trim().substring(0, 160)
+    : "Learn about Stellar Structures Limited — Bangladesh's trusted real estate company delivering quality construction, innovative design, and transparent services since inception.";
+
+  const keywords = post?.meta_keyword
+    ? post.meta_keyword.split(",").map((k) => k.trim()).filter(Boolean)
+    : [
+        "Stellar Structures Limited",
+        "about Stellar Structures",
+        "real estate company Bangladesh",
+        "construction company Dhaka",
+        "property developer Bangladesh",
+        "about us Dhaka",
+        "Stellar Structures about",
+        "real estate Bangladesh about",
+      ];
+
+  return {
+    metadataBase: new URL(baseUrl),
+    title,
+    description,
+    keywords,
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      url: `${baseUrl}/about`,
+      siteName: "Stellar Structures Limited",
+      images: [
+        {
+          url: "/frontend_theme/assets/imgs/template/og-about.jpg",
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: ["/frontend_theme/assets/imgs/template/og-about.jpg"],
+    },
+    alternates: {
+      canonical: `${baseUrl}/about`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 export default function AboutPage() {
-  const [post, setPost] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    console.log("Fetching about content...");
-    fetch(`${process.env.NEXT_PUBLIC_API_BASE}/public/getsPost?slug=company-profile`)
-      .then((res) => {
-        console.log("API Response status:", res.status);
-        return res.json();
-      })
-      .then((data) => {
-        console.log("API Response data:", data);
-        if (data.success && data.data.length > 0) {
-          setPost(data.data[0]);
-        }
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error("API Error:", err);
-        setLoading(false);
-      });
-  }, []);
-
-  const paragraphs = post?.description_full
-    ? post.description_full
-        .split(/\n\n|<\/p>\s*<p[^>]*>|<br\s*\/?>/)
-        .map((p) => p        .replace(/&nbsp;|&#160;|&NonBreakingSpace;/g, " ")
-        .replace(/<[^>]*>/g, "").trim())
-        .filter(Boolean)
-    : [];
-
-  return (
-    <>
-      <PageHeader
-        tag="About Us"
-        title={post?.name || "About Stellar Structures"}
-        subtitle="Building Bangladesh future through quality, transparency, and digital innovation"
-        breadcrumbs={[{ label: "About" }, { label: "About Us" }]}
-      />
-
-      <section style={{ padding: "clamp(60px, 2vw, 120px) 0", background: "#fff" }}>
-        <div className="container">
-          <div className="row justify-content-center">
-            <div className="col-lg-10 col-md-11">
-              <div
-                style={{
-                  position: "relative",
-                  background: "#faf9f6",
-                  borderRadius: "16px",
-                  padding: "clamp(18px, 6vw, 80px)",
-                  border: "1px solid rgba(201,162,39,0.15)",
-                  boxShadow: "0 4px 40px rgba(6,20,36,0.04)",
-                }}
-              >
-                <div
-                  style={{
-                    position: "absolute",
-                    top: "32px",
-                    left: "clamp(32px, 5vw, 64px)",
-                    fontSize: "clamp(80px, 10vw, 140px)",
-                    color: "#C9A227",
-                    opacity: 0.08,
-                    fontFamily: "'Chivo', sans-serif",
-                    lineHeight: 1,
-                    userSelect: "none",
-                  }}
-                >
-                  &ldquo;
-                </div>
-
-                <div style={{ position: "relative", zIndex: 1 }}>
-                  {loading ? (
-                    <p style={{ color: "#999", textAlign: "center", fontSize: "18px" }}>Loading...</p>
-                  ) : paragraphs.length > 0 ? (
-                    paragraphs.map((text, i) => (
-                      <p
-                        key={i}
-                        style={{
-                          color: "#1a1a1a",
-                          fontSize: "clamp(16px, 1.5vw, 19px)",
-                          lineHeight: 2,
-                          textAlign: "justify",
-                          marginBottom: i === paragraphs.length - 1 ? "0" : "28px",
-                        }}
-                      >
-                        {text}
-                      </p>
-                    ))
-                  ) : (
-                    <p style={{ color: "#999", textAlign: "center", fontSize: "18px" }}>
-                      Content coming soon...
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-    </>
-  );
+  return <AboutContent />;
 }
