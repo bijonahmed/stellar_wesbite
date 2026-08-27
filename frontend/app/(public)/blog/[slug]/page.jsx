@@ -2,17 +2,16 @@ import BlogPageClient from "./BlogPageClient";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
-export const dynamicParams = true;
-
 export async function generateStaticParams() {
   try {
     const res = await fetch(`${API}/public/getsBlogPost`);
     const result = await res.json();
-    return (result.data || [])
+    const slugs = (result.data || [])
       .filter((post) => post.slug)
       .map((post) => ({ slug: post.slug }));
+    return slugs.length > 0 ? slugs : [{ slug: "__placeholder__" }];
   } catch {
-    return [];
+    return [{ slug: "__placeholder__" }];
   }
 }
 

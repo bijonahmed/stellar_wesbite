@@ -306,13 +306,8 @@ export default function LoginPage() {
               <div className="field">
                 <label className="field-label">Email Address</label>
                 <div className="field-row">
-                  <span className="field-ico">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
-                      <polyline points="22,6 12,13 2,6" />
-                    </svg>
-                  </span>
-                  <input className="field-input" type="email" placeholder=""
+                 
+                  <input className="field-input" type="email" placeholder="Enter your email"
                     value={email} onChange={(e) => setEmail(e.target.value)} required autoComplete="email" />
                 </div>
               </div>
@@ -320,14 +315,9 @@ export default function LoginPage() {
               <div className="field">
                 <label className="field-label">Password</label>
                 <div className="field-row">
-                  <span className="field-ico">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <rect x="3" y="11" width="18" height="11" rx="2" />
-                      <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-                    </svg>
-                  </span>
+                
                   <input className="field-input" type={showPassword ? "text" : "password"}
-                    placeholder="" value={password}
+                    placeholder="Enter your password" value={password}
                     onChange={(e) => setPassword(e.target.value)} required autoComplete="current-password" />
                   <button type="button" className="pwd-toggle" onClick={() => setShowPassword(!showPassword)}
                     tabIndex={-1} aria-label={showPassword ? "Hide password" : "Show password"}>

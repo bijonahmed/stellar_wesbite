@@ -2,15 +2,11 @@ process.env.NEXT_PRIVATE_WORKER_THREADS = 'false';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+      output: "export",
       reactStrictMode: true,
       trailingSlash: true,
       images: {
-            remotePatterns: [
-                  {
-                        protocol: "https",
-                        hostname: "api.stellarstructuresbd.com",
-                  },
-            ],
+            unoptimized: true,
       },
       typescript: {
             ignoreBuildErrors: true,

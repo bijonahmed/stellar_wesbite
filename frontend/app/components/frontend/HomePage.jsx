@@ -149,10 +149,10 @@ export default function HomePage() {
             <div className="row">
               <div className="col-lg-2 col-sm-1 col-12"></div>
               <div className="col-lg-8 col-sm-10 col-12 text-center mt-2">
-                <h2 className="text-heading-3 color-gray-900">
+                <h2 className="text-heading-3 color-gray-900 text-center">
                   {homeData?.name || <>Crafting Premium Living Spaces<br className="d-lg-block d-none" /> Across Dhaka</>}
                 </h2>
-                <div className="text-body-text color-gray-600 mt-20" style={{ textAlign: "justify" }}>
+                <div className="text-body-text color-gray-600 mt-20 text-center">
                   {homeData?.description_full ? (
                     <span dangerouslySetInnerHTML={{ __html: homeData.description_full }} />
                   ) : (

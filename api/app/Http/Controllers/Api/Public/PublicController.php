@@ -499,12 +499,8 @@ class PublicController extends Controller
         ],
         [
             'label' => 'Contact',
-            'href' => '#',
-            'children' => [
-                ['label' => 'Contact Us', 'href' => '/contact'],
-                ['label' => 'Book Appointment', 'href' => '/appointment'],
-                ['label' => 'Customer Support', 'href' => '/support'],
-            ],
+            'href' => '/contact',
+            'children' => null,
         ],
     ]);
 
@@ -756,6 +752,45 @@ class PublicController extends Controller
             'data' => $posts,
         ], 200);
     }
+
+    /*
+public function getsPost(Request $request)
+    {
+        $slug = $request->query('slug');
+        $name = $request->query('name');
+        $category_id = $request->query('category_id');
+
+        $lookup = $slug ?: $name;
+        //dd($lookup);
+          $checkCategory     = Categories::where('slug', $lookup)->first();
+        //dd($checkCategory->id);
+          $checkCategoryById = $checkCategory->id ?? null;
+
+
+        $posts = Post::where('subcategoryId', $checkCategoryById)
+            ->where('status', 1)
+            ->orderBy('id', 'desc')
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'name' => $post->name,
+                    'slug' => $post->slug,
+                    'description_short' => $post->description_short,
+                    'description_full' => $post->description_full,
+                    'categoryId' => $post->categoryId,
+                    'subcategoryId' => $post->subcategoryId,
+                    'thumnail_img' => $post->thumnail_img ? url($post->thumnail_img) : null,
+                    'created_at' => $post->created_at,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'data' => $posts,
+        ], 200);
+    }
+    */
 
     public function checkedProductRow($slug)
     {
