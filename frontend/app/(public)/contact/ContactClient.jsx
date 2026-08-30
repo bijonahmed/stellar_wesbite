@@ -30,7 +30,7 @@ export default function ContactClient() {
         </svg>
       ),
       label: "Head Office",
-      lines: [settings?.address || "The Laureate, Level # C5-C7, House # 56, Road # 11, Block # F, Banani-11, Dhaka, Bangladesh, 1213"],
+      lines: [settings?.address || ""],
       link: "#",
     },
     {
@@ -304,7 +304,14 @@ export default function ContactClient() {
             {/* Map */}
             <div className="col-lg-5">
               <div style={{ position: "relative", overflow: "hidden", border: "1px solid #EFEFED", height: "100%", minHeight: "480px" }}>
-                <div className="mapouter"><div className="gmap_canvas"><iframe className="gmap_iframe" width="100%" height="450" frameBorder={0} scrolling="no" marginHeight={0} marginWidth={0} src="https://www.google.com/maps?q=The+Laureate%2C+Level+%23+C5-C7%2C+House+%23+56%2C+Road+%23+11%2C+Block+%23+F%2C+Banani-11%2C+Dhaka%2C+Bangladesh%2C+1213&amp;z=14&amp;t=m&amp;hl=en&amp;output=embed" /><a href="https://www.24meteo.com/">24meteo.com</a></div><style dangerouslySetInnerHTML={{__html: ".mapouter{position:relative;text-align:right;width:100%;height:450px}.gmap_canvas{overflow:hidden;background:none!important;width:100%;height:450px}.gmap_iframe{width:100%!important;height:450px!important}" }} /></div>
+                <iframe
+                  style={{ width: "100%", height: "450px", border: 0 }}
+                  src="https://www.google.com/maps?q=House-396+%285th+floor%29%2CRoad+%23+29%2C+Mohakhali+DOHS%2C+Dhaka&amp;z=14&amp;t=m&amp;hl=en&amp;output=embed"
+                  frameBorder="0"
+                  scrolling="no"
+                  marginHeight="0"
+                  marginWidth="0"
+                />
 
                 {/* Map overlay label */}
                 <div style={{ position: "absolute", bottom: "16px", left: "16px", background: "#fff", padding: "10px 16px", boxShadow: "0 4px 20px rgba(0,0,0,0.08)", display: "flex", alignItems: "center", gap: "10px", zIndex: 5, pointerEvents: "none" }}>
