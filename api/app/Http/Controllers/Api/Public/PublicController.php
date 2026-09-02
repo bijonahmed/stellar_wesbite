@@ -738,6 +738,8 @@ class PublicController extends Controller
                     'id' => $post->id,
                     'name' => $post->name,
                     'slug' => $post->slug,
+                    'text_1' => $post->text_1,
+                    'text_2' => $post->text_2,
                     'description_short' => $post->description_short,
                     'description_full' => $post->description_full,
                     'categoryId' => $post->categoryId,

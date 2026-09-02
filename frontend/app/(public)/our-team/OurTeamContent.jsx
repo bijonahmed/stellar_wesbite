@@ -186,6 +186,7 @@ export default function OurTeamContent() {
                     >
                       {chairmanPost?.description_short || "Chairman"}
                     </p>
+                    <p>{chairmanPost?.text_1 || ""}</p>
                   </div>
 
                   <div className="col">
@@ -249,6 +250,7 @@ export default function OurTeamContent() {
                     >
                       {mdPost?.name || ""}
                     </p>
+                  
                     <p
                       style={{
                         color: gold,
@@ -260,6 +262,8 @@ export default function OurTeamContent() {
                     >
                       {mdPost?.description_short || "Managing Director"}
                     </p>
+
+                      <p>{mdPost?.text_1 || ""}</p>
                   </div>
 
                   <div className="col">
@@ -267,6 +271,7 @@ export default function OurTeamContent() {
                       <span style={{ width: "24px", height: "2px", background: gold }} />
                       Leadership
                     </span>
+
                     <h2 style={sectionTitle}>Managing Director&apos;s Profile</h2>
                     <div style={goldLine} />
 
@@ -353,6 +358,7 @@ export default function OurTeamContent() {
                           >
                             {director.description_short || "Director"}
                           </p>
+                          <p>{director?.text_1 || ""}</p>
                         </div>
 
                         <div className="col">
