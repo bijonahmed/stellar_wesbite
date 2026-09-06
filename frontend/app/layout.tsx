@@ -59,6 +59,20 @@ export default function RootLayout({ children }) {
         <link href="/frontend_theme/assets/css/style.css" rel="stylesheet" />
         <link rel="manifest" href="/manifest.json" crossOrigin="anonymous" />
         <title>Stellar Structures Limited</title>
+
+        {/* Google Analytics */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-7RHBJVP5SZ"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-7RHBJVP5SZ');
+            `,
+          }}
+        />
+
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/npm/apexcharts@3.37.1/dist/apexcharts.css"
