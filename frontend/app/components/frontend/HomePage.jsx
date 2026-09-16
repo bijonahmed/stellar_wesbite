@@ -169,7 +169,7 @@ export default function HomePage() {
 
         {/* Who We Are */}
         <section className="section-box">
-          <div className="container mt-100">
+          <div className="container mt-20">
             <div className="row">
               <div className="col-lg-6 col-sm-12 block-img-we-do">
                 <img className="bdrd-16 img-responsive" src="/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-21.jpg" alt="Stellar Structures Premium Real Estate Development in Dhaka" />

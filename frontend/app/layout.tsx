@@ -32,6 +32,14 @@ export default function RootLayout({ children }) {
           content="Astute360corp provides trusted IT solutions including software development, web development, mobile app development, digital marketing, and technology consulting services for startups and enterprises."
         />
 
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600;700&display=swap"
+        />
+
         {/* CDN CSS links */}
         <link
           href="/src/css/admincustom.css"
@@ -82,7 +90,7 @@ export default function RootLayout({ children }) {
           href="https://cdn.jsdelivr.net/npm/jsvectormap@1.5.3/dist/css/jsvectormap.min.css"
         />
       </head>
-      <body className="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary" suppressHydrationWarning>
+      <body className="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary" suppressHydrationWarning style={{ fontFamily: "'Comfortaa', cursive, sans-serif" }}>
         {children}
       </body>
     </html>

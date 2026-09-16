@@ -2,6 +2,11 @@
    CUSTOM ADMIN CSS - Stellar Structures
    ============================================================ */
 
+/* GLOBAL FONT - Comfortaa */
+body, html, *, *::before, *::after {
+  font-family: 'Comfortaa', cursive, sans-serif !important;
+}
+
 /* 1. FORM INPUTS / SELECTS / TEXTAREA */
 .form-control,
 .form-select,
