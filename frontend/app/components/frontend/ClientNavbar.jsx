@@ -205,6 +205,7 @@ export default function ClientNavbar({ initialMenu = [] }) {
                   <img
                     alt="Stellar Structures Limited"
                     src="/frontend_theme/assets/imgs/template/logo.png"
+                    style={{ maxWidth: "160px", height: "80px" }}
                   />
                 </Link>
               </div>
