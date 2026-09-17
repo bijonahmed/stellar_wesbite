@@ -27,6 +27,30 @@ const responsive = {
   },
 };
 
+const CustomLeftArrow = ({ onClick }) => (
+  <button
+    onClick={onClick}
+    className="slider-arrow slider-arrow-left"
+    aria-label="Previous slide"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  </button>
+);
+
+const CustomRightArrow = ({ onClick }) => (
+  <button
+    onClick={onClick}
+    className="slider-arrow slider-arrow-right"
+    aria-label="Next slide"
+  >
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  </button>
+);
+
 export default function FullWidthSlider() {
   const { sliderData, loading } = useCategories();
 
@@ -42,14 +66,15 @@ export default function FullWidthSlider() {
 
   return (
     <div>
-      <div className="slider-wrapper" style={{ marginTop: "-25px"}}>
+      <div className="slider-wrapper" style={{ marginTop: "-25px" }}>
         <Carousel
           responsive={responsive}
           infinite
           autoPlay
           autoPlaySpeed={3000}
           showDots
-          arrows
+          customLeftArrow={<CustomLeftArrow />}
+          customRightArrow={<CustomRightArrow />}
           swipeable
         >
           {sliderData.map((img, index) => (
@@ -58,7 +83,6 @@ export default function FullWidthSlider() {
                 src={img.home_slider}
                 className="slider-image"
                 loading="lazy"
-               
               />
             </div>
           ))}

@@ -4,8 +4,8 @@ import ClientNavbar from "../components/frontend/ClientNavbar";
 import ClientFooter from "../components/frontend/ClientFooter";
 import { AuthProvider } from "../context/AuthContext";
 import FrontendAssets from "../components/frontend/FrontendAssets";
-import FooterMobileMenu from "../components/frontend/FooterMobileMenu";
 import { CartProvider } from "../context/CartContext";
+import N8nChat from "../components/frontend/N8nChat";
 
 async function getNavbarMenu() {
   try {
@@ -28,6 +28,7 @@ export default async function PublicLayout({ children }) {
         <ClientNavbar initialMenu={initialMenu} />
         <main>{children}</main>
         <ClientFooter />
+        <N8nChat />
       </CartProvider>
     </AuthProvider>
   );
