@@ -102,6 +102,7 @@ export default function AboutContent() {
                         color: "#1a1a1a",
                         lineHeight: 2,
                         fontFamily: "'Chivo', sans-serif",
+                        textAlign: "justify",
                       }}
                       dangerouslySetInnerHTML={{
                         __html: normalizeHtml(post.description_full),

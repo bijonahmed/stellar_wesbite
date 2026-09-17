@@ -323,7 +323,7 @@ export default function OurTeamContent() {
                 <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
               </div>
             ) : directorsPosts.length > 0 ? (
-              directorsPosts.map((director, i) => {
+              [...directorsPosts].sort((a, b) => (a.id === 18 ? 1 : b.id === 18 ? -1 : 0)).map((director, i) => {
                 const directorParagraphs = parseParagraphs(director.description_full);
                 return (
                   <div key={i} className="col-lg-10">
@@ -356,7 +356,7 @@ export default function OurTeamContent() {
                               marginBottom: "4px",
                             }}
                           >
-                            {director.description_short || "Director"}
+                            {/* {director.description_short || "Director"} */}
                           </p>
                           <p>{director?.text_1 || ""}</p>
                         </div>
