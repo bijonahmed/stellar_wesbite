@@ -412,7 +412,7 @@ export default function ChatboxPage() {
         const { createChat } = await import('@n8n/chat');
 
         cleanup = createChat({
-          webhookUrl: '/api/n8n-chat',
+          webhookUrl: 'https://n8n.srv1106977.hstgr.cloud/webhook/d6347915-48ea-412a-8b88-fe04264f7eee/chat',
           mode: 'window',
           showWelcomeScreen: true,
           initialMessages: [
