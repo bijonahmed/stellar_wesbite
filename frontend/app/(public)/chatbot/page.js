@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect } from 'react';
+import Link from 'next/link';
 import '@n8n/chat/style.css';
 
 const CHAT_STYLES = `
@@ -77,38 +78,7 @@ const CHAT_STYLES = `
 
   .chat-close-button,
   .chat--close-button {
-    width: 30px !important;
-    height: 30px !important;
-    border-radius: 50% !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    background: rgba(255, 255, 255, 0.1) !important;
-    border: none !important;
-    cursor: pointer !important;
-    padding: 0 !important;
-    color: rgba(255, 255, 255, 0.55) !important;
-    transition: all 0.2s !important;
-    flex-shrink: 0 !important;
-  }
-
-  .chat-close-button:hover,
-  .chat--close-button:hover {
-    color: #FFFFFF !important;
-    background: rgba(255, 255, 255, 0.2) !important;
-  }
-
-  .chat-close-button > *,
-  .chat--close-button > * {
     display: none !important;
-  }
-
-  .chat-close-button::after,
-  .chat--close-button::after {
-    content: '✕' !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    line-height: 1 !important;
   }
 
   .chat-body,
@@ -397,6 +367,50 @@ const CHAT_STYLES = `
   }
 `;
 
+const BACK_HOME_STYLES = `
+  .back-to-home {
+    position: fixed !important;
+    top: 18px !important;
+    right: 20px !important;
+    z-index: 100000 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 9px 18px !important;
+    border-radius: 20px !important;
+    background: rgba(255, 255, 255, 0.12) !important;
+    border: 0.5px solid rgba(255, 255, 255, 0.15) !important;
+    color: #FFFFFF !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'SF Pro Text', 'Helvetica Neue', system-ui, sans-serif !important;
+    backdrop-filter: blur(8px) !important;
+    -webkit-backdrop-filter: blur(8px) !important;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  .back-to-home:hover {
+    background: rgba(255, 255, 255, 0.22) !important;
+    transform: scale(1.03) !important;
+  }
+
+  .back-to-home:active {
+    transform: scale(0.97) !important;
+  }
+
+  @media (max-width: 640px) {
+    .back-to-home {
+      top: 12px !important;
+      right: 16px !important;
+      padding: 7px 14px !important;
+      font-size: 0.8125rem !important;
+    }
+  }
+`;
+
 export default function ChatboxPage() {
   useEffect(() => {
     let cleanup;
@@ -439,5 +453,12 @@ export default function ChatboxPage() {
     };
   }, []);
 
-  return null;
+  return (
+    <>
+      <style>{BACK_HOME_STYLES}</style>
+      <Link href="/" className="back-to-home" aria-label="Back to home">
+        ← Back to Home
+      </Link>
+    </>
+  );
 }
