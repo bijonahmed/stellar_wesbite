@@ -9,10 +9,9 @@ export async function generateStaticParams() {
     const slugs = (result.data || [])
       .filter((post) => post.slug)
       .map((post) => ({ slug: post.slug }));
-    return slugs.length > 0 ? slugs : [{ slug: "__placeholder__" }];
-  } catch {
-    return [{ slug: "__placeholder__" }];
-  }
+    if (slugs.length > 0) return slugs;
+  } catch {}
+  return [{ slug: "latest" }];
 }
 
 export async function generateMetadata({ params }) {

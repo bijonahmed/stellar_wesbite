@@ -2,6 +2,16 @@ import ServicesPageClient from "./ServicesPageClient";
 
 const API = process.env.NEXT_PUBLIC_API_BASE;
 
+const STATIC_SLUGS = [
+  "architectural-design",
+  "construction-management",
+  "interior-design",
+  "investment-consultancy",
+  "ongoing-projects",
+  "property-development",
+  "upcoming-projects",
+];
+
 export async function generateStaticParams() {
   try {
     const res = await fetch(`${API}/public/getsAllServices`);
@@ -9,9 +19,9 @@ export async function generateStaticParams() {
     const slugs = (result.data || [])
       .filter((post) => post.slug)
       .map((post) => ({ slug: post.slug }));
-    return slugs.length > 0 ? slugs : [{ slug: "__placeholder__" }];
+    return slugs.length > 0 ? slugs : STATIC_SLUGS.map((slug) => ({ slug }));
   } catch {
-    return [{ slug: "__placeholder__" }];
+    return STATIC_SLUGS.map((slug) => ({ slug }));
   }
 }
 

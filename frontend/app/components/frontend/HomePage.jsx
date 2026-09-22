@@ -1,25 +1,97 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import Slider from "./Slider";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE || "https://api.stellarstructuresbd.com/api";
 
+/* ---- Palette ----
+  ink        #10202F   deep navy-charcoal (headlines, dark sections)
+  paper      #FAF7F1   warm ivory (base background, replaces stark white)
+  stone      #F2ECE0   warm sand (alternating sections, replaces flat grey)
+  brass      #A9822E   muted brass gold (accent)
+  brass-deep #7C5F22   brass hover / pressed state
+  slate      #5C6670   body copy
+  line       #E3DCC9   warm hairline border
+*/
+
+const features = [
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9822E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+        <polyline points="9 22 9 12 15 12 15 22" />
+      </svg>
+    ),
+    title: "Premium Residences",
+    desc: "Thoughtfully designed homes with spacious floor plans and luxury finishes.",
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9822E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
+        <circle cx="12" cy="10" r="3" />
+      </svg>
+    ),
+    title: "Prime Locations",
+    desc: "Strategically chosen sites in Dhaka's most desirable neighbourhoods.",
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9822E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <polyline points="9 12 11 14 15 10" />
+      </svg>
+    ),
+    title: "Transparent Process",
+    desc: "Clear communication and honest pricing with no hidden charges.",
+  },
+  {
+    icon: (
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9822E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <polyline points="22 4 12 14.01 9 11.01" />
+      </svg>
+    ),
+    title: "Quality Construction",
+    desc: "Premium materials and skilled craftsmanship backed by rigorous quality checks.",
+  },
+];
+
+const steps = [
+  { num: "01", icon: "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20z M12 6v6l4 2", title: "Site Selection & Planning", desc: "We identify prime locations in Dhaka and develop comprehensive project plans that maximize value for our clients." },
+  { num: "02", icon: "M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z", title: "Design & Architecture", desc: "Our expert architects create designs that harmonize modern aesthetics with functional living spaces and structural integrity." },
+  { num: "03", icon: "M2 20h20 M5 20V8l7-5 7 5v12 M9 20v-6h6v6", title: "Construction & Delivery", desc: "Rigorous project oversight ensures superior quality standards, timely completion, and a seamless handover experience." },
+];
+
+function ProjectCard({ project, status, href = "/projects", fullWidth }) {
+  const isOngoing = status === "Ongoing";
+  return (
+    <Link href={href} className="ss-card">
+      <div className={fullWidth ? "ss-card-media ss-card-media-wide" : "ss-card-media"}>
+        {project.thumnail_img && (
+          <img src={project.thumnail_img} alt={project.name} />
+        )}
+        <span className={`ss-badge ${isOngoing ? "ss-badge-brass" : "ss-badge-ink"}`}>{status}</span>
+        <div className="ss-card-overlay">
+          <h3>{project.name}</h3>
+          <span className="ss-card-link">
+            View project
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+          </span>
+        </div>
+      </div>
+    </Link>
+  );
+}
+
 export default function HomePage() {
-  const [lightboxIndex, setLightboxIndex] = useState(-1);
-  const [zoomed, setZoomed] = useState(false);
   const [homeData, setHomeData] = useState(null);
   const [whoWeAre, setWhoWeAre] = useState(null);
-
-  const galleryImages = [
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-1.jpg", title: "Bashundhara R/A — Phase I", location: "Bashundhara, Dhaka" },
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-5.jpg", title: "Jolshiri R/A — Luxury Living", location: "Jolshiri, Dhaka" },
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-9.jpg", title: "Premium Lobby & Common Areas", location: "Elegant Interiors" },
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-12.jpg", title: "Rooftop Amenities & Sky Lounge", location: "Exclusive Amenities" },
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-16.jpg", title: "Intelligent Floor Plans", location: "1,200 – 2,800 sqft" },
-    { src: "/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-20.jpg", title: "Superior Construction Quality", location: "Premium Materials" },
-  ];
-
+  const [ongoingProjects, setOngoingProjects] = useState([]);
+  const [upcomingProjects, setUpcomingProjects] = useState([]);
+  const [loadingOngoing, setLoadingOngoing] = useState(true);
+  const [loadingUpcoming, setLoadingUpcoming] = useState(true);
 
   useEffect(() => {
     fetch(`${API_BASE}/public/getsPost`)
@@ -37,261 +109,466 @@ export default function HomePage() {
   }, []);
 
   useEffect(() => {
-    const loadOwlCarousel = async () => {
-      if (typeof window !== "undefined") {
-        const $ = (await import("jquery")).default;
-        window.$ = window.jQuery = $;
-        await import("owl.carousel/dist/owl.carousel.min.js");
-        $(".partner-slides").owlCarousel({
-          loop: true, margin: 20, nav: false, dots: false, autoplay: true,
-          autoplayTimeout: 3000, autoplayHoverPause: true,
-          responsive: { 0: { items: 2 }, 576: { items: 3 }, 768: { items: 4 }, 1200: { items: 5 } },
-        });
-        $(".testimonials-slides").owlCarousel({
-          loop: true, margin: 30, nav: false, dots: true, autoplay: true,
-          autoplayTimeout: 5000, autoplayHoverPause: true,
-          responsive: { 0: { items: 1 }, 768: { items: 1 } },
-        });
-      }
-    };
-    loadOwlCarousel();
-    return () => {
-      if (typeof window !== "undefined" && window.$) {
-        const $ = window.$;
-        if ($(".partner-slides").data("owl.carousel")) $(".partner-slides").trigger("destroy.owl.carousel");
-        if ($(".testimonials-slides").data("owl.carousel")) $(".testimonials-slides").trigger("destroy.owl.carousel");
-      }
-    };
+    fetch(`${API_BASE}/public/getsPost?slug=ongoing-projects`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data.length > 0) setOngoingProjects(data.data);
+        setLoadingOngoing(false);
+      })
+      .catch(() => setLoadingOngoing(false));
   }, []);
 
   useEffect(() => {
-    if (lightboxIndex === -1) return;
-    const handleKey = (e) => {
-      if (e.key === "Escape") { setLightboxIndex(-1); setZoomed(false); }
-      if (e.key === "ArrowRight") { setZoomed(false); setLightboxIndex((p) => (p + 1) % galleryImages.length); }
-      if (e.key === "ArrowLeft") { setZoomed(false); setLightboxIndex((p) => (p - 1 + galleryImages.length) % galleryImages.length); }
-    };
-    document.addEventListener("keydown", handleKey);
-    document.body.style.overflow = "hidden";
-    return () => { document.removeEventListener("keydown", handleKey); document.body.style.overflow = ""; };
-  }, [lightboxIndex]);
-
-  let touchStartX = 0;
-  const handleTouchStart = (e) => { touchStartX = e.touches[0].clientX; };
-  const handleTouchEnd = (e) => {
-    const diff = touchStartX - e.changedTouches[0].clientX;
-    if (Math.abs(diff) > 50) {
-      setZoomed(false);
-      if (diff > 0) setLightboxIndex((p) => (p + 1) % galleryImages.length);
-      else setLightboxIndex((p) => (p - 1 + galleryImages.length) % galleryImages.length);
-    }
-  };
+    fetch(`${API_BASE}/public/getsPost?slug=upcoming-projects`)
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.data.length > 0) setUpcomingProjects(data.data);
+        setLoadingUpcoming(false);
+      })
+      .catch(() => setLoadingUpcoming(false));
+  }, []);
 
   return (
     <>
-      <style>{`
-        .gallery-item { cursor: pointer; overflow: hidden; position: relative; }
-        .gallery-item .product-image { overflow: hidden; }
-        .gallery-item .product-image img { transition: transform 0.5s ease; }
-        .gallery-item:hover .product-image img { transform: scale(1.05); }
-        .gallery-overlay { position: absolute; inset: 0; background: rgba(6,20,36,0.5); display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; }
-        .gallery-item:hover .gallery-overlay { opacity: 1; }
-        .gallery-overlay-icon { width: 48px; height: 48px; border: 2px solid #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; }
-        .lb-backdrop { position: fixed; inset: 0; z-index: 9999; background: rgba(0,0,0,0.92); display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .lb-close { position: absolute; top: 12px; right: 16px; z-index: 10; width: 40px; height: 40px; border: none; background: rgba(255,255,255,0.1); border-radius: 50%; color: #fff; font-size: 22px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
-        .lb-close:hover { background: rgba(255,255,255,0.25); }
-        .lb-counter { position: absolute; top: 16px; left: 16px; z-index: 10; color: rgba(255,255,255,0.7); font-size: 14px; font-weight: 500; letter-spacing: 2px; }
-        .lb-zoom-btn { position: absolute; top: 16px; left: 50%; transform: translateX(-50%); z-index: 10; padding: 6px 16px; border: 1px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.1); border-radius: 4px; color: #fff; font-size: 13px; cursor: pointer; transition: background 0.2s; }
-        .lb-zoom-btn:hover { background: rgba(255,255,255,0.25); }
-        .lb-img-wrap { max-width: 90vw; max-height: 75vh; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .lb-img-wrap img { max-width: 100%; max-height: 75vh; object-fit: contain; transition: transform 0.35s ease; user-select: none; -webkit-user-drag: none; }
-        .lb-img-wrap img.lb-zoomed { transform: scale(2); cursor: zoom-out; }
-        .lb-img-wrap img:not(.lb-zoomed) { cursor: zoom-in; }
-        .lb-caption { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(transparent, rgba(0,0,0,0.8)); padding: 32px 20px 20px; text-align: center; }
-        .lb-caption h4 { color: #fff; font-size: 18px; font-weight: 600; margin: 0 0 4px; }
-        .lb-caption p { color: rgba(255,255,255,0.6); font-size: 13px; margin: 0; }
-        .lb-arrow { position: absolute; top: 50%; transform: translateY(-50%); z-index: 10; width: 44px; height: 44px; border: 1px solid rgba(255,255,255,0.2); background: rgba(0,0,0,0.4); border-radius: 50%; color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
-        .lb-arrow:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.4); }
-        .lb-prev { left: 12px; }
-        .lb-next { right: 12px; }
-        @media (max-width: 768px) {
-          .lb-arrow { width: 36px; height: 36px; font-size: 15px; }
-          .lb-prev { left: 8px; }
-          .lb-next { right: 8px; }
-          .lb-close { width: 36px; height: 36px; font-size: 18px; top: 8px; right: 8px; }
-          .lb-counter { font-size: 12px; top: 10px; left: 10px; }
-          .lb-zoom-btn { font-size: 11px; padding: 5px 12px; top: 10px; }
-          .lb-caption { padding: 24px 16px 14px; }
-          .lb-caption h4 { font-size: 15px; }
-          .lb-caption p { font-size: 12px; }
-          .lb-img-wrap { max-width: 96vw; max-height: 65vh; }
-          .lb-img-wrap img { max-height: 65vh; }
-        }
-        @media (max-width: 480px) {
-          .lb-arrow { width: 32px; height: 32px; font-size: 14px; }
-          .lb-caption h4 { font-size: 13px; }
-          .lb-caption p { font-size: 11px; }
-        }
-      `}</style>
-
-      <main className="main">
+      <main className="ss-main">
         {/* Hero Slider */}
-        <section className="section-box">
+        <section>
           <Slider />
         </section>
 
-
-
-
-        {/* Intro */}
-        <section className="section-box">
+        {/* Intro Section */}
+        <section className="ss-section ss-section-paper">
           <div className="container">
-            <div className="row">
-              <div className="col-lg-2 col-sm-1 col-12"></div>
-              <div className="col-lg-8 col-sm-10 col-12 text-center mt-2">
-                <h2 className="text-heading-3 color-gray-900 text-center">
-                  {homeData?.name || <>Crafting Premium Living Spaces<br className="d-lg-block d-none" /> Across Dhaka</>}
-                </h2>
-                <div className="text-body-text color-gray-600 mt-20 text-center">
-                  {homeData?.description_full ? (
-                    <span dangerouslySetInnerHTML={{ __html: homeData.description_full }} />
-                  ) : (
-                    "Stellar Structures Limited is a trusted name in Bangladesh&apos;s real estate industry, delivering exceptional residential and commercial developments built on quality, transparency, and innovation."
-                  )}
-                </div>
-              </div>
-              <div className="col-lg-2 col-sm-1 col-12"></div>
+            <div className="ss-intro">
+              <h2>
+                {homeData?.name || <>Crafting premium living spaces across Dhaka</>}
+              </h2>
+              <div className="ss-rule" />
+              <p>
+                Stellar Structures Limited is a trusted name in Bangladesh&apos;s real estate industry,
+                delivering exceptional residential and commercial developments built on quality,
+                transparency, and innovation.
+              </p>
             </div>
           </div>
         </section>
 
-
-
-        {/* Who We Are */}
-        <section className="section-box">
-          <div className="container mt-20">
-            <div className="row">
-              <div className="col-lg-6 col-sm-12 block-img-we-do">
-                <img className="bdrd-16 img-responsive" src="/frontend_theme/assets/imgs/gallery_img/stellar-structures-limited-21.jpg" alt="Stellar Structures Premium Real Estate Development in Dhaka" />
-              </div>
-              <div className="col-lg-6 col-sm-12 block-we-do">
-                <span className="tag-1">Who We Are</span>
-                <h3 className="text-heading-3 mt-30">{whoWeAre?.name || "Building Landmarks. Creating Better Living."}</h3>
-                {whoWeAre?.description_full ? (
-                  <div className="text-body-text color-gray-600 mt-30 text-justify" style={{ textAlign: "justify" }}>
-                    <span dangerouslySetInnerHTML={{ __html: whoWeAre.description_full }} />
-                  </div>
-                ) : (
-                  <p className="text-body-text color-gray-600 mt-30 text-justify" style={{ textAlign: "justify" }}>
-                    Founded with a vision to redefine urban living in Bangladesh, Stellar Structures Limited brings together passionate professionals dedicated to creating residences that inspire. From site selection to final handover, we maintain the highest standards of construction quality, design innovation, and transparent communication.
-                  </p>
-                )}
-                <div className="line-bd-green mt-50"></div>
-                <div className="row">
-                  <div className="col-lg-6 col-sm-6 col-12 mt-50">
-                    <h4 className="text-heading-6 icon-leaf">Premium Residences</h4>
-                    <p className="text-body-excerpt color-gray-600 mt-15">Thoughtfully designed homes with spacious floor plans and luxury finishes.</p>
-                  </div>
-                  <div className="col-lg-6 col-sm-6 col-12 mt-50">
-                    <h4 className="text-heading-6 icon-leaf">Prime Locations</h4>
-                    <p className="text-body-excerpt color-gray-600 mt-15">Strategically chosen sites in Dhaka&apos;s most desirable neighbourhoods.</p>
-                  </div>
-                  <div className="col-lg-6 col-sm-6 col-12 mt-50">
-                    <h4 className="text-heading-6 icon-leaf">Transparent Process</h4>
-                    <p className="text-body-excerpt color-gray-600 mt-15">Clear communication and honest pricing with no hidden charges.</p>
-                  </div>
-                  <div className="col-lg-6 col-sm-6 col-12 mt-50">
-                    <h4 className="text-heading-6 icon-leaf">Quality Construction</h4>
-                    <p className="text-body-excerpt color-gray-600 mt-15">Premium materials and skilled craftsmanship backed by rigorous quality checks.</p>
-                  </div>
+        {/* Features */}
+        <section className="ss-section ss-section-paper ss-section-tight">
+          <div className="container">
+            <div className="ss-features-grid">
+              {features.map((f, i) => (
+                <div key={i} className="ss-feature">
+                  <div className="ss-feature-plate">{f.icon}</div>
+                  <h3>{f.title}</h3>
+                  <p>{f.desc}</p>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
+        {/* Ongoing Projects */}
+        <section className="ss-section ss-section-stone">
+          <div className="container">
+            <div className="ss-section-head">
+              <span className="ss-eyebrow">Active developments</span>
+              <h2>Ongoing Projects</h2>
+              <div className="ss-rule" />
+              <p>Explore our active developments bringing premium living spaces to Dhaka&apos;s most prestigious addresses.</p>
+            </div>
 
+            {loadingOngoing ? (
+              <div className="ss-loading"><div className="ss-spinner" /></div>
+            ) : ongoingProjects.length > 0 ? (
+              <ProjectCard project={ongoingProjects[ongoingProjects.length - 1]} status="Ongoing" href="/services/ongoing-projects" fullWidth />
+            ) : (
+              <p className="ss-empty">No ongoing projects found.</p>
+            )}
 
+            {ongoingProjects.length > 0 && (
+              <div className="ss-center">
+                <Link href="/services/ongoing-projects" className="ss-btn ss-btn-brass">
+                  View all ongoing
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
 
-        
+        {/* Upcoming Projects */}
+        <section className="ss-section ss-section-paper">
+          <div className="container">
+            <div className="ss-section-head">
+              <span className="ss-eyebrow">Coming soon</span>
+              <h2>Upcoming Projects</h2>
+              <div className="ss-rule" />
+              <p>Be the first to discover our exciting new developments coming soon to Dhaka&apos;s most prestigious addresses.</p>
+            </div>
+
+            {loadingUpcoming ? (
+              <div className="ss-loading"><div className="ss-spinner" /></div>
+            ) : upcomingProjects.length > 0 ? (
+              <div className="ss-project-grid">
+                {upcomingProjects.slice(-2).map((p, i) => (
+                  <ProjectCard key={p.id || i} project={p} status="Upcoming" href="/services/upcoming-projects" />
+                ))}
+              </div>
+            ) : (
+              <p className="ss-empty">No upcoming projects found.</p>
+            )}
+
+            {upcomingProjects.length > 0 && (
+              <div className="ss-center">
+                <Link href="/services/upcoming-projects" className="ss-btn ss-btn-brass">
+                  View all upcoming
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* Our Approach */}
-        <section className="section-box mt-lg-100">
+        <section className="ss-section ss-section-stone">
           <div className="container">
-            <div className="row">
-              <div className="col-lg-2 col-sm-1 col-12"></div>
-              <div className="col-lg-8 col-sm-10 col-12 text-center mt-40">
-                <h2 className="text-heading-3 color-gray-900 mb-10">Our Approach to Development</h2>
-                <p className="text-body-text color-gray-600 mt-20">Every project we undertake follows a meticulous process designed to deliver nothing short of excellence.</p>
-              </div>
-              <div className="col-lg-2 col-sm-1 col-12"></div>
+            <div className="ss-section-head">
+              <h2>Our approach to development</h2>
+              <div className="ss-rule" />
+              <p>Every project we undertake follows a meticulous process designed to deliver nothing short of excellence.</p>
             </div>
-          </div>
-          <div className="container mt-70">
             <div className="row">
-              <div className="col-lg-4 col-md-12 col-sm-12">
-                <div className="list-icons mt-50">
-                  <div className="item-icon">
-                    <span className="icon-left"><img src="/frontend_theme/assets/imgs/page/homepage2/icon-acquis.svg" alt="Site Selection and Planning Process" /></span>
-                    <h4 className="text-heading-4">1. Site Selection &amp; Planning</h4>
-                    <p className="text-body-text color-gray-600 mt-15">We identify prime locations in Dhaka and develop comprehensive project plans that maximize value for our clients.</p>
+              {steps.map((step, i) => (
+                <div key={i} className="col-lg-4 col-md-6 col-12 ss-step-col">
+                  <div className="ss-step">
+                    <span className="ss-step-num">{step.num}</span>
+                    <div className="ss-step-icon">
+                      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#A9822E" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d={step.icon} /></svg>
+                    </div>
+                    <h3>{step.title}</h3>
+                    <p>{step.desc}</p>
                   </div>
                 </div>
-              </div>
-              <div className="col-lg-4 col-md-12 col-sm-12">
-                <div className="list-icons mt-50">
-                  <div className="item-icon">
-                    <span className="icon-left"><img src="/frontend_theme/assets/imgs/page/homepage2/icon-active.svg" alt="Design and Architecture Process" /></span>
-                    <h4 className="text-heading-4">2. Design &amp; Architecture</h4>
-                    <p className="text-body-text color-gray-600 mt-15">Our expert architects create designs that harmonize modern aesthetics with functional living spaces and structural integrity.</p>
-                  </div>
-                </div>
-              </div>
-              <div className="col-lg-4 col-md-12 col-sm-12">
-                <div className="list-icons mt-50">
-                  <div className="item-icon">
-                    <span className="icon-left"><img src="/frontend_theme/assets/imgs/page/homepage2/icon-retent.svg" alt="Construction and Delivery Process" /></span>
-                    <h4 className="text-heading-4">3. Construction &amp; Delivery</h4>
-                    <p className="text-body-text color-gray-600 mt-15">Rigorous project oversight ensures superior quality standards, timely completion, and a seamless handover experience.</p>
-                  </div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </section>
 
-        
-        
-
-        {/* Newsletter */}
-        <section className="section-box overflow-visible mb-100 d-none">
-          <div className="container mt-100">
-            <div className="row">
-              <div className="col-lg-10 mx-auto">
-                <div className="bg-2 box-newsletter position-relative">
-                  <div className="row">
-                    <div className="col-lg-5 col-md-7">
-                      <span className="text-body-capitalized color-gray-500 text-uppercase">Stay Updated</span>
-                      <h4 className="text-heading-2 mb-10 mt-10">Subscribe to Our Newsletter</h4>
-                      <p className="text-body-text color-gray-500">Get the latest updates on our projects, construction milestones, and exclusive offers delivered to your inbox.</p>
-                      <div className="box-form-newsletter mt-30">
-                        <form className="form-newsletter">
-                          <input className="input-newsletter" type="text" defaultValue="" placeholder="Enter your email address" />
-                          <button className="btn btn-send"></button>
-                        </form>
-                      </div>
-                    </div>
-                    <div className="col-lg-7 col-md-5 mt-30 mt-lg-0 mt-md-30 mt-sm-30 position-relative text-end">
-                      <div className="block-chart shape-1"><img src="/frontend_theme/assets/imgs/template/chart.png" alt="Newsletter Updates" /></div>
-                      <img className="img-responsive img-newsletter" src="/frontend_theme/assets/imgs/template/img-newsletter.png" alt="Stellar Structures Newsletter" />
-                    </div>
-                  </div>
-                </div>
+        {/* CTA Banner */}
+        <section className="ss-cta">
+          <div className="container">
+            <div className="row align-items-center">
+              <div className="col-lg-8 col-sm-12 ss-cta-copy">
+                <span className="ss-eyebrow ss-eyebrow-light">Get started</span>
+                <h2>Ready to find your dream home?</h2>
+                <p>Explore our premium residential and commercial developments designed for those who appreciate uncompromising quality.</p>
+              </div>
+              <div className="col-lg-4 col-sm-12 ss-cta-action">
+                <Link href="/services/upcoming-projects" className="ss-btn ss-btn-outline-light">
+                  Explore projects
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" /></svg>
+                </Link>
               </div>
             </div>
           </div>
         </section>
       </main>
+
+      <style>{`
+        :root {
+          --ss-ink: #10202F;
+          --ss-ink-soft: #1B3247;
+          --ss-paper: #FAF7F1;
+          --ss-stone: #F2ECE0;
+          --ss-brass: #A9822E;
+          --ss-brass-deep: #7C5F22;
+          --ss-slate: #5C6670;
+          --ss-line: #E3DCC9;
+        }
+
+        .ss-main { overflow: hidden; background: var(--ss-paper); }
+
+        .ss-section { padding: clamp(32px, 4vw, 48px) 0; }
+        .ss-section-tight { padding-top: 0; }
+        .ss-section-paper { background: var(--ss-paper); }
+        .ss-section-stone { background: var(--ss-stone); }
+
+        .ss-rule { width: 44px; height: 2px; background: var(--ss-brass); margin: 16px 0 18px; }
+        .ss-intro .ss-rule, .ss-section-head .ss-rule { margin-left: auto; margin-right: auto; }
+
+        .ss-eyebrow {
+          display: inline-block;
+          font-family: 'Chivo', sans-serif;
+          font-size: 12px;
+          font-weight: 700;
+          color: var(--ss-brass-deep);
+          letter-spacing: 2px;
+          margin-bottom: 14px;
+        }
+        .ss-eyebrow-light { color: rgba(201,162,39,0.9); }
+
+        .ss-intro { max-width: 760px; margin: 0 auto; text-align: center; }
+        .ss-intro h2 {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(28px, 4vw, 44px);
+          font-weight: 700;
+          color: var(--ss-ink);
+          line-height: 1.25;
+          margin: 0;
+        }
+        .ss-intro p {
+          font-family: 'Chivo', sans-serif;
+          font-size: clamp(15px, 1.6vw, 17px);
+          color: var(--ss-slate);
+          line-height: 1.8;
+          margin: 0 auto;
+          max-width: 640px;
+        }
+
+        .ss-section-head { text-align: center; max-width: 620px; margin: 0 auto 32px; }
+        .ss-section-head h2 {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(24px, 3.5vw, 38px);
+          font-weight: 700;
+          color: var(--ss-ink);
+          margin: 0;
+        }
+        .ss-section-head p {
+          font-family: 'Chivo', sans-serif;
+          font-size: clamp(14px, 1.4vw, 16px);
+          color: var(--ss-slate);
+          line-height: 1.7;
+          margin: 0;
+        }
+
+        /* Features */
+        .ss-features-grid {
+          display: grid;
+          grid-template-columns: repeat(4, 1fr);
+          border-top: 1px solid var(--ss-line);
+          border-left: 1px solid var(--ss-line);
+        }
+        .ss-feature {
+          padding: clamp(24px, 2.5vw, 32px) clamp(18px, 2vw, 24px);
+          border-right: 1px solid var(--ss-line);
+          border-bottom: 1px solid var(--ss-line);
+        }
+        .ss-feature-plate {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(169,130,46,0.08);
+          border: 1px solid rgba(169,130,46,0.25);
+          margin-bottom: 14px;
+        }
+        .ss-feature h3 {
+          font-family: 'Chivo', sans-serif;
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--ss-ink);
+          margin: 0 0 10px;
+        }
+        .ss-feature p {
+          font-family: 'Chivo', sans-serif;
+          font-size: 14px;
+          color: var(--ss-slate);
+          line-height: 1.7;
+          margin: 0;
+        }
+
+        /* Project cards */
+        .ss-project-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+        .ss-card { text-decoration: none; display: block; }
+        .ss-card-media {
+          position: relative;
+          overflow: hidden;
+          aspect-ratio: 16 / 10;
+          cursor: pointer;
+          border: 1px solid var(--ss-line);
+        }
+        .ss-card-media img {
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          transition: transform 0.6s ease;
+        }
+        .ss-card:hover .ss-card-media img { transform: scale(1.06); }
+        .ss-card:hover .ss-card-overlay { opacity: 1; }
+
+        .ss-card-media-wide {
+          aspect-ratio: 21 / 6;
+          animation: ss-fadeSlideUp 0.6s ease both;
+        }
+        .ss-card-media-wide .ss-card-overlay { opacity: 1; }
+        .ss-card-media-wide .ss-card-overlay h3 {
+          font-size: clamp(1.4rem, 3vw, 2rem);
+        }
+
+        @keyframes ss-fadeSlideUp {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+
+        .ss-badge {
+          position: absolute;
+          top: 16px;
+          left: 16px;
+          padding: 5px 16px;
+          color: #fff;
+          font-family: 'Chivo', sans-serif;
+          font-size: 10px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1.5px;
+          z-index: 2;
+        }
+        .ss-badge-brass { background: var(--ss-brass); }
+        .ss-badge-ink { background: var(--ss-ink); }
+
+        .ss-card-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(to top, rgba(16,32,47,0.9) 0%, rgba(16,32,47,0.25) 55%, transparent 100%);
+          display: flex;
+          flex-direction: column;
+          justify-content: flex-end;
+          padding: clamp(20px, 3vw, 32px);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        .ss-card-overlay h3 {
+          font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+          font-weight: 700;
+          color: #fff;
+          font-family: 'Chivo', sans-serif;
+          margin: 0 0 6px;
+          line-height: 1.3;
+        }
+        .ss-card-link {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          color: var(--ss-brass);
+          font-family: 'Chivo', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+        }
+
+        .ss-loading { padding: 60px 0; text-align: center; }
+        .ss-empty {
+          color: #9A9280;
+          text-align: center;
+          font-family: 'Chivo', sans-serif;
+          font-size: 15px;
+          padding: 40px 0;
+        }
+        .ss-center { text-align: center; margin-top: 28px; }
+
+        .ss-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 10px;
+          padding: 14px 32px;
+          font-family: 'Chivo', sans-serif;
+          font-size: 13px;
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 1px;
+          text-decoration: none;
+          transition: all 0.25s ease;
+        }
+        .ss-btn-brass { background: var(--ss-brass); color: #fff; }
+        .ss-btn-brass:hover { background: var(--ss-brass-deep); }
+        .ss-btn-outline-light {
+          background: transparent;
+          color: #fff;
+          border: 1px solid rgba(255,255,255,0.35);
+        }
+        .ss-btn-outline-light:hover {
+          background: var(--ss-brass);
+          border-color: var(--ss-brass);
+        }
+
+        /* Process steps */
+        .ss-step-col { margin-bottom: 16px; }
+        .ss-step {
+          padding: 28px 22px;
+          background: var(--ss-paper);
+          border: 1px solid var(--ss-line);
+          text-align: center;
+          height: 100%;
+          position: relative;
+        }
+        .ss-step-num {
+          position: absolute;
+          top: 20px;
+          right: 24px;
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: 15px;
+          font-weight: 700;
+          color: var(--ss-brass);
+          letter-spacing: 1px;
+        }
+        .ss-step-icon {
+          width: 48px;
+          height: 48px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(169,130,46,0.08);
+          border: 1px solid rgba(169,130,46,0.25);
+          margin: 0 auto 12px;
+        }
+        .ss-step h3 {
+          font-family: 'Chivo', sans-serif;
+          font-size: 16px;
+          font-weight: 700;
+          color: var(--ss-ink);
+          margin: 0 0 10px;
+        }
+        .ss-step p {
+          font-family: 'Chivo', sans-serif;
+          font-size: 14px;
+          color: var(--ss-slate);
+          line-height: 1.6;
+          margin: 0;
+        }
+
+        /* CTA */
+        .ss-cta {
+          background: linear-gradient(135deg, #10202F 0%, #16293B 55%, #10202F 100%);
+          padding: clamp(36px, 5vw, 56px) 0;
+        }
+        .ss-cta-copy { margin-bottom: 24px; }
+        .ss-cta-copy h2 {
+          font-family: 'Playfair Display', Georgia, serif;
+          font-size: clamp(24px, 3vw, 36px);
+          font-weight: 700;
+          color: #fff;
+          margin: 0 0 12px;
+          line-height: 1.25;
+        }
+        .ss-cta-copy p {
+          font-family: 'Chivo', sans-serif;
+          font-size: 15px;
+          color: rgba(255,255,255,0.62);
+          margin: 0;
+          max-width: 500px;
+        }
+        .ss-cta-action { text-align: right; }
+
+        @media (max-width: 991px) {
+          .ss-features-grid { grid-template-columns: repeat(2, 1fr); }
+          .ss-cta-action { text-align: left; margin-top: 8px; }
+        }
+        @media (max-width: 767px) {
+          .ss-project-grid { grid-template-columns: 1fr; }
+          .ss-features-grid { grid-template-columns: 1fr; }
+        }
+      `}</style>
     </>
   );
 }

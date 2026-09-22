@@ -28,7 +28,8 @@
     "slick-carousel": "^1.8.1",
     "styled-components": "^6.4.2",
     "sweetalert2": "^11.26.3",
-    "swiper": "^12.2.0"
+    "swiper": "^12.2.0",
+    "@n8n/chat": "^1.38.5"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

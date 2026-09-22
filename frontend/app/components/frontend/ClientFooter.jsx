@@ -9,6 +9,7 @@ const footerLinks = [
     links: [
       { label: "Company Profile", href: "/about" },
       { label: "Our Team", href: "/our-team" },
+        
      
     ],
   },
@@ -45,6 +46,7 @@ const footerLinks = [
 
       { label: "Quick Support", href: "/contact" },
       { label: "Customer Support", href: "/contact" },
+      { label: "Contact Us", href: "/contact" },
     ],
   },
   {

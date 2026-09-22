@@ -50,11 +50,11 @@ const fallbackMenu = [
     href: "/blog",
     children: null,
   },
-  {
-    label: "Contact",
-    href: "/contact",
-    children: null,
-  },
+  // {
+  //   label: "Contact",
+  //   href: "/contact",
+  //   children: null,
+  // },
 ];
 
 export default function ClientNavbar({ initialMenu = [] }) {
@@ -65,6 +65,7 @@ export default function ClientNavbar({ initialMenu = [] }) {
   const [mobileSubOpen, setMobileSubOpen] = useState(null);
   const [desktopOpen, setDesktopOpen] = useState(null);
   const [desktopSubOpen, setDesktopSubOpen] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
   const navRef = useRef(null);
   const hoverTimeout = useRef(null);
   const [mounted, setMounted] = useState(false);
@@ -82,8 +83,11 @@ export default function ClientNavbar({ initialMenu = [] }) {
       .then((res) => res.json())
       .then((data) => {
         if (data.success && Array.isArray(data.data) && data.data.length > 0) {
-          setCachedMenu(data.data);
-          setDynamicMenu(data.data);
+          const filtered = data.data.filter(
+            (item) => item.href !== "/contact"
+          );
+          setCachedMenu(filtered);
+          setDynamicMenu(filtered);
         }
       })
       .catch(() => {});
@@ -92,7 +96,9 @@ export default function ClientNavbar({ initialMenu = [] }) {
   const baseMenuData = dynamicMenu;
 
   const filteredMenuData = (items) =>
-    items.filter((item) => item.label !== "Blog");
+    items.filter(
+      (item) => item.label !== "Blog" && item.href !== "/contact"
+    );
 
   const menuData =
     mounted && isLoggedIn
@@ -194,19 +200,34 @@ export default function ClientNavbar({ initialMenu = [] }) {
     setDesktopOpen(null);
   };
 
+  const isHomepage = pathname === "/";
+
+  useEffect(() => {
+    if (!isHomepage) { setScrolled(false); return; }
+    const onScroll = () => setScrolled(window.scrollY > 80);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHomepage]);
+
   return (
-    <div>
-      <header className="header sticky-bar" style={{ zIndex: 1000 }}>
+    <>
+      <header
+        className={`header ${isHomepage ? (scrolled ? "ss-hero-header ss-hero-header--scrolled" : "ss-hero-header") : "ss-scrolled-header"}`}
+        style={{ zIndex: 1000 }}
+      >
         <div className="container">
           <div className="main-header">
             <div className="header-left">
               <div className="header-logo">
                 <Link className="d-flex" href="/">
+                
                   <img
                     alt="Stellar Structures Limited"
-                    src="/frontend_theme/assets/imgs/template/logo.png"
+                    src={isHomepage ? "/frontend_theme/assets/imgs/template/logo_home.png" : "/frontend_theme/assets/imgs/template/logo.png"}
                     style={{ maxWidth: "160px", height: "80px" }}
                   />
+
                 </Link>
               </div>
               <div className="header-nav">
@@ -707,7 +728,145 @@ export default function ClientNavbar({ initialMenu = [] }) {
         .sub-menu > li.has-children {
           position: relative;
         }
+
+        /* Hero header: transparent overlay on homepage */
+        .ss-hero-header {
+          position: absolute !important;
+          top: 0;
+          left: 0;
+          right: 0;
+          width: 100%;
+          background: transparent !important;
+          border-bottom: none !important;
+          box-shadow: none !important;
+          z-index: 100 !important;
+        }
+        .ss-hero-header--scrolled {
+          background: #fff !important;
+          border-bottom: 1px solid #EFEFED !important;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+          z-index: 1000 !important;
+          transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .ss-hero-header--scrolled .main-menu > li > a {
+          color: #061424 !important;
+        }
+        .ss-hero-header--scrolled .main-menu > li > a:hover,
+        .ss-hero-header--scrolled .main-menu > li > a.active {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header--scrolled .main-menu > li > a i {
+          color: #6B7280 !important;
+        }
+        .ss-hero-header--scrolled .main-menu > li > a:hover i {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header--scrolled .sub-menu {
+          background: #fff !important;
+          border: 1px solid #EFEFED;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .ss-hero-header--scrolled .sub-menu li a {
+          color: #061424 !important;
+        }
+        .ss-hero-header--scrolled .sub-menu li a:hover {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header--scrolled .burger-icon-white > span::before,
+        .ss-hero-header--scrolled .burger-icon-white > span::after {
+          background: #061424 !important;
+        }
+        .ss-hero-header--scrolled .burger-icon-white > span {
+          background: #061424 !important;
+        }
+        .ss-scrolled-header {
+          position: sticky !important;
+          top: 0;
+          background: #fff !important;
+          border-bottom: 1px solid #EFEFED !important;
+          box-shadow: 0 2px 12px rgba(0,0,0,0.06) !important;
+          z-index: 1000 !important;
+          transition: background 0.3s ease, box-shadow 0.3s ease;
+        }
+        .ss-scrolled-header .main-menu > li > a {
+          color: #061424 !important;
+        }
+        .ss-scrolled-header .main-menu > li > a:hover,
+        .ss-scrolled-header .main-menu > li > a.active {
+          color: #C9A227 !important;
+        }
+        .ss-scrolled-header .main-menu > li > a i {
+          color: #6B7280 !important;
+        }
+        .ss-scrolled-header .main-menu > li > a:hover i {
+          color: #C9A227 !important;
+        }
+        .ss-scrolled-header .sub-menu {
+          background: #fff !important;
+          border: 1px solid #EFEFED;
+          box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+        .ss-scrolled-header .sub-menu li a {
+          color: #061424 !important;
+        }
+        .ss-scrolled-header .sub-menu li a:hover {
+          color: #C9A227 !important;
+        }
+        .ss-scrolled-header .burger-icon-white > span::before,
+        .ss-scrolled-header .burger-icon-white > span::after {
+          background: #061424 !important;
+        }
+        .ss-scrolled-header .burger-icon-white > span {
+          background: #061424 !important;
+        }
+        .ss-hero-header .main-menu > li > a {
+          color: rgba(255, 255, 255, 0.9) !important;
+        }
+        .ss-hero-header .main-menu > li > a:hover,
+        .ss-hero-header .main-menu > li > a.active {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header .main-menu > li > a i {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+        .ss-hero-header .main-menu > li > a:hover i {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header .sub-menu {
+          background: #0a0f0d !important;
+        }
+        .ss-hero-header .sub-menu li a {
+          color: rgba(255, 255, 255, 0.8) !important;
+        }
+        .ss-hero-header .sub-menu li a:hover {
+          color: #C9A227 !important;
+        }
+        .ss-hero-header .burger-icon-white > span::before,
+        .ss-hero-header .burger-icon-white > span::after {
+          background: #fff !important;
+        }
+        .ss-hero-header .burger-icon-white > span {
+          background: #fff !important;
+        }
+        .ss-hero-header .block-signin .btn {
+          color: #fff !important;
+          border-color: rgba(255, 255, 255, 0.4) !important;
+        }
+        .ss-hero-header .block-signin .btn:hover {
+          border-color: #C9A227 !important;
+          color: #C9A227 !important;
+        }
+
+        @media (max-width: 1279px) {
+          .ss-hero-header .burger-icon-white > span::before,
+          .ss-hero-header .burger-icon-white > span::after {
+            background: #fff !important;
+          }
+          .ss-hero-header .burger-icon-white > span {
+            background: #fff !important;
+          }
+        }
       `}</style>
-    </div>
+    </>
   );
 }

@@ -3680,10 +3680,10 @@ label {
   font-family: "Chivo", sans-serif;
   font-style: normal;
   font-weight: 400;
-  font-size: 18px;
+  font-size: 15px;
   color: #101828;
   display: block;
-  padding: 10px 5px 10px 15px;
+  padding: 10px 5px 10px 12px;
   text-decoration: none;
   position: relative;
 }
@@ -3709,7 +3709,7 @@ label {
   top: 100%;
   left: 0px;
   z-index: 999;
-  min-width: 460px;
+  min-width: 250px;
   border-radius: 4px;
   padding: 8px 0px 8px 0;
   box-shadow: 4px 4px 40px rgba(16, 24, 40, 0.1);
@@ -3719,7 +3719,7 @@ label {
   width: 100%;
 }
 .header .main-menu li ul li a {
-  font-size: 16px;
+  font-size: 13px;
   color: #101828;
   position: relative;
   padding: 10px 22px 10px 22px;
