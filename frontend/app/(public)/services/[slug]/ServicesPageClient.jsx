@@ -3,6 +3,30 @@
 import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 
+const FALLBACK_SERVICES = [
+  { id: "pd", name: "Property Development", slug: "property-development" },
+  { id: "id", name: "Interior Design", slug: "interior-design" },
+  { id: "ad", name: "Architectural Design", slug: "architectural-design" },
+  { id: "ic", name: "Investment Consultancy", slug: "investment-consultancy" },
+  { id: "cm", name: "Construction Management", slug: "construction-management" },
+  { id: "op", name: "Ongoing Projects", slug: "ongoing-projects" },
+  { id: "up", name: "Upcoming Projects", slug: "upcoming-projects" },
+];
+
+function normalizeService(raw) {
+  if (!raw) return null;
+  return {
+    ...raw,
+    title: raw.title || raw.name || "",
+    name: raw.name || raw.title || "",
+    description: raw.description || raw.description_full || raw.description_short || "",
+    image: raw.image || raw.thumnail_img || "",
+    thumnail_img: raw.thumnail_img || raw.image || "",
+    author: raw.author || "Admin",
+    slug: raw.slug,
+  };
+}
+
 export default function ServicesPageClient({ slug }) {
   const [data, setData] = useState(null);
   const [popularPosts, setPopularPosts] = useState([]);
@@ -12,12 +36,28 @@ export default function ServicesPageClient({ slug }) {
   const fetchBlog = async () => {
     setLoading(true);
     try {
+      let service = null;
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/public/checkedProductRow/${slug}`,
+        `${process.env.NEXT_PUBLIC_API_BASE}/public/checkedPostRow/${slug}`,
         { cache: "no-store" }
       );
-      const result = await res.json();
-      setData(result.data || null);
+      if (res.ok) {
+        const result = await res.json();
+        service = result.data || null;
+      }
+      if (!service) {
+        const fallbackRes = await fetch(
+          `${process.env.NEXT_PUBLIC_API_BASE}/public/getsPost?slug=${slug}`,
+          { cache: "no-store" }
+        );
+        const fallbackResult = await fallbackRes.json();
+        service = Array.isArray(fallbackResult.data)
+          ? fallbackResult.data.find((item) => item.slug === slug) ||
+            fallbackResult.data[0] ||
+            null
+          : fallbackResult.data || null;
+      }
+      setData(normalizeService(service));
     } catch (error) {
       console.error("Service fetch error:", error);
     } finally {
@@ -32,9 +72,11 @@ export default function ServicesPageClient({ slug }) {
         { cache: "no-store" }
       );
       const result = await res.json();
-      setPopularPosts(result.data || []);
+      const list = (result.data || []).map(normalizeService);
+      setPopularPosts(list.length > 0 ? list : FALLBACK_SERVICES);
     } catch (error) {
       console.error("Popular posts error:", error);
+      setPopularPosts(FALLBACK_SERVICES);
     }
   };
 
@@ -57,7 +99,7 @@ export default function ServicesPageClient({ slug }) {
       <div className="page-title-area style-four bg4">
         <div className="container">
           <div className="page-title-content text-start">
-            <h2>{data?.title || "Blog Details"}</h2>
+            <h2>{data?.title || "Service Details"}</h2>
             <ul>
               <li><Link href="/">Home</Link></li>
               <li>Service Details</li>
