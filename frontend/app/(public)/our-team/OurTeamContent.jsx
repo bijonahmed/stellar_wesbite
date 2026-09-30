@@ -151,9 +151,11 @@ export default function OurTeamContent() {
       />
 
       {/* Chairman Section */}
+      {chairmanPost && chairmanPost.status !== 0 && (
       <section style={{ padding: "clamp(20px, 2vw, 40px) 0", background: "#f8f7f3" }}>
         <div className="container">
           <div className="row justify-content-center">
+            
             <div className="col-lg-10">
               <div style={cardStyle}>
                 <div className="row align-items-start g-4">
@@ -221,9 +223,11 @@ export default function OurTeamContent() {
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </section>
+      )}
 
       {/* Managing Director Section */}
       <section style={{ padding: "clamp(20px, 2vw, 40px) 0", background: "#fff" }}>
